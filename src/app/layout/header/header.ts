@@ -7,12 +7,16 @@ import { RouterModule } from '@angular/router';
   imports: [RouterModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
-  encapsulation: ViewEncapsulation.None, // <--- importante
+  encapsulation: ViewEncapsulation.None
 })
 export class HeaderComponent {
   menuOpen = false;
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu() {
+    this.menuOpen = false;
   }
 }

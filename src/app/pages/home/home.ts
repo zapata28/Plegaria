@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductCardComponent } from './product-card/product-card';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
+  imports: [CommonModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
 export class Home implements OnInit {
+
+  constructor(private router: Router) {}
 
   currentSlide = 0;
 
@@ -39,6 +41,29 @@ export class Home implements OnInit {
     }
   ];
 
+  categorias = [
+    {
+      name: 'Maquillaje',
+      slug: 'maquillaje',
+      img: 'img/categorias/maquillaje.jpg'
+    },
+    {
+      name: 'Cuidado de la piel',
+      slug: 'skincare',
+      img: 'img/categorias/skincare.jpg'
+    },
+    {
+      name: 'Cuidado capilar',
+      slug: 'capilar',
+      img: 'img/categorias/capilar.jpg'
+    },
+    {
+      name: 'Accesorios',
+      slug: 'accesorios',
+      img: 'img/categorias/accesorios.jpg'
+    }
+  ];
+
   ngOnInit(): void {
     setInterval(() => {
       this.currentSlide =
@@ -49,27 +74,8 @@ export class Home implements OnInit {
   goToSlide(index: number) {
     this.currentSlide = index;
   }
-  maquillaje = [
-  { name: 'Base líquida', price: 120000, img: 'assets/img/base.jpg' },
-  { name: 'BB Cream', price: 95000, img: 'assets/img/bb-cream.jpg' },
-  { name: 'Corrector', price: 80000, img: 'assets/img/corrector.jpg' }
-];
 
-piel = [
-  { name: 'Limpiador facial', price: 45000, img: 'assets/img/limpiador.jpg' },
-  { name: 'Mascarilla', price: 60000, img: 'assets/img/mascarilla.jpg' }
-];
-
-capilar = [
-  { name: 'Shampoo', price: 70000, img: 'assets/img/shampoo.jpg' },
-  { name: 'Acondicionador', price: 65000, img: 'assets/img/acondicionador.jpg' }
-];
-
-accesorios = [
-  { name: 'Brochas', price: 35000, img: 'assets/img/brochas.jpg' },
-  { name: 'Cosmetiquera', price: 40000, img: 'assets/img/cosmetiquera.jpg' }
-];
-
+  irACategoria(slug: string) {
+    this.router.navigate(['/categoria', slug]);
+  }
 }
-
-

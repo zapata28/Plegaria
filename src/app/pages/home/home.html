@@ -1,5 +1,5 @@
+<!-- ================= HERO CAROUSEL ================= -->
 <section class="hero-carousel">
-
   <div
     class="slide"
     *ngFor="let slide of slides; let i = index"
@@ -21,44 +21,31 @@
       (click)="goToSlide(i)"
     ></span>
   </div>
-
 </section>
 
-<section class="categoria">
-  <h2>Maquillaje</h2>
-  <div class="grid">
-    <app-product-card *ngFor="let p of maquillaje"
-      [name]="p.name" [price]="p.price" [img]="p.img">
-    </app-product-card>
+<!-- ================= NOVEDADES ================= -->
+<section class="section-title">
+  <h2>NOVEDADES</h2>
+</section>
+
+<!-- ================= CATEGORÍAS ================= -->
+<section class="categoria-container">
+  <div class="horizontal-scroll">
+    <div
+      class="card"
+      *ngFor="let item of categorias"
+      (click)="irACategoria(item.slug)"
+    >
+      <img [src]="item.img" alt="{{ item.name }}">
+      <div class="card-info">
+        <span class="text">{{ item.name }}</span>
+      </div>
+    </div>
   </div>
+  <div class="franja"></div>
 </section>
 
-<section class="categoria">
-  <h2>Cuidado de la piel</h2>
-  <div class="grid">
-    <app-product-card *ngFor="let p of piel"
-      [name]="p.name" [price]="p.price" [img]="p.img">
-    </app-product-card>
-  </div>
+<!-- ================= INTERESES ================= -->
+<section class="section-title">
+  <h2>INTERESES</h2>
 </section>
-
-<section class="categoria">
-  <h2>Cuidado capilar</h2>
-  <div class="grid">
-    <app-product-card *ngFor="let p of capilar"
-      [name]="p.name" [price]="p.price" [img]="p.img">
-    </app-product-card>
-  </div>
-</section>
-
-<section class="categoria">
-  <h2>Accesorios</h2>
-  <div class="grid">
-    <app-product-card *ngFor="let p of accesorios"
-      [name]="p.name" [price]="p.price" [img]="p.img">
-    </app-product-card>
-  </div>
-</section>
-
-
-

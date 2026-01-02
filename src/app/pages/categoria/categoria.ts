@@ -44,7 +44,6 @@ export class Categoria implements OnInit {
       this.cargarCategoria(slug);
       this.cargarGrupos(slug);
 
-      // Defaults
       this.grupoActivo = 'Todos';
       this.subitems = [];
       this.subitemActivo = 'Todos';
@@ -140,7 +139,7 @@ export class Categoria implements OnInit {
     this.actualizarBreadcrumbs();
   }
 
-  // ✅ Genera el breadcrumb automáticamente
+  // ✅ Breadcrumb automáticamente
   actualizarBreadcrumbs() {
     const crumbs: Crumb[] = [
       { label: 'Inicio', action: 'home' },
@@ -175,13 +174,12 @@ export class Categoria implements OnInit {
     }
 
     if (action === 'grupo') {
-      // volver a solo el grupo (sin subitem)
+
       this.subitemActivo = 'Todos';
-      this.mostrarNivel2 = true; // para poder escoger otra subcategoria
+      this.mostrarNivel2 = true;
       this.actualizarBreadcrumbs();
       return;
     }
 
-    // action === 'subitem' -> no hace nada (ya estás ahí)
   }
 }

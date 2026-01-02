@@ -1,8 +1,106 @@
-/* You can add global styles to this file, and also import other style files */
 :root {
   --verde-principal: #2f7d5a;
   --verde-hover: #246347;
   --verde-claro: #e9f5ef;
   --gris-suave: #f4f6f5;
   --texto-principal: #1f2d27;
+}
+
+/* ==========================
+   WHATSAPP FLOAT PRO
+========================== */
+.whatsapp-float{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1200;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  height: 56px;
+  padding: 0 16px 0 14px;
+  border-radius: 999px;
+
+  /* 🔥 CONTRASTE CON TU MARCA */
+  background: linear-gradient(
+    135deg,
+    var(--verde-principal),
+    var(--verde-hover)
+  );
+
+  color: #fff;
+  text-decoration: none;
+
+  box-shadow: 0 12px 26px rgba(47,125,90,.35);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Icono */
+.whatsapp-float svg{
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* Texto */
+.wa-label{
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .2px;
+  white-space: nowrap;
+}
+
+/* Hover */
+.whatsapp-float:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(47,125,90,.45);
+  filter: brightness(1.05);
+}
+
+/* Focus accesible */
+.whatsapp-float:focus-visible{
+  outline: 3px solid var(--verde-claro);
+  outline-offset: 4px;
+}
+
+/* Pulse elegante */
+.whatsapp-float::after{
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 999px;
+  background: rgba(47,125,90,.25);
+  animation: waPulse 2.4s ease-out infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes waPulse{
+  0%   { transform: scale(.9);  opacity: 0; }
+  35%  { opacity: .35; }
+  100% { transform: scale(1.18); opacity: 0; }
+}
+
+/* 📱 MÓVIL: solo burbuja */
+@media (max-width: 520px){
+  .whatsapp-float{
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .wa-label{
+    display: none;
+  }
+
+  .whatsapp-float::after{
+    inset: -10px;
+    border-radius: 50%;
+  }
 }

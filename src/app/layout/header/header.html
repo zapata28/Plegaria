@@ -1,12 +1,6 @@
 <!-- TOP BAR -->
 <div class="top-bar">
   <span>Envío gratis por compras superiores a $150.000</span>
-  <a
-    href="https://wa.me/573202507109?text=Hola%20Bienvenido%20a%20nuestra%20tienda"
-    target="_blank"
-  >
-    WhatsApp
-  </a>
 </div>
 
 <!-- OVERLAY -->
@@ -14,8 +8,6 @@
 
 <!-- HEADER -->
 <header class="header">
-
-  <header class="header">
   <!-- LOGO → HOME -->
   <a class="logo" routerLink="/" (click)="closeMenu()">
     <img src="/favicon.ico" alt="Logo">
@@ -65,6 +57,11 @@
       Accesorios
     </a>
   </nav>
+  <!-- ICONS -->
+    <div class="icons">
+        <span routerLink="/carrito" (click)="closeMenu()">🛒</span>
+        <span routerLink="/login" (click)="closeMenu()">👤</span>
+    </div>
 </header>
 
 <!-- OVERLAY -->
@@ -72,3 +69,4 @@
      [class.active]="menuOpen"
      (click)="closeMenu()">
 </div>
+

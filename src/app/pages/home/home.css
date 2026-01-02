@@ -39,7 +39,7 @@
   z-index: 1;
 }
 
-/* Capa oscura sobre la imagen */
+/* Capa oscura sobre la imagen */s
 .hero-carousel .slide::before {
   content: "";
   position: absolute;
@@ -117,11 +117,9 @@
   transform: scale(1.2);
 }
 
-/* ===============================
-   TITULOS DE SECCION (NOVEDADES / INTERESES)
-================================ */
+
 .section-title {
-  margin-bottom: 6px; /* más pegado a lo que sigue */
+  margin-bottom: 6px;
 }
 
 .section-title h2 {
@@ -130,20 +128,16 @@
   color: var(--texto-principal);
 }
 
-/* ===============================
-   CATEGORÍAS (CUADRO FIJO / UNIFORME)
-================================ */
 .categoria-container {
   background-color: var(--verde-claro);
-  border-radius: 16px;     /* un poco más sutil */
-  padding: 8px 16px 12px; /* ↓ MENOS ALTO */
+  border-radius: 16px;
+  padding: 8px 16px 12px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-  margin: 6px 0 10px;     /* ↓ menos separación */
+  margin: 6px 0 10px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
-
 
 /* Scroll horizontal */
 .horizontal-scroll {
@@ -152,7 +146,7 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   justify-content: center;
-  margin-top: auto;          /* manda las tarjetas al fondo */
+  margin-top: auto;
   padding: 10px 0 6px;
 }
 
@@ -185,7 +179,7 @@
   box-shadow: 0 10px 22px rgba(0,0,0,0.14);
 }
 
-/* ✅ CUADRO FIJO PARA IMAGEN/ICONO (MISMO TAMAÑO SIEMPRE) */
+/* ✅ CUADRO FIJO PARA IMAGEN/ICONO */
 .card img {
   width: 112px;
   height: 112px;
@@ -274,9 +268,7 @@
     object-fit: contain;
   }
 }
-/* ===============================
-   TEXTO DEL CARRUSEL EN BLANCO
-================================ */
+
 .hero-carousel h1,
 .hero-carousel p,
 .hero-carousel button {

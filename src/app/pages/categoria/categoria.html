@@ -18,8 +18,7 @@
 
 <section class="categoria-page">
 
-
-  <!-- NIVEL 1 (siempre visible) -->
+  <!-- NIVEL 1 -->
   <div class="chips-box" *ngIf="grupos.length">
     <div class="chips">
       <button
@@ -33,7 +32,7 @@
     </div>
   </div>
 
-  <!-- NIVEL 2 (solo se muestra cuando el usuario entra a escoger y se oculta cuando selecciona "Todos") -->
+  <!-- NIVEL 2  -->
   <div class="chips-box" *ngIf="subitems.length && mostrarNivel2">
     <div class="chips">
       <button
@@ -47,11 +46,7 @@
     </div>
   </div>
 
-
-
-
-  <!-- Productos después -->
   <div class="productos-grid">
-    <!-- aquí van productos -->
+
   </div>
 </section>

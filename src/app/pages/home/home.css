@@ -314,3 +314,21 @@
     flex: 0 0 260px;
   }
 }
+
+.acciones{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.btn-add{
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 900;
+  cursor: pointer;
+  background: var(--verde-principal);
+  color: #fff;
+}
+.btn-add:hover{
+  filter: brightness(0.95);
+}

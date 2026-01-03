@@ -63,13 +63,24 @@
             </span>
           </div>
 
-          <button
-            class="btn-ver"
-            type="button"
-            (click)="verProducto(p.id); $event.stopPropagation()"
-          >
-            Ver
-          </button>
+          <!-- ✅ Botones -->
+          <div class="acciones">
+            <button
+              class="btn-add"
+              type="button"
+              (click)="addToCart(p); $event.stopPropagation()"
+            >
+              Agregar
+            </button>
+
+            <button
+              class="btn-ver"
+              type="button"
+              (click)="verProducto(p.id); $event.stopPropagation()"
+            >
+              Ver
+            </button>
+          </div>
         </div>
       </div>
     </article>

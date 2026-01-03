@@ -4,5 +4,8 @@ import { Categoria } from './pages/categoria/categoria';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  {path: 'categoria/:slug', component: Categoria}
+  { path: 'categoria/:slug', component: Categoria },
+  { path: 'carrito', loadComponent: () =>import('./pages/carrito/carrito').then(m => m.CarritoComponent),},
+
+
 ];

@@ -1,4 +1,11 @@
-
+/* ===============================
+   CATEGORIA PAGE (BASE)
+================================ */
+.categoria-page{
+  padding: 28px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
 
 .categoria-page h1 {
   font-size: 32px;
@@ -6,6 +13,51 @@
   margin-bottom: 16px;
 }
 
+/* ===============================
+   BREADCRUMB
+================================ */
+.breadcrumb{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.crumb{
+  border: none;
+  background: transparent;
+  color: rgba(0,0,0,0.65);
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.crumb:hover{
+  color: var(--verde-principal);
+  text-decoration: underline;
+}
+
+.crumb.last{
+  color: var(--texto-principal);
+  cursor: default;
+  text-decoration: none;
+}
+
+.crumb:disabled{
+  opacity: 1;
+}
+
+.sep{
+  color: rgba(0,0,0,0.35);
+  font-weight: 900;
+}
+
+/* ===============================
+   CHIPS (FILTROS)
+================================ */
 /* Caja de chips */
 .chips-box {
   background: rgba(47,125,90,0.06);
@@ -61,15 +113,7 @@
   padding: 8px 12px;
 }
 
-/* Grid listo para cards */
-.productos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
-  margin-top: 16px;
-}
-
-/* MOBILE: filas con scroll horizontal para que no se mezclen */
+/* MOBILE: chips con scroll horizontal */
 @media (max-width: 600px) {
   .chips {
     flex-wrap: nowrap;
@@ -89,44 +133,148 @@
   }
 }
 
-.breadcrumb{
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
+/* ===============================
+   GRID PRODUCTOS
+================================ */
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
 }
 
-.crumb{
-  border: none;
-  background: transparent;
-  color: rgba(0,0,0,0.65);
-  font-weight: 800;
-  font-size: 13px;
+/* ===============================
+   PRODUCT CARD (FALTABA)
+================================ */
+.producto-card{
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
   cursor: pointer;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform .15s ease, box-shadow .2s ease;
 }
 
-.crumb:hover{
-  color: var(--verde-principal);
-  text-decoration: underline;
+.producto-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
 }
 
-.crumb.last{
-  color: var(--texto-principal);
-  cursor: default;
-  text-decoration: none;
+/* Imagen contenedor */
+.producto-img{
+  position: relative;
+  width: 100%;
+  height: 190px; /* ✅ mismo tamaño todas */
+  background: #f3f5f4;
 }
 
-.crumb:disabled{
-  opacity: 1;
+.producto-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ✅ no se deforma */
+  display: block;
 }
 
-.sep{
-  color: rgba(0,0,0,0.35);
+/* Badges */
+.badge{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
   font-weight: 900;
+  font-size: 12px;
+  color: #fff;
+  background: var(--verde-principal);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
 }
+
+.badge-oferta{
+  left: auto;
+  right: 10px;
+  background: #ff5a5f;
+}
+
+.badge-nuevo{
+  background: var(--verde-principal);
+}
+
+/* Info */
+.producto-info{
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.producto-info h3{
+  margin: 0;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--texto-principal);
+  line-height: 1.2;
+}
+
+.producto-info .desc{
+  margin: 0;
+  color: rgba(0,0,0,0.62);
+  font-size: 12.8px;
+  line-height: 1.25;
+  min-height: 32px;
+}
+
+/* Precio y botón */
+.precio-row{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.precios{
+  display:flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.precio{
+  font-weight: 900;
+  color: var(--texto-principal);
+  font-size: 14px;
+}
+
+.precio-antes{
+  font-size: 12px;
+  color: rgba(0,0,0,0.45);
+  text-decoration: line-through;
+  font-weight: 800;
+}
+
+/* Botón ver */
+.btn-ver{
+  border: none;
+  background: var(--verde-principal);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease;
+  white-space: nowrap;
+}
+
+.btn-ver:hover{
+  transform: translateY(-1px);
+  background: var(--verde-hover);
+}
+
+/* ===============================
+   PAGINACIÓN (TU BLOQUE)
+================================ */
 .paginacion{
   display:flex;
   align-items:center;
@@ -204,5 +352,9 @@
     width: 36px;
     height: 36px;
     border-radius: 10px;
+  }
+
+  .producto-img{
+    height: 170px; /* un poco más bajito en móvil */
   }
 }

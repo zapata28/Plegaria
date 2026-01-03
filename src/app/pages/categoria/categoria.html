@@ -1,6 +1,6 @@
 <section class="categoria-page">
 
-  <!-- ===================== BREADCRUMB ===================== -->
+  <!-- BREADCRUMB -->
   <nav class="breadcrumb" *ngIf="breadcrumbs.length">
     <button
       type="button"
@@ -9,9 +9,7 @@
       [class.last]="last"
       [disabled]="last"
       (click)="!last && navegarCrumb(c.action)"
-      [attr.aria-label]="c.label"
     >
-      <!-- Icono Home solo para Inicio -->
       <span *ngIf="c.action === 'home'" aria-hidden="true">🏠</span>
       <span *ngIf="c.action !== 'home'">{{ c.label }}</span>
 
@@ -19,15 +17,13 @@
     </button>
   </nav>
 
-  <!-- ===================== TÍTULO ===================== -->
   <h1>{{ titulo }}</h1>
 
-  <!-- ===================== NIVEL 1 (GRUPOS) ===================== -->
+  <!-- NIVEL 1 -->
   <div class="chips-box">
     <div class="chips-title">Secciones de {{ titulo }}</div>
 
     <div class="chips">
-      <!-- Todos -->
       <button
         type="button"
         class="chip"
@@ -37,7 +33,6 @@
         Todos
       </button>
 
-      <!-- Grupos -->
       <button
         type="button"
         class="chip"
@@ -50,7 +45,7 @@
     </div>
   </div>
 
-  <!-- ===================== NIVEL 2 (SUBCATEGORÍAS) ===================== -->
+  <!-- NIVEL 2 -->
   <div class="chips-box" *ngIf="grupoActivo !== 'Todos'">
     <div class="chips-title">Subcategorías de {{ grupoActivo }}</div>
 
@@ -67,12 +62,12 @@
     </div>
   </div>
 
-  <!-- ===================== LOADING ===================== -->
-  <div *ngIf="loading" style="padding: 12px 0; color: #666;">
+  <!-- LOADING -->
+  <div *ngIf="loading" style="padding: 12px 0; color:#666;">
     Cargando productos...
   </div>
 
-  <!-- ===================== GRID PRODUCTOS ===================== -->
+  <!-- GRID -->
   <div class="productos-grid" *ngIf="!loading">
 
     <article
@@ -82,8 +77,6 @@
     >
       <div class="producto-img">
         <img [src]="p.imagen || 'img/placeholder.png'" [alt]="p.nombre" />
-
-        <!-- Badges -->
         <span class="badge badge-nuevo" *ngIf="p.es_nuevo">Nuevo</span>
         <span class="badge badge-oferta" *ngIf="p.en_oferta">Oferta</span>
       </div>
@@ -114,45 +107,40 @@
       </div>
     </article>
 
-
-<!-- ===================== PAGINACIÓN NUMÉRICA ===================== -->
-<div class="paginacion" *ngIf="!loading && total > 0">
-
-  <button type="button" class="pag-btn" (click)="prevPage()" [disabled]="page === 1">
-    ←
-  </button>
-
-  <div class="pag-numeros" aria-label="Paginación">
-    <button
-      type="button"
-      class="pag-num"
-      *ngFor="let p of paginasVisibles"
-      [class.active]="p === page"
-      [disabled]="p === -1"
-      (click)="p !== -1 && goToPage(p)"
-    >
-      {{ p === -1 ? '…' : p }}
-    </button>
-  </div>
-
-  <button type="button" class="pag-btn" (click)="nextPage()" [disabled]="page === totalPages">
-    →
-  </button>
-
-</div>
-
-<div class="pag-info" *ngIf="!loading && total > 0">
-  Página <b>{{ page }}</b> de <b>{{ totalPages }}</b>
-  <span class="pag-total">({{ total }} productos)</span>
-</div>
-
-
-
-    <!-- Empty state -->
     <div *ngIf="productosFiltrados.length === 0" style="padding: 12px 0; color:#666;">
       No hay productos para este filtro.
     </div>
+  </div>
 
+  <!-- PAGINACIÓN NUMÉRICA -->
+  <div class="paginacion" *ngIf="!loading && total > 0">
+
+    <button type="button" class="pag-btn" (click)="prevPage()" [disabled]="page === 1">
+      ←
+    </button>
+
+    <div class="pag-numeros">
+      <button
+        type="button"
+        class="pag-num"
+        *ngFor="let p of paginasVisibles"
+        [class.active]="p === page"
+        [disabled]="p === -1"
+        (click)="p !== -1 && goToPage(p)"
+      >
+        {{ p === -1 ? '…' : p }}
+      </button>
+    </div>
+
+    <button type="button" class="pag-btn" (click)="nextPage()" [disabled]="page === totalPages">
+      →
+    </button>
+
+  </div>
+
+  <div class="pag-info" *ngIf="!loading && total > 0">
+    Página <b>{{ page }}</b> de <b>{{ totalPages }}</b>
+    <span class="pag-total">({{ total }} productos)</span>
   </div>
 
 </section>

@@ -49,13 +49,19 @@ export class Categoria implements OnInit {
   breadcrumbs: Crumb[] = [];
 
   // ✅ PAGINACIÓN
-  pageSize = 12;        // cambia a 8, 12, 16...
-  page = 1;             // página actual (1-based)
-  total = 0;            // total productos (según filtro)
+  pageSize = 12;
+  page = 1;
+  total = 0;
   totalPages = 1;
+
+  // ✅ PAGINACIÓN NUMÉRICA (incluye "...")
+  paginasVisibles: number[] = []; // ej: [1, -1, 5, 6, 7, -1, 20]
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
+  // =========================
+  // INIT
+  // =========================
   ngOnInit(): void {
     this.route.paramMap.subscribe(async params => {
       const slug = (params.get('slug') || 'maquillaje') as CategoriaSlug;
@@ -64,21 +70,25 @@ export class Categoria implements OnInit {
       this.cargarCategoria(slug);
       this.cargarGrupos(slug);
 
-      // defaults
+      // defaults filtros
       this.grupoActivo = 'Todos';
       this.subitems = [];
       this.subitemActivo = 'Todos';
 
-      // ✅ reset paginación
+      // reset paginación
       this.page = 1;
       this.total = 0;
       this.totalPages = 1;
+      this.paginasVisibles = [];
 
       this.actualizarBreadcrumbs();
       await this.cargarProductosFiltrados();
     });
   }
 
+  // =========================
+  // TITULO
+  // =========================
   cargarCategoria(slug: CategoriaSlug) {
     switch (slug) {
       case 'maquillaje': this.titulo = 'Maquillaje'; break;
@@ -88,6 +98,9 @@ export class Categoria implements OnInit {
     }
   }
 
+  // =========================
+  // GRUPOS / SUBGRUPOS
+  // =========================
   cargarGrupos(slug: CategoriaSlug) {
     if (slug === 'maquillaje') {
       this.grupos = [
@@ -128,7 +141,9 @@ export class Categoria implements OnInit {
     this.grupos = [];
   }
 
-  // ✅ SUPABASE + PAGINACIÓN
+  // =========================
+  // SUPABASE + PAGINACIÓN
+  // =========================
   async cargarProductosFiltrados() {
     this.loading = true;
 
@@ -137,7 +152,7 @@ export class Categoria implements OnInit {
 
     let query = supabase
       .from('productos')
-      .select('*', { count: 'exact' }) // ✅ devuelve count total
+      .select('*', { count: 'exact' })
       .eq('categoria', this.slugActual)
       .order('created_at', { ascending: false });
 
@@ -156,6 +171,7 @@ export class Categoria implements OnInit {
       this.productosFiltrados = [];
       this.total = 0;
       this.totalPages = 1;
+      this.paginasVisibles = [];
       this.loading = false;
       return;
     }
@@ -164,7 +180,10 @@ export class Categoria implements OnInit {
     this.total = count ?? 0;
     this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
 
-    // por seguridad si quedas en una página que ya no existe (cambió filtro)
+    // ✅ recalcular botones numéricos
+    this.recalcularPaginasVisibles();
+
+    // seguridad si el filtro deja tu page fuera de rango
     if (this.page > this.totalPages) {
       this.page = this.totalPages;
       this.loading = false;
@@ -175,11 +194,49 @@ export class Categoria implements OnInit {
     this.loading = false;
   }
 
-  // ✅ UI filtros (resetean paginación)
+  // =========================
+  // PAGINACIÓN NUMÉRICA (1 … 5 6 7 … 20)
+  // -1 representa "..."
+  // =========================
+  private recalcularPaginasVisibles() {
+    const total = this.totalPages;
+    const current = this.page;
+
+    if (total <= 7) {
+      this.paginasVisibles = Array.from({ length: total }, (_, i) => i + 1);
+      return;
+    }
+
+    let start = Math.max(2, current - 1);
+    let end = Math.min(total - 1, current + 1);
+
+    if (current <= 3) {
+      start = 2;
+      end = 4;
+    } else if (current >= total - 2) {
+      start = total - 3;
+      end = total - 1;
+    }
+
+    const pages: number[] = [1];
+
+    if (start > 2) pages.push(-1);
+
+    for (let p = start; p <= end; p++) pages.push(p);
+
+    if (end < total - 1) pages.push(-1);
+
+    pages.push(total);
+
+    this.paginasVisibles = pages;
+  }
+
+  // =========================
+  // FILTROS UI (reset page)
+  // =========================
   async seleccionarGrupo(nombre: string) {
     this.grupoActivo = nombre;
 
-    // reset subitems
     if (nombre === 'Todos') {
       this.subitems = [];
       this.subitemActivo = 'Todos';
@@ -189,9 +246,7 @@ export class Categoria implements OnInit {
       this.subitemActivo = 'Todos';
     }
 
-    // reset paginación
     this.page = 1;
-
     this.actualizarBreadcrumbs();
     await this.cargarProductosFiltrados();
   }
@@ -203,7 +258,9 @@ export class Categoria implements OnInit {
     await this.cargarProductosFiltrados();
   }
 
-  // ✅ PAGINACIÓN CONTROLES
+  // =========================
+  // CONTROLES PAGINACIÓN
+  // =========================
   async prevPage() {
     if (this.page <= 1) return;
     this.page--;
@@ -222,7 +279,9 @@ export class Categoria implements OnInit {
     await this.cargarProductosFiltrados();
   }
 
-  // ========= BREADCRUMB =========
+  // =========================
+  // BREADCRUMB
+  // =========================
   actualizarBreadcrumbs() {
     const crumbs: Crumb[] = [
       { label: 'Inicio', action: 'home' },
@@ -260,7 +319,11 @@ export class Categoria implements OnInit {
     }
   }
 
+  // =========================
+  // NAV
+  // =========================
   verProducto(id: string) {
     console.log('Producto:', id);
+    // this.router.navigate(['/producto', id]);
   }
 }

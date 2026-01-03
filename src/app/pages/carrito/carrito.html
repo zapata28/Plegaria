@@ -1,1 +1,37 @@
-<p>carrito works!</p>
+<section class="carrito">
+  <div class="top">
+    <h1>Carrito</h1>
+
+    <div class="top-actions">
+      <button class="btn ghost" *ngIf="items().length" (click)="cart.clear()">Vaciar</button>
+    </div>
+  </div>
+
+  <div class="carrito-vacio" *ngIf="items().length === 0">
+    Tu carrito está vacío.
+  </div>
+
+  <div class="lista" *ngIf="items().length">
+    <div class="item" *ngFor="let it of items()">
+      <div class="info">
+        <div class="name">{{ it.nombre }}</div>
+        <div class="price">{{ money(it.precio) }}</div>
+      </div>
+
+      <div class="qty">
+        <button (click)="cart.setQty(it.id, it.qty - 1)">−</button>
+        <input [value]="it.qty" (change)="cart.setQty(it.id, $any($event.target).value)" />
+        <button (click)="cart.setQty(it.id, it.qty + 1)">+</button>
+      </div>
+
+      <div class="line-total">{{ money(it.precio * it.qty) }}</div>
+
+      <button class="btn danger" (click)="cart.remove(it.id)">Quitar</button>
+    </div>
+
+    <div class="resumen">
+      <span>Subtotal</span>
+      <strong>{{ money(cart.subtotal()) }}</strong>
+    </div>
+  </div>
+</section>

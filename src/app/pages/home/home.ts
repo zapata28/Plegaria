@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { supabase } from '../../supabase.client';
+import { CartService } from '../../cart.service';
 
 type CategoriaSlug = 'maquillaje' | 'skincare' | 'capilar' | 'accesorios';
 
@@ -28,7 +29,7 @@ type Producto = {
   styleUrls: ['./home.css'],
 })
 export class Home implements OnInit, OnDestroy {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cart: CartService) {}
 
   // HERO
   currentSlide = 0;
@@ -129,6 +130,19 @@ export class Home implements OnInit, OnDestroy {
     // Si aún no tienes /producto/:id, deja esto así por ahora:
     console.log('Producto:', id);
     // this.router.navigate(['/producto', id]);
+  }
+
+  // ✅ CARRITO (LOCAL, NO TOCA SUPABASE)
+  addToCart(p: Producto) {
+    this.cart.add(
+      {
+        id: String(p.id),
+        nombre: p.nombre,
+        precio: Number(p.precio),
+        imagen: p.imagen ?? '',
+      },
+      1
+    );
   }
 
   // SUPABASE - NOVEDADES

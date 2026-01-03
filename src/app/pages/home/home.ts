@@ -30,9 +30,7 @@ type Producto = {
 export class Home implements OnInit, OnDestroy {
   constructor(private router: Router) {}
 
-  // =========================
-  // HERO CAROUSEL
-  // =========================
+  // HERO
   currentSlide = 0;
   private autoplayId: any = null;
   private autoplayMs = 5000;
@@ -56,16 +54,14 @@ export class Home implements OnInit, OnDestroy {
       button: 'Explorar',
     },
     {
-      image: 'img/slide3.jpg', // ✅ pon una imagen real en /public/img/slide3.jpg
+      image: 'img/slide3.jpg',
       title: 'Tu rutina empieza aquí',
       text: 'Mensaje promocional.',
       button: 'Ver todo',
     },
   ];
 
-  // =========================
   // CATEGORÍAS
-  // =========================
   categorias = [
     { name: 'Maquillaje', slug: 'maquillaje', img: 'assets/icons/icono-maquillaje.png' },
     { name: 'Cuidado de la piel', slug: 'skincare', img: 'assets/icons/icono-cuidado-facial.png' },
@@ -73,15 +69,11 @@ export class Home implements OnInit, OnDestroy {
     { name: 'Accesorios', slug: 'accesorios', img: 'assets/icons/icono-accesorios.png' },
   ];
 
-  // =========================
-  // NOVEDADES (desde Supabase)
-  // =========================
+  // NOVEDADES
   loadingNovedades = true;
   novedades: Producto[] = [];
 
-  // =========================
-  // UPLOAD / ADMIN (temporal)
-  // =========================
+  // ADMIN TEMP (subir/guardar demo)
   ultimaUrlImagen: string | null = null;
   uploadBusy = false;
 
@@ -94,9 +86,7 @@ export class Home implements OnInit, OnDestroy {
     this.stopAutoplay();
   }
 
-  // =========================
-  // HERO controls
-  // =========================
+  // HERO CONTROLS
   goToSlide(index: number) {
     this.currentSlide = index;
     this.restartAutoplay();
@@ -130,21 +120,18 @@ export class Home implements OnInit, OnDestroy {
     this.startAutoplay();
   }
 
-  // =========================
   // NAV
-  // =========================
   irACategoria(slug: string) {
     this.router.navigate(['/categoria', slug]);
   }
 
   verProducto(id: string) {
-    // si no tienes /producto/:id aún, puedes comentar esta línea
-    this.router.navigate(['/producto', id]);
+    // Si aún no tienes /producto/:id, deja esto así por ahora:
+    console.log('Producto:', id);
+    // this.router.navigate(['/producto', id]);
   }
 
-  // =========================
-  // SUPABASE - Cargar novedades
-  // =========================
+  // SUPABASE - NOVEDADES
   async cargarNovedades() {
     this.loadingNovedades = true;
 
@@ -165,9 +152,7 @@ export class Home implements OnInit, OnDestroy {
     this.loadingNovedades = false;
   }
 
-  // =========================
   // SUBIR IMAGEN
-  // =========================
   async subirImagen(file: File) {
     try {
       this.uploadBusy = true;
@@ -205,14 +190,10 @@ export class Home implements OnInit, OnDestroy {
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    this.subirImagen(file);
+    this.subirImagen(input.files[0]);
   }
 
-  // =========================
-  // INSERT DEMO PRODUCTO
-  // =========================
+  // INSERT DEMO
   async guardarProductoDemo() {
     if (!this.ultimaUrlImagen) {
       alert('Primero sube una imagen.');
@@ -226,7 +207,7 @@ export class Home implements OnInit, OnDestroy {
       categoria: 'maquillaje',
       grupo: 'Rostro',
       subgrupo: 'Bases',
-      imagen: this.ultimaUrlImagen,
+      imagen: this.ultimaUrlImagen, // ✅ tu campo real
       es_nuevo: true,
       en_oferta: false,
       precio_antes: null,
@@ -242,8 +223,6 @@ export class Home implements OnInit, OnDestroy {
 
     alert('✅ Producto guardado');
     this.ultimaUrlImagen = null;
-
-    // refrescar novedades para ver el producto nuevo
     this.cargarNovedades();
   }
 }

@@ -1,0 +1,111 @@
+.footer {
+  background: var(--verde-principal);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 26px 18px 14px;   /* ↓ antes era enorme */
+  margin-top: 34px;          /* ↓ menos separación con el contenido */
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;             /* más compacto que grid */
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 22px;                 /* ↓ antes 40 */
+}
+
+/* Marca */
+.footer-brand {
+  max-width: 520px;
+}
+
+.footer-logo {
+  font-size: 20px;           /* ↓ antes 24 */
+  font-weight: 900;
+  margin: 0 0 6px 0;
+  color: #fff;
+}
+
+.footer-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0;                 /* quita espacios extra */
+  opacity: 0.9;
+}
+
+/* Contacto */
+.footer-contact {
+  min-width: 220px;
+}
+
+.footer-title {
+  font-size: 12px;           /* ↓ más minimal */
+  font-weight: 900;
+  margin: 2px 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.footer-info {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-info li {
+  font-size: 13px;
+  margin-bottom: 7px;        /* ↓ */
+  opacity: 0.88;
+}
+
+/* Redes */
+.footer-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;          /* ↓ */
+}
+
+.footer-social a {
+  width: 34px;               /* ↓ */
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.footer-social a:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.footer-social svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+/* Línea inferior */
+.footer-bottom {
+  margin-top: 14px;          /* ↓ antes 36 */
+  padding-top: 10px;         /* ↓ */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Responsive: todo en columna, bien apretado */
+@media (max-width: 720px) {
+  .footer-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-contact {
+    min-width: 0;
+  }
+}

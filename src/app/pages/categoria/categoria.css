@@ -76,6 +76,7 @@
     overflow-x: auto;
     padding-bottom: 6px;
     -webkit-overflow-scrolling: touch;
+    flex: 0 0 auto;
   }
 
   .chips::-webkit-scrollbar {
@@ -125,4 +126,83 @@
 .sep{
   color: rgba(0,0,0,0.35);
   font-weight: 900;
+}
+.paginacion{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(47,125,90,0.12);
+  background: rgba(47,125,90,0.06);
+}
+
+.pag-btn{
+  border: none;
+  background: var(--verde-principal);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.pag-btn:disabled{
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.pag-numeros{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content:center;
+}
+
+.pag-num{
+  border: 1px solid rgba(47,125,90,0.20);
+  background: #fff;
+  color: var(--texto-principal);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.pag-num.active{
+  background: var(--verde-principal);
+  border-color: var(--verde-principal);
+  color: #fff;
+}
+
+.pag-num:disabled{
+  cursor: default;
+  opacity: .7;
+}
+
+.pag-info{
+  margin-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+.pag-total{
+  font-weight: 700;
+  color: rgba(0,0,0,.55);
+  margin-left: 6px;
+}
+
+@media (max-width:600px){
+  .pag-num, .pag-btn{
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
 }

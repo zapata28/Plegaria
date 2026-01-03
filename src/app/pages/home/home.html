@@ -35,7 +35,6 @@
 </section>
 
 <section class="novedades-container">
-  <!-- Loading simple -->
   <div *ngIf="loadingNovedades" style="padding: 10px 20px;">
     Cargando novedades...
   </div>
@@ -47,12 +46,7 @@
       (click)="verProducto(p.id)"
     >
       <div class="producto-img">
-        <img
-          [src]="p.imagen || 'img/placeholder.png'"
-          [alt]="p.nombre"
-        />
-
-        <!-- Badges -->
+        <img [src]="p.imagen || 'img/placeholder.png'" [alt]="p.nombre" />
         <span class="badge badge-nuevo" *ngIf="p.es_nuevo">Nuevo</span>
         <span class="badge badge-oferta" *ngIf="p.en_oferta">Oferta</span>
       </div>
@@ -63,10 +57,7 @@
 
         <div class="precio-row">
           <div class="precios">
-            <span class="precio">
-              {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
-            </span>
-
+            <span class="precio">{{ p.precio | currency:'COP':'symbol':'1.0-0' }}</span>
             <span class="precio-antes" *ngIf="p.en_oferta && p.precio_antes">
               {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
             </span>
@@ -98,17 +89,11 @@
   <div class="franja"></div>
 </section>
 
-<!-- ================= INTERESES ================= -->
-<section class="section-title">
-  <h2>INTERESES</h2>
-</section>
-
-<!-- ================= ADMIN (TEMPORAL) ================= -->
+<!-- ================= ADMIN TEMP (PRUEBA) ================= -->
 <section style="padding: 10px 20px;">
   <h3>Admin (prueba)</h3>
 
   <input type="file" accept="image/*" (change)="onFileChange($event)" />
-
   <p *ngIf="uploadBusy">Subiendo imagen...</p>
 
   <p *ngIf="ultimaUrlImagen">
@@ -116,7 +101,11 @@
     <a [href]="ultimaUrlImagen" target="_blank">Ver</a>
   </p>
 
-  <button type="button" (click)="guardarProductoDemo()" [disabled]="!ultimaUrlImagen || uploadBusy">
+  <button
+    type="button"
+    (click)="guardarProductoDemo()"
+    [disabled]="!ultimaUrlImagen || uploadBusy"
+  >
     Guardar producto demo
   </button>
 </section>

@@ -1,30 +1,48 @@
-
-  <!-- BREADCRUMB -->
-<nav class="breadcrumb" aria-label="breadcrumb" *ngIf="breadcrumbs.length">
-  <ng-container *ngFor="let c of breadcrumbs; let last = last">
-    <button
-      class="crumb"
-      [class.last]="last"
-      (click)="!last && navegarCrumb(c.action)"
-      [disabled]="last"
-      type="button"
-    >
-      {{ c.label }}
-    </button>
-
-    <span class="sep" *ngIf="!last">›</span>
-  </ng-container>
-</nav>
-
 <section class="categoria-page">
 
-  <!-- NIVEL 1 -->
-  <div class="chips-box" *ngIf="grupos.length">
+  <!-- ===================== BREADCRUMB ===================== -->
+  <nav class="breadcrumb" *ngIf="breadcrumbs.length">
+    <button
+      type="button"
+      class="crumb"
+      *ngFor="let c of breadcrumbs; let last = last"
+      [class.last]="last"
+      [disabled]="last"
+      (click)="!last && navegarCrumb(c.action)"
+      [attr.aria-label]="c.label"
+    >
+      <!-- Icono Home solo para Inicio -->
+      <span *ngIf="c.action === 'home'" aria-hidden="true">🏠</span>
+      <span *ngIf="c.action !== 'home'">{{ c.label }}</span>
+
+      <span class="sep" *ngIf="!last">/</span>
+    </button>
+  </nav>
+
+  <!-- ===================== TÍTULO ===================== -->
+  <h1>{{ titulo }}</h1>
+
+  <!-- ===================== NIVEL 1 (GRUPOS) ===================== -->
+  <div class="chips-box">
+    <div class="chips-title">Secciones de {{ titulo }}</div>
+
     <div class="chips">
+      <!-- Todos -->
       <button
+        type="button"
+        class="chip"
+        [class.active]="grupoActivo === 'Todos'"
+        (click)="seleccionarGrupo('Todos')"
+      >
+        Todos
+      </button>
+
+      <!-- Grupos -->
+      <button
+        type="button"
         class="chip"
         *ngFor="let g of grupos"
-        [class.active]="g.nombre === grupoActivo"
+        [class.active]="grupoActivo === g.nombre"
         (click)="seleccionarGrupo(g.nombre)"
       >
         {{ g.nombre }}
@@ -32,13 +50,16 @@
     </div>
   </div>
 
-  <!-- NIVEL 2  -->
-  <div class="chips-box" *ngIf="subitems.length && mostrarNivel2">
+  <!-- ===================== NIVEL 2 (SUBCATEGORÍAS) ===================== -->
+  <div class="chips-box" *ngIf="grupoActivo !== 'Todos'">
+    <div class="chips-title">Subcategorías de {{ grupoActivo }}</div>
+
     <div class="chips">
       <button
+        type="button"
         class="chip chip-sec"
         *ngFor="let s of subitems"
-        [class.active]="s === subitemActivo"
+        [class.active]="subitemActivo === s"
         (click)="seleccionarSubitem(s)"
       >
         {{ s }}
@@ -46,7 +67,92 @@
     </div>
   </div>
 
-  <div class="productos-grid">
+  <!-- ===================== LOADING ===================== -->
+  <div *ngIf="loading" style="padding: 12px 0; color: #666;">
+    Cargando productos...
+  </div>
+
+  <!-- ===================== GRID PRODUCTOS ===================== -->
+  <div class="productos-grid" *ngIf="!loading">
+
+    <article
+      class="producto-card"
+      *ngFor="let p of productosFiltrados"
+      (click)="verProducto(p.id)"
+    >
+      <div class="producto-img">
+        <img [src]="p.imagen || 'img/placeholder.png'" [alt]="p.nombre" />
+
+        <!-- Badges -->
+        <span class="badge badge-nuevo" *ngIf="p.es_nuevo">Nuevo</span>
+        <span class="badge badge-oferta" *ngIf="p.en_oferta">Oferta</span>
+      </div>
+
+      <div class="producto-info">
+        <h3>{{ p.nombre }}</h3>
+        <p class="desc">{{ p.descripcion }}</p>
+
+        <div class="precio-row">
+          <div class="precios">
+            <span class="precio">
+              {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
+            </span>
+
+            <span class="precio-antes" *ngIf="p.en_oferta && p.precio_antes">
+              {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            class="btn-ver"
+            (click)="verProducto(p.id); $event.stopPropagation()"
+          >
+            Ver
+          </button>
+        </div>
+      </div>
+    </article>
+
+
+<!-- ===================== PAGINACIÓN NUMÉRICA ===================== -->
+<div class="paginacion" *ngIf="!loading && total > 0">
+
+  <button type="button" class="pag-btn" (click)="prevPage()" [disabled]="page === 1">
+    ←
+  </button>
+
+  <div class="pag-numeros" aria-label="Paginación">
+    <button
+      type="button"
+      class="pag-num"
+      *ngFor="let p of paginasVisibles"
+      [class.active]="p === page"
+      [disabled]="p === -1"
+      (click)="p !== -1 && goToPage(p)"
+    >
+      {{ p === -1 ? '…' : p }}
+    </button>
+  </div>
+
+  <button type="button" class="pag-btn" (click)="nextPage()" [disabled]="page === totalPages">
+    →
+  </button>
+
+</div>
+
+<div class="pag-info" *ngIf="!loading && total > 0">
+  Página <b>{{ page }}</b> de <b>{{ totalPages }}</b>
+  <span class="pag-total">({{ total }} productos)</span>
+</div>
+
+
+
+    <!-- Empty state -->
+    <div *ngIf="productosFiltrados.length === 0" style="padding: 12px 0; color:#666;">
+      No hay productos para este filtro.
+    </div>
 
   </div>
+
 </section>

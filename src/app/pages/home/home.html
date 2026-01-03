@@ -6,7 +6,6 @@
   (touchstart)="pauseAutoplay()"
   (touchend)="resumeAutoplay()"
 >
-
   <div
     class="slide"
     *ngFor="let slide of slides; let i = index"
@@ -16,7 +15,7 @@
     <div class="content">
       <h1>{{ slide.title }}</h1>
       <p>{{ slide.text }}</p>
-      <button>{{ slide.button }}</button>
+      <button type="button">{{ slide.button }}</button>
     </div>
   </div>
 
@@ -36,11 +35,26 @@
 </section>
 
 <section class="novedades-container">
-  <div class="novedades-grid">
-    <article class="producto-card" *ngFor="let p of novedades" (click)="verProducto(p.id)">
+  <!-- Loading simple -->
+  <div *ngIf="loadingNovedades" style="padding: 10px 20px;">
+    Cargando novedades...
+  </div>
+
+  <div class="novedades-grid" *ngIf="!loadingNovedades">
+    <article
+      class="producto-card"
+      *ngFor="let p of novedades"
+      (click)="verProducto(p.id)"
+    >
       <div class="producto-img">
-        <img [src]="p.img" [alt]="p.nombre" />
-        <span class="badge" *ngIf="p.esNuevo">Nuevo</span>
+        <img
+          [src]="p.imagen || 'img/placeholder.png'"
+          [alt]="p.nombre"
+        />
+
+        <!-- Badges -->
+        <span class="badge badge-nuevo" *ngIf="p.es_nuevo">Nuevo</span>
+        <span class="badge badge-oferta" *ngIf="p.en_oferta">Oferta</span>
       </div>
 
       <div class="producto-info">
@@ -48,9 +62,22 @@
         <p class="desc">{{ p.descripcion }}</p>
 
         <div class="precio-row">
-          <span class="precio">{{ p.precio | currency:'COP':'symbol':'1.0-0' }}</span>
-          <button class="btn-ver" (click)="verProducto(p.id); $event.stopPropagation()">
-            Ver producto
+          <div class="precios">
+            <span class="precio">
+              {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
+            </span>
+
+            <span class="precio-antes" *ngIf="p.en_oferta && p.precio_antes">
+              {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
+            </span>
+          </div>
+
+          <button
+            class="btn-ver"
+            type="button"
+            (click)="verProducto(p.id); $event.stopPropagation()"
+          >
+            Ver
           </button>
         </div>
       </div>
@@ -58,16 +85,11 @@
   </div>
 </section>
 
-
 <!-- ================= CATEGORÍAS ================= -->
 <section class="categoria-container">
   <div class="horizontal-scroll">
-    <div
-      class="card"
-      *ngFor="let item of categorias"
-      (click)="irACategoria(item.slug)"
-    >
-      <img [src]="item.img" alt="{{ item.name }}">
+    <div class="card" *ngFor="let item of categorias" (click)="irACategoria(item.slug)">
+      <img [src]="item.img" [alt]="item.name" />
       <div class="card-info">
         <span class="text">{{ item.name }}</span>
       </div>
@@ -81,8 +103,20 @@
   <h2>INTERESES</h2>
 </section>
 
-<input
-  type="file"
-  accept="image/*"
-  (change)="onFileChange($event)"
-/>
+<!-- ================= ADMIN (TEMPORAL) ================= -->
+<section style="padding: 10px 20px;">
+  <h3>Admin (prueba)</h3>
+
+  <input type="file" accept="image/*" (change)="onFileChange($event)" />
+
+  <p *ngIf="uploadBusy">Subiendo imagen...</p>
+
+  <p *ngIf="ultimaUrlImagen">
+    ✅ Imagen lista:
+    <a [href]="ultimaUrlImagen" target="_blank">Ver</a>
+  </p>
+
+  <button type="button" (click)="guardarProductoDemo()" [disabled]="!ultimaUrlImagen || uploadBusy">
+    Guardar producto demo
+  </button>
+</section>

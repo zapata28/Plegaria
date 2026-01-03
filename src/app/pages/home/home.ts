@@ -1,21 +1,39 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { supabase } from '../../supabase.client';
+
+type CategoriaSlug = 'maquillaje' | 'skincare' | 'capilar' | 'accesorios';
+
+type Producto = {
+  id: string;
+  nombre: string;
+  descripcion?: string | null;
+  precio: number;
+  categoria: CategoriaSlug;
+  grupo?: string | null;
+  subgrupo?: string | null;
+  imagen?: string | null;
+  es_nuevo?: boolean | null;
+  en_oferta?: boolean | null;
+  precio_antes?: number | null;
+  created_at?: string | null;
+};
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CurrencyPipe],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
 export class Home implements OnInit, OnDestroy {
-
   constructor(private router: Router) {}
 
+  // =========================
+  // HERO CAROUSEL
+  // =========================
   currentSlide = 0;
-
-  // ⏱️ autoplay config
   private autoplayId: any = null;
   private autoplayMs = 5000;
 
@@ -38,122 +56,59 @@ export class Home implements OnInit, OnDestroy {
       button: 'Explorar',
     },
     {
-      image: '',
+      image: 'img/slide3.jpg', // ✅ pon una imagen real en /public/img/slide3.jpg
       title: 'Tu rutina empieza aquí',
       text: 'Mensaje promocional.',
       button: 'Ver todo',
-    }
+    },
   ];
 
+  // =========================
+  // CATEGORÍAS
+  // =========================
   categorias = [
     { name: 'Maquillaje', slug: 'maquillaje', img: 'assets/icons/icono-maquillaje.png' },
     { name: 'Cuidado de la piel', slug: 'skincare', img: 'assets/icons/icono-cuidado-facial.png' },
     { name: 'Cuidado capilar', slug: 'capilar', img: 'assets/icons/icono-cuidado-capilar.png' },
-    { name: 'Accesorios', slug: 'accesorios', img: 'assets/icons/icono-accesorios.png' }
+    { name: 'Accesorios', slug: 'accesorios', img: 'assets/icons/icono-accesorios.png' },
   ];
 
-  // ✅ NOVEDADES
-  novedades = [
-    {
-      id: 1,
-      nombre: 'Espuma de ampolla de centella',
-      descripcion: 'Limpieza suave, ideal para piel sensible.',
-      precio: 58000,
-      img: '',
-      esNuevo: true,
-    },
-    {
-      id: 2,
-      nombre: 'Serum hidratante',
-      descripcion: 'Hidratación ligera para uso diario.',
-      precio: 72000,
-      img: '',
-      esNuevo: true,
-    },
-    {
-      id: 3,
-      nombre: 'Shampoo reparación',
-      descripcion: 'Fortalece y aporta brillo.',
-      precio: 45000,
-      img: '',
-      esNuevo: true,
-    },
-    {
-      id: 4,
-      nombre: 'Protector solar',
-      descripcion: 'Protección UV de uso diario.',
-      precio: 69000,
-      img: '',
-      esNuevo: true,
-    },
-  ];
+  // =========================
+  // NOVEDADES (desde Supabase)
+  // =========================
+  loadingNovedades = true;
+  novedades: Producto[] = [];
+
+  // =========================
+  // UPLOAD / ADMIN (temporal)
+  // =========================
+  ultimaUrlImagen: string | null = null;
+  uploadBusy = false;
 
   ngOnInit(): void {
     this.startAutoplay();
+    this.cargarNovedades();
   }
 
   ngOnDestroy(): void {
     this.stopAutoplay();
   }
 
-
-
-async subirImagen(file: File) {
-  const ext = file.name.split('.').pop() || 'png';
-  const filePath = `imgs/${Date.now()}.${ext}`;
-
-  const { data: s } = await supabase.auth.getSession();
-  console.log('SESSION EN UPLOAD:', s.session?.user?.email, s.session?.user?.id);
-
-  const { error: upErr } = await supabase.storage
-    .from('productos')
-    .upload(filePath, file, {
-      upsert: false,
-      contentType: file.type || 'image/png'
-    });
-
-  if (upErr) {
-    console.error('Error subiendo imagen:', upErr);
-    return null;
-  }
-
-  const { data } = supabase.storage.from('productos').getPublicUrl(filePath);
-  console.log('✅ URL pública:', data.publicUrl);
-  return data.publicUrl;
-}
-
-
-onFileChange(event: Event) {
-  const input = event.target as HTMLInputElement;
-
-  if (!input.files || input.files.length === 0) return;
-
-  const file = input.files[0];
-  this.subirImagen(file);
-}
-
-
-
-
-
-
-  // ✅ Dots
+  // =========================
+  // HERO controls
+  // =========================
   goToSlide(index: number) {
     this.currentSlide = index;
     this.restartAutoplay();
   }
 
-  // ✅ Next (autoplay)
   private nextSlide() {
     this.currentSlide = (this.currentSlide + 1) % this.slides.length;
   }
 
-  // ✅ Autoplay controls
   private startAutoplay() {
     if (this.autoplayId) return;
-    this.autoplayId = setInterval(() => {
-      this.nextSlide();
-    }, this.autoplayMs);
+    this.autoplayId = setInterval(() => this.nextSlide(), this.autoplayMs);
   }
 
   private stopAutoplay() {
@@ -167,7 +122,6 @@ onFileChange(event: Event) {
     this.startAutoplay();
   }
 
-  // ✅ Para pausar desde el HTML )
   pauseAutoplay() {
     this.stopAutoplay();
   }
@@ -176,11 +130,120 @@ onFileChange(event: Event) {
     this.startAutoplay();
   }
 
+  // =========================
+  // NAV
+  // =========================
   irACategoria(slug: string) {
     this.router.navigate(['/categoria', slug]);
   }
 
-  verProducto(id: number) {
+  verProducto(id: string) {
+    // si no tienes /producto/:id aún, puedes comentar esta línea
     this.router.navigate(['/producto', id]);
+  }
+
+  // =========================
+  // SUPABASE - Cargar novedades
+  // =========================
+  async cargarNovedades() {
+    this.loadingNovedades = true;
+
+    const { data, error } = await supabase
+      .from('productos')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(8);
+
+    if (error) {
+      console.error('Error cargando novedades:', error.message);
+      this.novedades = [];
+      this.loadingNovedades = false;
+      return;
+    }
+
+    this.novedades = (data ?? []) as Producto[];
+    this.loadingNovedades = false;
+  }
+
+  // =========================
+  // SUBIR IMAGEN
+  // =========================
+  async subirImagen(file: File) {
+    try {
+      this.uploadBusy = true;
+
+      const ext = file.name.split('.').pop() || 'png';
+      const filePath = `imgs/${Date.now()}.${ext}`;
+
+      const { error: upErr } = await supabase.storage
+        .from('productos')
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type || 'image/png',
+        });
+
+      if (upErr) {
+        console.error('Error subiendo imagen:', upErr);
+        this.uploadBusy = false;
+        return null;
+      }
+
+      const { data } = supabase.storage.from('productos').getPublicUrl(filePath);
+      this.ultimaUrlImagen = data.publicUrl;
+
+      console.log('✅ URL pública:', this.ultimaUrlImagen);
+
+      this.uploadBusy = false;
+      return this.ultimaUrlImagen;
+    } catch (e) {
+      console.error('Error inesperado subiendo imagen:', e);
+      this.uploadBusy = false;
+      return null;
+    }
+  }
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    this.subirImagen(file);
+  }
+
+  // =========================
+  // INSERT DEMO PRODUCTO
+  // =========================
+  async guardarProductoDemo() {
+    if (!this.ultimaUrlImagen) {
+      alert('Primero sube una imagen.');
+      return;
+    }
+
+    const producto = {
+      nombre: 'Producto demo',
+      descripcion: 'Creado desde Angular + Supabase',
+      precio: 59000,
+      categoria: 'maquillaje',
+      grupo: 'Rostro',
+      subgrupo: 'Bases',
+      imagen: this.ultimaUrlImagen,
+      es_nuevo: true,
+      en_oferta: false,
+      precio_antes: null,
+    };
+
+    const { error } = await supabase.from('productos').insert(producto);
+
+    if (error) {
+      console.error('Error insertando producto:', error);
+      alert('❌ Error guardando: ' + error.message);
+      return;
+    }
+
+    alert('✅ Producto guardado');
+    this.ultimaUrlImagen = null;
+
+    // refrescar novedades para ver el producto nuevo
+    this.cargarNovedades();
   }
 }

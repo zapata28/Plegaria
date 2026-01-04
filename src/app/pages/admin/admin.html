@@ -1,1 +1,149 @@
-<p>admin works!</p>
+<section class="admin-page">
+  <div class="admin-header">
+    <h1>Admin productos</h1>
+    <p>Crear, editar y eliminar productos (Supabase).</p>
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <div class="admin-card">
+    <h2>{{ editandoId ? 'Editar producto' : 'Crear producto' }}</h2>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Nombre *</label>
+        <input [(ngModel)]="form.nombre" placeholder="Ej: Base mate..." />
+      </div>
+
+      <div class="field">
+        <label>Precio *</label>
+        <input type="number" [(ngModel)]="form.precio" placeholder="Ej: 59000" />
+      </div>
+
+      <div class="field">
+        <label>Categoría *</label>
+        <select [(ngModel)]="form.categoria">
+          <option value="maquillaje">Maquillaje</option>
+          <option value="skincare">Cuidado de la piel</option>
+          <option value="capilar">Cuidado capilar</option>
+          <option value="accesorios">Accesorios</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Grupo *</label>
+        <input [(ngModel)]="form.grupo" placeholder="Ej: Rostro" />
+      </div>
+
+      <div class="field">
+        <label>Subgrupo *</label>
+        <input [(ngModel)]="form.subgrupo" placeholder="Ej: Bases" />
+      </div>
+
+      <div class="field field-full">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Opcional..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>
+          <input type="checkbox" [(ngModel)]="form.es_nuevo" />
+          Nuevo
+        </label>
+      </div>
+
+      <div class="field">
+        <label>
+          <input type="checkbox" [(ngModel)]="form.en_oferta" />
+          Oferta
+        </label>
+      </div>
+
+      <div class="field" *ngIf="form.en_oferta">
+        <label>Precio antes *</label>
+        <input type="number" [(ngModel)]="form.precio_antes" placeholder="Ej: 79000" />
+      </div>
+
+      <!-- Imagen -->
+      <div class="field field-full">
+        <label>Imagen</label>
+        <div class="img-row">
+          <input type="file" accept="image/*" (change)="onFileChange($event)" />
+          <span class="hint" *ngIf="uploadBusy">Subiendo imagen...</span>
+        </div>
+
+        <div class="img-preview" *ngIf="imagenPreviewLocal || form.imagen">
+          <img [src]="imagenPreviewLocal || form.imagen" alt="preview" />
+          <div class="img-url" *ngIf="form.imagen">
+            <small>URL guardada:</small>
+            <div class="mono">{{ form.imagen }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" (click)="guardar()" [disabled]="saving || uploadBusy">
+        {{ saving ? 'Guardando...' : (editandoId ? 'Actualizar' : 'Crear') }}
+      </button>
+
+      <button class="btn" *ngIf="editandoId" (click)="limpiarFormulario()" [disabled]="saving || uploadBusy">
+        Cancelar edición
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= LISTA ================= -->
+  <div class="admin-card">
+    <div class="list-head">
+      <h2>Productos</h2>
+
+      <div class="filters">
+        <select [(ngModel)]="filtroCategoria" (change)="aplicarFiltro()">
+          <option value="todas">Todas</option>
+          <option value="maquillaje">Maquillaje</option>
+          <option value="skincare">Cuidado de la piel</option>
+          <option value="capilar">Cuidado capilar</option>
+          <option value="accesorios">Accesorios</option>
+        </select>
+
+        <input [(ngModel)]="busqueda" placeholder="Buscar por nombre..." />
+        <button class="btn" (click)="aplicarFiltro()">Buscar</button>
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="loading">Cargando productos...</div>
+
+    <div class="grid" *ngIf="!loading">
+      <article class="card" *ngFor="let p of productos">
+        <div class="thumb">
+          <img [src]="p.imagen || 'assets/img/placeholder.png'" [alt]="p.nombre" />
+          <span class="badge nuevo" *ngIf="p.es_nuevo">Nuevo</span>
+          <span class="badge oferta" *ngIf="p.en_oferta">Oferta</span>
+        </div>
+
+        <div class="info">
+          <h3>{{ p.nombre }}</h3>
+          <p class="meta">
+            <b>{{ p.categoria }}</b> · {{ p.grupo }} / {{ p.subgrupo }}
+          </p>
+
+          <div class="price">
+            <span class="now">{{ p.precio | currency:'COP':'symbol':'1.0-0' }}</span>
+            <span class="old" *ngIf="p.en_oferta && p.precio_antes">
+              {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
+            </span>
+          </div>
+
+          <div class="row-actions">
+            <button class="btn" (click)="editar(p)">Editar</button>
+            <button class="btn danger" (click)="eliminar(p)">Eliminar</button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="empty" *ngIf="!loading && productos.length === 0">
+      No hay productos con ese filtro.
+    </div>
+  </div>
+</section>

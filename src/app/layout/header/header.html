@@ -3,21 +3,25 @@
   <span>Envío gratis por compras superiores a $150.000</span>
 </div>
 
-<!-- OVERLAY -->
-<div class="overlay" [class.active]="menuOpen" (click)="toggleMenu()"></div>
+<!-- OVERLAY (solo 1) -->
+<div class="overlay" [class.active]="menuOpen" (click)="closeAll()"></div>
 
 <!-- HEADER -->
 <header class="header">
   <!-- LOGO → HOME -->
-  <a class="logo" routerLink="/" (click)="closeMenu()">
+  <a class="logo" routerLink="/" (click)="closeAll()">
     <img src="/favicon.ico" alt="Logo">
     <span>MI MARCA</span>
   </a>
 
   <!-- HAMBURGUESA -->
-  <button class="menu-toggle"
-          (click)="toggleMenu()"
-          [class.active]="menuOpen">
+  <button
+    class="menu-toggle"
+    type="button"
+    (click)="toggleMenu()"
+    [class.active]="menuOpen"
+    aria-label="Abrir menú"
+  >
     <span></span>
     <span></span>
     <span></span>
@@ -25,54 +29,99 @@
 
   <!-- NAV -->
   <nav [class.open]="menuOpen">
-    <a
-      routerLink="/categoria/maquillaje"
-      routerLinkActive="active"
-      (click)="closeMenu()"
-    >
+    <a routerLink="/categoria/maquillaje" routerLinkActive="active" (click)="closeAll()">
       Maquillaje
     </a>
 
-    <a
-      routerLink="/categoria/skincare"
-      routerLinkActive="active"
-      (click)="closeMenu()"
-    >
+    <a routerLink="/categoria/skincare" routerLinkActive="active" (click)="closeAll()">
       Cuidado de la piel
     </a>
 
-    <a
-      routerLink="/categoria/capilar"
-      routerLinkActive="active"
-      (click)="closeMenu()"
-    >
+    <a routerLink="/categoria/capilar" routerLinkActive="active" (click)="closeAll()">
       Cuidado capilar
     </a>
 
-    <a
-      routerLink="/categoria/accesorios"
-      routerLinkActive="active"
-      (click)="closeMenu()"
-    >
+    <a routerLink="/categoria/accesorios" routerLinkActive="active" (click)="closeAll()">
       Accesorios
     </a>
+    <a routerLink="/">Inicio</a>
+<a routerLink="/categoria/maquillaje">Maquillaje</a>
+
+<!-- SOLO si está logueado -->
+<a *ngIf="auth.isLoggedIn()" routerLink="/admin">Admin</a>
+
+<!-- Si NO está logueado -->
+<a *ngIf="!auth.isLoggedIn()" routerLink="/login">Login</a>
+
+<button *ngIf="auth.isLoggedIn()" type="button" (click)="salir()">
+  Salir
+</button>
+
   </nav>
+
   <!-- ICONS -->
-    <div class="icons">
-  <a class="icon-btn cart-btn" routerLink="/carrito" (click)="closeMenu()" aria-label="Carrito">
-    🛒
-    <span class="badge" *ngIf="cart.countSig() > 0">{{ cart.countSig() }}</span>
-  </a>
+  <div class="icons">
+    <!-- Carrito -->
+<button
+  class="cart-btn"
+  type="button"
+  (click)="toggleCart()"
+  aria-label="Carrito"
+>
+  <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      fill="currentColor"
+      d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10
+      0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16
+      14h9.45c.75 0 1.4-.41 1.74-1.03l3.58-6.49A1 1 0 0 0 21.08 5H6.21L5.27
+      3H2v2h2l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"
+    />
+  </svg>
 
-  <a class="icon-btn" routerLink="/login" (click)="closeMenu()" aria-label="Cuenta">
-    👤
-  </a>
-</div>
+  <span class="cart-badge" *ngIf="cart.countSig() > 0">
+    {{ cart.countSig() > 99 ? '99+' : cart.countSig() }}
+  </span>
+</button>
 
 
-<!-- OVERLAY -->
-<div class="overlay"
-     [class.active]="menuOpen"
-     (click)="closeMenu()">
-</div>
 
+    <!-- Login -->
+    <a class="icon-btn" routerLink="/login" (click)="closeAll()" aria-label="Cuenta">
+      👤
+    </a>
+  </div>
+
+  <!-- MINI CARRITO (dentro del header) -->
+  <div class="mini-cart" *ngIf="cartOpen">
+    <div class="mini-top">
+      <strong>Carrito</strong>
+      <button class="mini-close" type="button" (click)="closeCart()">✕</button>
+    </div>
+
+    <div class="mini-empty" *ngIf="cart.itemsSig().length === 0">
+      Está vacío.
+    </div>
+
+    <div class="mini-list" *ngIf="cart.itemsSig().length">
+      <div class="mini-item" *ngFor="let it of cart.itemsSig()">
+        <div class="mini-name">{{ it.nombre }}</div>
+
+        <div class="mini-right">
+          <span class="mini-qty">x{{ it.qty }}</span>
+          <button class="mini-del" type="button" (click)="cart.remove(it.id)">
+            Quitar
+          </button>
+        </div>
+      </div>
+
+      <div class="mini-sub">
+        <span>Subtotal</span>
+        <strong>{{ cart.subtotalSig() | currency:'COP':'symbol':'1.0-0' }}</strong>
+      </div>
+
+      <a class="mini-go" routerLink="/carrito" (click)="closeAll()">
+        Ir al carrito
+      </a>
+    </div>
+  </div>
+</header>

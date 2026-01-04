@@ -3,8 +3,7 @@ import { supabase } from '../supabase.client';
 import type { User } from '@supabase/supabase-js';
 
 @Injectable({ providedIn: 'root' })
-export class AuthService {
-
+export class Auth {
   user: User | null = null;
 
   async init() {
@@ -17,11 +16,8 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const { data, error } =
-      await supabase.auth.signInWithPassword({ email, password });
-
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-
     this.user = data.user;
     return data.user;
   }

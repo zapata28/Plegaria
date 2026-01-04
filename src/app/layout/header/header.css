@@ -1,4 +1,6 @@
-/* Top Bar */
+/* ===============================
+   TOP BAR
+================================ */
 .top-bar {
   background-color: var(--verde-principal);
   color: #fff;
@@ -15,7 +17,7 @@
 .top-bar a {
   color: #fff;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 700;
   transition: color 0.3s;
 }
 
@@ -23,8 +25,8 @@
   color: var(--verde-claro);
 }
 
-/* Responsive */
-@media(max-width: 768px) {
+/* Responsive Top Bar */
+@media (max-width: 768px) {
   .top-bar {
     flex-direction: column;
     gap: 5px;
@@ -32,11 +34,13 @@
   }
 }
 
-/* Overlay cuando se abre menú en móvil */
+/* ===============================
+   OVERLAY (móvil)
+================================ */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(47,125,90,0.45);
+  background: rgba(47, 125, 90, 0.45);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -50,7 +54,9 @@
   pointer-events: auto;
 }
 
-/* Header principal */
+/* ===============================
+   HEADER
+================================ */
 .header {
   background-color: #fff;
   width: 100%;
@@ -65,11 +71,16 @@
   position: sticky;
   top: 30px;
   border-bottom: 1px solid var(--verde-claro);
-  box-shadow: 0 2px 8px rgba(47,125,90,0.15);
+  box-shadow: 0 2px 8px rgba(47, 125, 90, 0.15);
   z-index: 1000;
+
+  /* ✅ para que el mini-carrito se posicione bien */
+  position: sticky;
 }
 
-/* Logo */
+/* ===============================
+   LOGO
+================================ */
 .logo {
   display: flex;
   align-items: center;
@@ -81,17 +92,19 @@
   cursor: pointer;
 }
 
-
 .logo img {
   height: 42px;
   display: block;
+  transition: transform 0.2s ease;
 }
 
 .logo:hover img {
   transform: scale(1.05);
 }
 
-/* Nav Desktop */
+/* ===============================
+   NAV DESKTOP
+================================ */
 nav {
   flex: 1;
   display: flex;
@@ -108,6 +121,8 @@ nav a {
   padding: 5px 0;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
+  position: relative;
+  line-height: 1;
 }
 
 nav a:hover {
@@ -115,26 +130,81 @@ nav a:hover {
   color: var(--verde-principal);
 }
 
-/* Icons */
+nav a.active {
+  color: var(--verde-principal);
+  font-weight: 700;
+  border-bottom: 2px solid var(--verde-principal);
+}
+
+/* ===============================
+   ICONS (carrito + login)
+================================ */
 .icons {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
 }
 
-.icons span {
+/* Botón icon */
+.icon-btn,
+.cart-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--texto-principal);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  font-size: 20px;
-  transition: transform 0.2s, color 0.3s;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.icons span:hover {
-  transform: scale(1.2);
+.icon-btn:hover,
+.cart-btn:hover {
+  background: rgba(47, 125, 90, 0.10);
+  border-color: rgba(47, 125, 90, 0.20);
   color: var(--verde-principal);
 }
 
-/* Menu Hamburguesa */
+/* SVG del carrito */
+.cart-btn svg,
+.cart-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* ✅ Badge SOLO del carrito (súper sutil) */
+.cart-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+
+  min-width: 13px;
+  height: 13px;
+  padding: 0 3px;
+
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1;
+
+  color: #fff;
+  background: var(--verde-principal);
+  opacity: 0.92;
+}
+
+/* ===============================
+   HAMBURGUESA
+================================ */
 .menu-toggle {
   width: 32px;
   height: 24px;
@@ -168,9 +238,9 @@ nav a:hover {
   transform: rotate(-45deg) translateY(-12px);
 }
 
-/* ========================
-   MOBILE
-======================== */
+/* ===============================
+   MOBILE NAV
+================================ */
 @media (max-width: 768px) {
   .menu-toggle {
     display: flex;
@@ -185,7 +255,7 @@ nav a:hover {
     width: 100%;
     background: #fff;
     border-top: 1px solid var(--verde-claro);
-    box-shadow: 0 4px 12px rgba(47,125,90,0.15);
+    box-shadow: 0 4px 12px rgba(47, 125, 90, 0.15);
     z-index: 11;
   }
 
@@ -194,9 +264,11 @@ nav a:hover {
   }
 
   nav a {
-    padding: 15px 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
     border-bottom: 1px solid var(--verde-claro);
-    display: block;
     transition: background 0.3s, color 0.3s;
   }
 
@@ -205,195 +277,138 @@ nav a:hover {
     color: var(--verde-principal);
   }
 
+  nav a.active {
+    background-color: var(--verde-claro);
+    border-bottom: none;
+  }
+
+  /* en móvil escondemos iconos (como tú lo tenías) */
   .icons {
     display: none;
   }
 }
 
-nav a.active {
-  color: var(--verde-principal);
-  font-weight: 700;
-  border-bottom: 2px solid var(--verde-principal);
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  nav a.active {
-    background-color: var(--verde-claro);
-    border-bottom: none;
-  }
-}
-/* ===== FIX DEFINITIVO ACTIVE NAV ===== */
-nav a {
-  position: relative;
-  line-height: 1;
-}
-
-nav a.active {
-  color: var(--verde-principal);
-  font-weight: 700;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  nav a {
-    height: 52px;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-  }
-
-  nav a.active {
-    background-color: var(--verde-claro);
-  }
-}
-
 /* ===============================
-   NOVEDADES
+   MINI CARRITO
 ================================ */
-.novedades-container {
-  margin: 6px 0 18px;
+.header {
+  position: sticky; /* ya lo tienes, pero lo repetimos con intención */
 }
 
-.novedades-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+/* para que el mini-cart se posicione respecto al header */
+.header {
+  position: sticky;
 }
 
-.producto-card {
-  background: var(--blanco);
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
-  display: flex;
-  flex-direction: column;
-}
+/* si tu mini-cart no se posiciona, cambia sticky -> relative en header:
+   .header{ position: sticky; } ya existe arriba. Está ok.
+*/
 
-.producto-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
-}
-
-.producto-img {
-  position: relative;
-  background: var(--gris-suave);
-}
-
-.producto-img img {
-  width: 100%;
-  height: 170px;
-  object-fit: cover;
-  display: block;
-}
-
-.badge {
+.mini-cart {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background: var(--verde-principal);
-  color: var(--blanco);
-  font-weight: 700;
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
+  right: 20px;
+  top: 64px;
+  width: min(360px, calc(100vw - 40px));
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+  padding: 12px;
+  z-index: 50;
 }
 
-.producto-info {
-  padding: 12px 12px 14px;
-}
-
-.producto-info h3 {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  color: var(--texto-principal);
-}
-
-.producto-info .desc {
-  margin: 0 0 10px 0;
-  font-size: 12.5px;
-  color: #54635d;
-  min-height: 34px;
-}
-
-.precio-row {
+.mini-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 8px;
 }
 
-.precio {
-  color: var(--rosa-precio);
+.mini-close {
+  border: 0;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.mini-empty {
+  padding: 12px 6px;
+  color: rgba(0, 0, 0, 0.65);
   font-weight: 800;
 }
 
-.btn-ver {
-  border: none;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--verde-principal);
-  color: var(--blanco);
-  font-weight: 700;
-  cursor: pointer;
-  transition: background .2s ease;
+.mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.btn-ver:hover {
-  background: var(--verde-hover);
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .novedades-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-@media (max-width: 520px) {
-  .novedades-grid { grid-template-columns: 1fr; }
-  .producto-img img { height: 190px; }
-}
-
-.cart-btn{
-  position: relative;
-  display: inline-flex;
+.mini-item {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  text-decoration: none;
-  color: var(--texto-principal);
-  background: rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.06);
+  gap: 10px;
 }
 
-.cart-btn svg{
-  width: 22px;
-  height: 22px;
-}
-
-.cart-btn:hover{
-  background: rgba(47,125,90,0.10);
-  border-color: rgba(47,125,90,0.20);
-  color: var(--verde-principal);
-}
-
-.badge{
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 12px;
+.mini-name {
   font-weight: 900;
-  color: #fff;
-  background: var(--verde-principal);
-  border: 2px solid #fff;
+  color: var(--texto-principal);
+  font-size: 13px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+.mini-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mini-qty {
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.mini-del {
+  border: 0;
+  background: rgba(255, 0, 0, 0.08);
+  color: #b00020;
+  font-weight: 900;
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mini-sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-weight: 900;
+}
+
+.mini-go {
+  display: inline-flex;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-weight: 900;
+  background: rgba(47, 125, 90, 0.10);
+  border: 1px solid rgba(47, 125, 90, 0.18);
+  color: var(--texto-principal);
+}
+
+.mini-go:hover {
+  filter: brightness(0.98);
+}

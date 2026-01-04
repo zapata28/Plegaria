@@ -1,1 +1,18 @@
-<p>login works!</p>
+<section class="login-wrap">
+  <div class="login-card">
+    <h1>Iniciar sesión</h1>
+    <p class="sub">Solo para administración de productos</p>
+
+    <label class="lbl">Correo</label>
+    <input class="inp" type="email" [(ngModel)]="email" placeholder="correo@dominio.com" />
+
+    <label class="lbl">Contraseña</label>
+    <input class="inp" type="password" [(ngModel)]="password" placeholder="••••••••" />
+
+    <button class="btn" type="button" (click)="entrar()" [disabled]="loading">
+      {{ loading ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <p class="err" *ngIf="errorMsg">{{ errorMsg }}</p>
+  </div>
+</section>

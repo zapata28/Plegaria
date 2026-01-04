@@ -332,3 +332,58 @@
 .btn-add:hover{
   filter: brightness(0.95);
 }
+
+/* Botón carrito (limpio) */
+.cart-btn{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
+  color: var(--texto-principal);
+
+  cursor: pointer;
+  padding: 0;
+}
+
+.cart-btn:hover{
+  background: rgba(47,125,90,0.10);
+  border-color: rgba(47,125,90,0.20);
+  color: var(--verde-principal);
+}
+
+/* Ícono SVG */
+.cart-icon{
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Badge MUY sutil (para 2 dígitos también) */
+.cart-badge{
+  position: absolute;
+  top: -4px;
+  right: -4px;
+
+  height: 14px;
+  min-width: 14px;
+  padding: 0 4px;
+
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1;
+
+  color: #fff;
+  background: var(--verde-principal);
+  opacity: 0.9;
+}

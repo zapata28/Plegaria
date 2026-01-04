@@ -59,10 +59,16 @@
   </nav>
   <!-- ICONS -->
     <div class="icons">
-        <span routerLink="/carrito" (click)="closeMenu()">🛒</span>
-        <span routerLink="/login" (click)="closeMenu()">👤</span>
-    </div>
-</header>
+  <a class="icon-btn cart-btn" routerLink="/carrito" (click)="closeMenu()" aria-label="Carrito">
+    🛒
+    <span class="badge" *ngIf="cart.countSig() > 0">{{ cart.countSig() }}</span>
+  </a>
+
+  <a class="icon-btn" routerLink="/login" (click)="closeMenu()" aria-label="Cuenta">
+    👤
+  </a>
+</div>
+
 
 <!-- OVERLAY -->
 <div class="overlay"

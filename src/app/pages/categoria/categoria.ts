@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { supabase } from '../../supabase.client';
+import { CartService } from '../../cart.service';
+
 
 type CategoriaSlug = 'maquillaje' | 'skincare' | 'capilar' | 'accesorios';
 
@@ -57,7 +59,7 @@ export class Categoria implements OnInit {
   // ✅ PAGINACIÓN NUMÉRICA (incluye "...")
   paginasVisibles: number[] = []; // ej: [1, -1, 5, 6, 7, -1, 20]
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router, private cart: CartService) {}
 
   // =========================
   // INIT
@@ -326,4 +328,19 @@ export class Categoria implements OnInit {
     console.log('Producto:', id);
     // this.router.navigate(['/producto', id]);
   }
+    // =========================
+  // CARRITO
+  // =========================
+  addToCart(p: Producto) {
+    this.cart.add(
+      {
+        id: String(p.id),
+        nombre: p.nombre,
+        precio: Number(p.precio),
+        imagen: p.imagen ?? '',
+      },
+      1
+    );
+  }
+
 }

@@ -1,10 +1,12 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { CartService } from '../../cart.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
   encapsulation: ViewEncapsulation.None
@@ -12,11 +14,8 @@ import { RouterModule } from '@angular/router';
 export class HeaderComponent {
   menuOpen = false;
 
-  toggleMenu() {
-    this.menuOpen = !this.menuOpen;
-  }
+  constructor(public cart: CartService) {}
 
-  closeMenu() {
-    this.menuOpen = false;
-  }
+  toggleMenu() { this.menuOpen = !this.menuOpen; }
+  closeMenu() { this.menuOpen = false; }
 }

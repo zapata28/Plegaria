@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
 export type CartItem = {
   id: string;
@@ -12,7 +12,12 @@ const LS_KEY = 'eclipse_cart_v1';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
-  private items: CartItem[] = this.load();
+  private _items = signal<CartItem[]>(this.load());
+
+  // ✅ Signals listos para UI
+  itemsSig = computed(() => this._items()); // <- lista reactiva
+  countSig = computed(() => this._items().reduce((acc, i) => acc + i.qty, 0));
+  subtotalSig = computed(() => this._items().reduce((acc, i) => acc + i.precio * i.qty, 0));
 
   private load(): CartItem[] {
     try {
@@ -23,44 +28,64 @@ export class CartService {
     }
   }
 
-  private save() {
-    localStorage.setItem(LS_KEY, JSON.stringify(this.items));
+  private save(items: CartItem[]) {
+    localStorage.setItem(LS_KEY, JSON.stringify(items));
   }
 
+  // ===== API que ya usas =====
   getItems(): CartItem[] {
-    return [...this.items];
+    return [...this._items()];
   }
 
   add(item: Omit<CartItem, 'qty'>, qty = 1) {
     const q = Math.max(1, Math.floor(qty || 1));
-    const found = this.items.find(i => i.id === item.id);
+    const items = [...this._items()];
+    const found = items.find(i => i.id === item.id);
+
     if (found) found.qty += q;
-    else this.items.push({ ...item, qty: q });
-    this.save();
+    else items.push({ ...item, qty: q });
+
+    this._items.set(items);
+    this.save(items);
   }
 
   setQty(id: string, qty: number) {
-    const it = this.items.find(i => i.id === id);
+    const items = [...this._items()];
+    const it = items.find(i => i.id === id);
     if (!it) return;
-    it.qty = Math.max(1, Math.floor(Number(qty) || 1));
-    this.save();
+
+    // ✅ si queda en 0 o menos, lo quitamos
+    const newQty = Math.floor(Number(qty) || 0);
+    if (newQty <= 0) {
+      const filtered = items.filter(x => x.id !== id);
+      this._items.set(filtered);
+      this.save(filtered);
+      return;
+    }
+
+    it.qty = newQty;
+
+    this._items.set(items);
+    this.save(items);
   }
 
   remove(id: string) {
-    this.items = this.items.filter(i => i.id !== id);
-    this.save();
+    const items = this._items().filter(i => i.id !== id);
+    this._items.set(items);
+    this.save(items);
   }
 
   clear() {
-    this.items = [];
-    this.save();
+    this._items.set([]);
+    this.save([]);
   }
 
+  // ===== helpers opcionales =====
   subtotal(): number {
-    return this.items.reduce((acc, i) => acc + i.precio * i.qty, 0);
+    return this.subtotalSig();
   }
 
   count(): number {
-    return this.items.reduce((acc, i) => acc + i.qty, 0);
+    return this.countSig();
   }
 }

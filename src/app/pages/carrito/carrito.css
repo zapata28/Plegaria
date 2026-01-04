@@ -92,16 +92,7 @@
   color: var(--texto-principal);
 }
 
-.resumen {
-  margin-top: 12px;
-  background: rgba(0, 0, 0, 0.04);
-  border-radius: 14px;
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  font-weight: 900;
-}
-
+/* Botones base */
 .btn {
   border: 0;
   border-radius: 12px;
@@ -110,16 +101,79 @@
   cursor: pointer;
 }
 
+/* Botón ghost (Vaciar) */
 .ghost {
   background: rgba(0, 0, 0, 0.06);
   color: var(--texto-principal);
 }
 
+.ghost:hover {
+  filter: brightness(0.97);
+}
+
+/* Botón quitar */
 .danger {
   background: rgba(255, 0, 0, 0.08);
   color: #b00020;
 }
 
+/* Resumen */
+.resumen{
+  margin-top: 12px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resumen .row{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 900;
+}
+
+.resumen .row span{
+  color: var(--texto-principal);
+}
+
+.resumen .row small{
+  font-weight: 800;
+  color: rgba(0,0,0,0.55);
+  margin-left: 6px;
+}
+
+.resumen .row small.free{
+  color: var(--verde-principal);
+}
+
+.resumen .divider{
+  height: 1px;
+  background: rgba(0,0,0,0.10);
+}
+
+.resumen .row.total{
+  font-size: 16px;
+}
+
+/* Mensaje "te faltan para envío gratis" */
+.free-tip{
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(47,125,90,0.10);
+  border: 1px solid rgba(47,125,90,0.18);
+  color: rgba(0,0,0,0.72);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.free-tip b{
+  color: var(--texto-principal);
+}
+
+/* Responsive */
 @media (max-width: 720px) {
   .item {
     grid-template-columns: 1fr;
@@ -129,4 +183,23 @@
   .line-total {
     justify-self: start;
   }
+
+  .resumen{
+    margin-top: 8px;
+    padding: 12px;
+  }
+}
+.cta{
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn.whatsapp{
+  width: 100%;
+  background: var(--verde-principal);
+  color: #fff;
+}
+.btn.whatsapp:hover{
+  filter: brightness(0.95);
 }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Auth } from '../../auth/auth';
-import { CartService } from '../../cart.service'; // ✅ ajusta la ruta si tu carpeta es otra
+import { CartService } from '../../cart.service';
 
 @Component({
   selector: 'app-header',
@@ -12,41 +12,81 @@ import { CartService } from '../../cart.service'; // ✅ ajusta la ruta si tu ca
   styleUrls: ['./header.css'],
 })
 export class HeaderComponent {
-  menuOpen = false;
-  cartOpen = false;
+
+  // Estados de UI
+  menuOpen = false;       // menú categorías
+  cartOpen = false;       // mini carrito
+  userMenuOpen = false;  // menú usuario (👤)
 
   constructor(
-    public auth: Auth,          // ✅ disponible en HTML
-    private router: Router,     // ✅ para redirecciones
-    public cart: CartService    // ✅ disponible en HTML
+    public auth: Auth,
+    private router: Router,
+    public cart: CartService
   ) {}
 
+  /* ===============================
+     SESIÓN
+  ================================ */
   async salir() {
     await this.auth.logout();
     this.router.navigate(['/']);
     this.closeAll();
   }
 
+  /* ===============================
+     MENÚ CATEGORÍAS
+  ================================ */
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
-    if (this.menuOpen) this.cartOpen = false;
-  }
 
-  toggleCart() {
-    this.cartOpen = !this.cartOpen;
-    if (this.cartOpen) this.menuOpen = false;
+    if (this.menuOpen) {
+      this.cartOpen = false;
+      this.userMenuOpen = false;
+    }
   }
 
   closeMenu() {
     this.menuOpen = false;
   }
 
+  /* ===============================
+     CARRITO
+  ================================ */
+  toggleCart() {
+    this.cartOpen = !this.cartOpen;
+
+    if (this.cartOpen) {
+      this.menuOpen = false;
+      this.userMenuOpen = false;
+    }
+  }
+
   closeCart() {
     this.cartOpen = false;
   }
 
+  /* ===============================
+     MENÚ USUARIO (👤)
+  ================================ */
+  toggleUserMenu() {
+    this.userMenuOpen = !this.userMenuOpen;
+
+    if (this.userMenuOpen) {
+      this.menuOpen = false;
+      this.cartOpen = false;
+    }
+  }
+
+  closeUserMenu() {
+    this.userMenuOpen = false;
+  }
+
+  /* ===============================
+     CERRAR TODO (overlay / navegación)
+  ================================ */
   closeAll() {
     this.menuOpen = false;
     this.cartOpen = false;
+    this.userMenuOpen = false;
   }
 }

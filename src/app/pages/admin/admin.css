@@ -1,11 +1,67 @@
 /* =========================================================
-   ADMIN PRODUCTOS – CSS FINAL (PRO)
+   ADMIN PRODUCTOS – CSS FINAL (PRO + TOAST + DROPZONE + LOAD MORE)
 ========================================================= */
 
 .admin-page{
   padding: 26px 18px;
   max-width: 1100px;
   margin: 0 auto;
+}
+
+/* ================= TOAST ================= */
+.toast-wrap{
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(380px, calc(100vw - 28px));
+}
+
+.toast{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.10);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.16);
+  border-radius: 16px;
+  padding: 12px;
+  animation: toastIn .18s ease;
+}
+
+.toast.success{ border-left: 6px solid #2f7d5a; }
+.toast.error{ border-left: 6px solid #c62828; }
+.toast.info{ border-left: 6px solid rgba(0,0,0,0.35); }
+
+.toast-title{
+  font-weight: 950;
+  color: rgba(0,0,0,0.78);
+  margin-bottom: 2px;
+}
+
+.toast-msg{
+  font-weight: 750;
+  color: rgba(0,0,0,0.58);
+  line-height: 1.25;
+}
+
+.toast-x{
+  border: none;
+  background: rgba(0,0,0,0.06);
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 950;
+}
+
+@keyframes toastIn{
+  from{ opacity: 0; transform: translateY(-6px) scale(.98); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ================= HEADER ================= */
@@ -83,7 +139,7 @@
 .field input,
 .field select,
 .field textarea{
-  width: 96%;
+  width: 100%;
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 10px;
   outline: none;
@@ -91,12 +147,12 @@
   background: #fff;
 }
 
-/* 🔹 inputs compactos (nombre / precio) */
+/* 🔹 inputs compactos (nombre / precio) — FIX */
 .field input[type="text"],
 .field input[type="number"],
 .field input:not([type]){
-  padding: 6px 9px;
-  height: 34px;
+  padding: 6px 2px;        /* antes tenías 6px 0px (se ve feo) */
+  height: 34px;            /* antes 20px (queda apretado) */
   font-size: 14px;
   line-height: 1;
 }
@@ -110,7 +166,7 @@
 
 /* textarea cómodo */
 .field textarea{
-  padding: 10px 12px;
+  padding: 2px 2px;      /* antes 10px 0PX */
   min-height: 80px;
   resize: vertical;
 }
@@ -164,7 +220,56 @@
   accent-color: var(--verde-principal);
 }
 
-/* ================= FILE INPUT ================= */
+/* =========================================================
+   DROPZONE (Drag & Drop) — NUEVO
+========================================================= */
+.dropzone{
+  border: 2px dashed rgba(0,0,0,0.22);
+  background: rgba(0,0,0,0.02);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  display:flex;
+  flex-direction:column;
+  gap: 4px;
+  align-items:center;
+  text-align:center;
+}
+
+.dropzone:hover{
+  border-color: rgba(47,125,90,0.55);
+  box-shadow: 0 0 0 3px rgba(47,125,90,0.10);
+}
+
+.dropzone.over{
+  border-color: var(--verde-principal);
+  background: rgba(47,125,90,0.06);
+  box-shadow: 0 0 0 3px rgba(47,125,90,0.14);
+}
+
+.dz-title{
+  font-weight: 950;
+  color: rgba(0,0,0,0.72);
+}
+
+.dz-sub{
+  font-weight: 800;
+  color: rgba(0,0,0,0.55);
+  font-size: 13px;
+}
+
+.dz-hint{
+  margin-top: 6px;
+  font-weight: 850;
+  color: rgba(0,0,0,0.55);
+}
+
+.hidden-file{
+  display: none;
+}
+
+/* ================= FILE INPUT (si aún lo usas en otros lados) ================= */
 .img-row{
   display:flex;
   align-items:center;
@@ -379,6 +484,15 @@
   gap: 10px;
 }
 
+/* =========================================================
+   LOAD MORE — NUEVO
+========================================================= */
+.load-more{
+  display:flex;
+  justify-content:center;
+  padding-top: 12px;
+}
+
 /* ================= MODAL ================= */
 .modal-backdrop{
   position: fixed;
@@ -477,17 +591,14 @@
   from{ opacity: 0; }
   to{ opacity: 1; }
 }
-
 @keyframes popIn{
   from{ opacity: 0; transform: translateY(8px) scale(.98); }
   to{ opacity: 1; transform: translateY(0) scale(1); }
 }
-
 @keyframes fadeOut{
   from{ opacity: 1; }
   to{ opacity: 0; }
 }
-
 @keyframes popOut{
   from{ opacity: 1; transform: translateY(0) scale(1); }
   to{ opacity: 0; transform: translateY(8px) scale(.985); }
@@ -504,5 +615,10 @@
   .img-preview img{
     max-width: 100%;
     height: 220px;
+  }
+  .toast-wrap{
+    left: 14px;
+    right: 14px;
+    width: auto;
   }
 }

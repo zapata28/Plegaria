@@ -67,14 +67,14 @@
   letter-spacing: -0.5px;
   text-shadow: 0 2px 8px rgba(0,0,0,0.35);
   margin: 0 0 10px 0;
-    color:  #ffffff;
+  color: #ffffff;
 }
 
 .hero-carousel p {
   font-size: 16px;
   margin: 0 0 22px 0;
   opacity: 0.95;
-  color:  #ffffff;
+  color: #ffffff;
 }
 
 /* Botón */
@@ -86,6 +86,7 @@
   cursor: pointer;
   border-radius: 6px;
   transition: background 0.3s ease;
+  color: #ffffff;
 }
 
 .hero-carousel button:hover {
@@ -117,23 +118,37 @@
   transform: scale(1.2);
 }
 
+.hero-carousel h1,
+.hero-carousel p,
+.hero-carousel button {
+  color: #ffffff !important;
+}
 
+/* ===============================
+   TÍTULOS DE SECCIÓN
+================================ */
 .section-title {
-  margin-bottom: 6px;
+  margin: 10px 0 6px;
+  padding: 0 18px;
 }
 
 .section-title h2 {
   margin: 0 0 6px 0;
   padding: 0;
   color: var(--texto-principal);
+  font-size: 18px;
+  letter-spacing: 0.2px;
 }
 
+/* ===============================
+   CATEGORÍAS
+================================ */
 .categoria-container {
   background-color: var(--verde-claro);
   border-radius: 16px;
   padding: 8px 16px 12px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-  margin: 6px 0 10px;
+  margin: 6px 18px 10px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -179,7 +194,7 @@
   box-shadow: 0 10px 22px rgba(0,0,0,0.14);
 }
 
-/* ✅ CUADRO FIJO PARA IMAGEN/ICONO */
+/* Cuadro fijo para imagen/ícono */
 .card img {
   width: 112px;
   height: 112px;
@@ -205,12 +220,7 @@
   font-size: 14px;
 }
 
-.card-info .price {
-  color: var(--rosa-precio);
-  font-weight: 500;
-}
-
-/* Franja debajo de toda la sección */
+/* Franja */
 .franja {
   width: 100%;
   height: 4px;
@@ -221,32 +231,284 @@
 }
 
 /* ===============================
+   NOVEDADES (HORIZONTAL)
+================================ */
+.novedades-container {
+  margin: 6px 18px 18px;
+  overflow: hidden;
+}
+
+.novedades-grid {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px 2px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Barra bonita */
+.novedades-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.novedades-grid::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 99px;
+}
+
+/* ===============================
+   CARD NOVEDADES: TAMAÑO FIJO + IMAGEN COMPLETA (SIN RECORTE)
+   + HOVER PRO
+================================ */
+.novedades-grid .producto-card {
+  flex: 0 0 240px;
+  width: 240px;
+  height: 360px;
+  scroll-snap-align: start;
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  border-radius: 16px;
+  background: var(--blanco);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.novedades-grid .producto-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.14);
+}
+
+/* Brillito sutil */
+.novedades-grid .producto-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.novedades-grid .producto-card:hover::after {
+  opacity: 1;
+}
+
+/* Contenedor de imagen fijo */
+.novedades-grid .producto-card .producto-img {
+  width: 100%;
+  height: 190px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+}
+
+/* Imagen completa (NO recorta) + zoom sutil */
+.novedades-grid .producto-card .producto-img img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  padding: 10px;
+  transition: transform 0.35s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .novedades-grid .producto-card:hover .producto-img img {
+    transform: scale(1.04);
+  }
+}
+
+/* Badges */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 10px 18px rgba(0,0,0,0.20);
+}
+
+.badge-nuevo { background: var(--verde-principal); }
+
+.badge-oferta {
+  background: #e53935;
+  left: auto;
+  right: 10px;
+}
+
+/* Info */
+.novedades-grid .producto-card .producto-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 6px;
+}
+
+.novedades-grid .producto-card .producto-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--texto-principal);
+  line-height: 1.15;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.novedades-grid .producto-card .producto-info .desc {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(0,0,0,0.68);
+  line-height: 1.25;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Precio + acciones abajo siempre */
+.novedades-grid .producto-card .producto-info .precio-row {
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.precios {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.precio {
+  font-weight: 900;
+  color: var(--texto-principal);
+  font-size: 15px;
+}
+
+.precio-antes {
+  font-size: 12px;
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+/* ===============================
+   BOTÓN AGREGAR (SVG BLANCO + HOVER PRO)
+================================ */
+.acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-add {
+  position: relative;
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+
+  background: var(--verde-principal);
+  color: #ffffff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    filter 0.25s ease;
+}
+
+.btn-add:hover {
+  transform: translateY(-3px) scale(1.03);
+  background: var(--verde-hover);
+  box-shadow: 0 10px 22px rgba(47,125,90,0.45);
+}
+
+.btn-add:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 6px 14px rgba(47,125,90,0.35);
+}
+
+/* Ripple/brillo */
+.btn-add::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.35), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.btn-add:hover::after {
+  opacity: 1;
+}
+
+/* Icono SVG blanco SIEMPRE */
+.btn-add .btn-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: #fff;
+  flex: 0 0 auto;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.btn-add .btn-text {
+  transition: transform 0.25s ease;
+}
+
+.btn-add:hover .btn-icon {
+  transform: scale(1.15) rotate(-6deg);
+  filter: brightness(1.05);
+}
+
+.btn-add:hover .btn-text {
+  transform: translateX(1px);
+}
+
+/* ===============================
    RESPONSIVE MOBILE
 ================================ */
 @media (max-width: 768px) {
-
   /* HERO */
-  .hero-carousel {
-    height: 340px;
-  }
+  .hero-carousel { height: 340px; }
 
   .hero-carousel .content {
     margin-left: 25px;
     margin-right: 25px;
   }
 
-  .hero-carousel h1 {
-    font-size: 28px;
-  }
-
-  .hero-carousel p {
-    font-size: 14px;
-  }
-
-  /* Títulos */
-  .section-title {
-    margin-bottom: 6px;
-  }
+  .hero-carousel h1 { font-size: 28px; }
+  .hero-carousel p { font-size: 14px; }
 
   /* CATEGORÍAS */
   .horizontal-scroll {
@@ -267,123 +529,48 @@
     padding: 10px;
     object-fit: contain;
   }
-}
 
-.hero-carousel h1,
-.hero-carousel p,
-.hero-carousel button {
-  color: #ffffff !important;
-}
+  /* NOVEDADES */
+  .novedades-grid .producto-card {
+    flex: 0 0 220px;
+    width: 220px;
+    height: 350px;
+  }
 
-/* ===============================
-   NOVEDADES (HORIZONTAL)
-================================ */
-.novedades-container{
-  margin: 6px 0 18px;
-  overflow: hidden;
-}
+  .novedades-grid .producto-card .producto-img {
+    height: 180px;
+  }
 
-.novedades-grid{
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 6px 2px 12px;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.novedades-grid .producto-card{
-  flex: 0 0 230px;
-  scroll-snap-align: start;
-}
-
-/* Barra bonita */
-.novedades-grid::-webkit-scrollbar{
-  height: 8px;
-}
-.novedades-grid::-webkit-scrollbar-thumb{
-  background: rgba(0,0,0,0.15);
-  border-radius: 99px;
-}
-
-/* Desktop un poco más grande */
-@media (min-width: 900px){
-  .novedades-grid .producto-card{
-    flex: 0 0 260px;
+  .novedades-grid .producto-card .producto-img img {
+    padding: 8px;
   }
 }
 
-.acciones{
-  display: flex;
-  gap: 8px;
-  align-items: center;
+/* Desktop un poco más grande */
+@media (min-width: 900px) {
+  .novedades-grid .producto-card {
+    flex: 0 0 260px;
+    width: 260px;
+    height: 375px;
+  }
+
+  .novedades-grid .producto-card .producto-img {
+    height: 205px;
+  }
 }
-.btn-add{
-  border: 0;
-  border-radius: 12px;
-  padding: 10px 12px;
+/* ===============================
+   BADGE DESCUENTO PRO (%)
+================================ */
+.badge-oferta{
+  background: linear-gradient(135deg, #ff3d3d, #ff7a00);
+  right: 10px;
+  left: auto;
+  letter-spacing: 0.3px;
   font-weight: 900;
-  cursor: pointer;
-  background: var(--verde-principal);
-  color: #fff;
-}
-.btn-add:hover{
-  filter: brightness(0.95);
+  text-transform: uppercase;
 }
 
-/* Botón carrito (limpio) */
-.cart-btn{
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-
-  background: rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.06);
-  color: var(--texto-principal);
-
-  cursor: pointer;
-  padding: 0;
-}
-
-.cart-btn:hover{
-  background: rgba(47,125,90,0.10);
-  border-color: rgba(47,125,90,0.20);
-  color: var(--verde-principal);
-}
-
-/* Ícono SVG */
-.cart-icon{
-  width: 18px;
-  height: 18px;
-  display: block;
-}
-
-/* Badge MUY sutil (para 2 dígitos también) */
-.cart-badge{
-  position: absolute;
-  top: -4px;
-  right: -4px;
-
-  height: 14px;
-  min-width: 14px;
-  padding: 0 4px;
-
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-
-  font-size: 9px;
-  font-weight: 500;
-  line-height: 1;
-
-  color: #fff;
-  background: var(--verde-principal);
-  opacity: 0.9;
+/* Un poquito más “premium” */
+.badge-oferta::before{
+  content: "🔥";
 }

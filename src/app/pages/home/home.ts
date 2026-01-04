@@ -74,13 +74,14 @@ export class Home implements OnInit, OnDestroy {
   loadingNovedades = true;
   novedades: Producto[] = [];
 
-  // ADMIN TEMP (subir/guardar demo)
-  ultimaUrlImagen: string | null = null;
-  uploadBusy = false;
+  // DESCUENTOS / OFERTAS
+  loadingOfertas = true;
+  ofertas: Producto[] = [];
 
   ngOnInit(): void {
     this.startAutoplay();
     this.cargarNovedades();
+    this.cargarOfertas();
   }
 
   ngOnDestroy(): void {
@@ -127,12 +128,11 @@ export class Home implements OnInit, OnDestroy {
   }
 
   verProducto(id: string) {
-    // Si aún no tienes /producto/:id, deja esto así por ahora:
     console.log('Producto:', id);
-    // this.router.navigate(['/producto', id]);
+    // Cuando tengas ruta: this.router.navigate(['/producto', id]);
   }
 
-  // ✅ CARRITO (LOCAL, NO TOCA SUPABASE)
+  // CARRITO
   addToCart(p: Producto) {
     this.cart.add(
       {
@@ -145,7 +145,15 @@ export class Home implements OnInit, OnDestroy {
     );
   }
 
-  // SUPABASE - NOVEDADES
+  // ✅ % DESCUENTO (OPCIÓN 3)
+  descuentoPct(p: Producto): number {
+    const antes = Number(p.precio_antes ?? 0);
+    const ahora = Number(p.precio ?? 0);
+    if (!antes || antes <= 0 || ahora <= 0 || ahora >= antes) return 0;
+    return Math.round(((antes - ahora) / antes) * 100);
+  }
+
+  // SUPABASE - NOVEDADES (ÚLTIMOS 10)
   async cargarNovedades() {
     this.loadingNovedades = true;
 
@@ -153,7 +161,7 @@ export class Home implements OnInit, OnDestroy {
       .from('productos')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(8);
+      .limit(10);
 
     if (error) {
       console.error('Error cargando novedades:', error.message);
@@ -166,77 +174,25 @@ export class Home implements OnInit, OnDestroy {
     this.loadingNovedades = false;
   }
 
-  // SUBIR IMAGEN
-  async subirImagen(file: File) {
-    try {
-      this.uploadBusy = true;
+  // SUPABASE - OFERTAS (SOLO en_oferta = true, ÚLTIMOS 10)
+  async cargarOfertas() {
+    this.loadingOfertas = true;
 
-      const ext = file.name.split('.').pop() || 'png';
-      const filePath = `imgs/${Date.now()}.${ext}`;
-
-      const { error: upErr } = await supabase.storage
-        .from('productos')
-        .upload(filePath, file, {
-          upsert: false,
-          contentType: file.type || 'image/png',
-        });
-
-      if (upErr) {
-        console.error('Error subiendo imagen:', upErr);
-        this.uploadBusy = false;
-        return null;
-      }
-
-      const { data } = supabase.storage.from('productos').getPublicUrl(filePath);
-      this.ultimaUrlImagen = data.publicUrl;
-
-      console.log('✅ URL pública:', this.ultimaUrlImagen);
-
-      this.uploadBusy = false;
-      return this.ultimaUrlImagen;
-    } catch (e) {
-      console.error('Error inesperado subiendo imagen:', e);
-      this.uploadBusy = false;
-      return null;
-    }
-  }
-
-  onFileChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-    this.subirImagen(input.files[0]);
-  }
-
-  // INSERT DEMO
-  async guardarProductoDemo() {
-    if (!this.ultimaUrlImagen) {
-      alert('Primero sube una imagen.');
-      return;
-    }
-
-    const producto = {
-      nombre: 'Producto demo',
-      descripcion: 'Creado desde Angular + Supabase',
-      precio: 59000,
-      categoria: 'maquillaje',
-      grupo: 'Rostro',
-      subgrupo: 'Bases',
-      imagen: this.ultimaUrlImagen, // ✅ tu campo real
-      es_nuevo: true,
-      en_oferta: false,
-      precio_antes: null,
-    };
-
-    const { error } = await supabase.from('productos').insert(producto);
+    const { data, error } = await supabase
+      .from('productos')
+      .select('*')
+      .eq('en_oferta', true)
+      .order('created_at', { ascending: false })
+      .limit(10);
 
     if (error) {
-      console.error('Error insertando producto:', error);
-      alert('❌ Error guardando: ' + error.message);
+      console.error('Error cargando ofertas:', error.message);
+      this.ofertas = [];
+      this.loadingOfertas = false;
       return;
     }
 
-    alert('✅ Producto guardado');
-    this.ultimaUrlImagen = null;
-    this.cargarNovedades();
+    this.ofertas = (data ?? []) as Producto[];
+    this.loadingOfertas = false;
   }
 }

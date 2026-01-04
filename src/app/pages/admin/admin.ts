@@ -33,6 +33,9 @@ type ProductoForm = {
   precio_antes: number | null;
 };
 
+type ToastType = 'success' | 'error' | 'info';
+type ToastItem = { id: string; type: ToastType; title: string; message: string; timeout?: any };
+
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -42,10 +45,42 @@ type ProductoForm = {
 })
 export class Admin implements OnInit {
   loading = true;
+  loadingMore = false;
   saving = false;
-  uploadBusy = false;
+  uploadBusy = false;  // lo usamos también para optimización (para bloquear mientras procesa)
 
   productos: Producto[] = [];
+
+  // =========================
+  // Paginación (Cargar más)
+  // =========================
+  pageSize = 12;
+  offset = 0;
+  hasMore = true;
+
+  // =========================
+  // TOASTS
+  // =========================
+  toasts: ToastItem[] = [];
+
+  private toast(type: ToastType, message: string, title?: string, ms: number = 2600) {
+    const id = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const t: ToastItem = {
+      id,
+      type,
+      title: title ?? (type === 'success' ? 'Listo' : type === 'error' ? 'Ups' : 'Info'),
+      message,
+    };
+
+    this.toasts = [t, ...this.toasts].slice(0, 4);
+    t.timeout = setTimeout(() => this.dismissToast(id), ms);
+  }
+
+  dismissToast(id: string) {
+    const t = this.toasts.find(x => x.id === id);
+    if (t?.timeout) clearTimeout(t.timeout);
+    this.toasts = this.toasts.filter(x => x.id !== id);
+  }
 
   // =========================
   // Catálogo (Categoría → Grupo → Subgrupo)
@@ -74,43 +109,47 @@ export class Admin implements OnInit {
   };
 
   // =========================
-  // Crear (form superior)
+  // Crear
   // =========================
   form: ProductoForm = this.nuevoForm();
+
+  // OJO: ahora guardamos el File ya optimizado aquí
   fileSeleccionado: File | null = null;
   imagenPreviewLocal: string | null = null;
 
-  // Validaciones visuales (crear)
   submittedCrear = false;
   errorsCrear: Partial<Record<keyof ProductoForm, string>> = {};
 
+  // Drag & Drop flags
+  dragOverCrear = false;
+  dragOverEditar = false;
+
   // =========================
-  // Modal editar (pro)
+  // Modal editar
   // =========================
   modalOpen = false;
-  modalClosing = false; // para animación de cierre real
+  modalClosing = false;
   editandoId: string | null = null;
   editForm: ProductoForm = this.nuevoForm();
 
+  // OJO: editFile será el optimizado
   editFile: File | null = null;
   editPreviewLocal: string | null = null;
 
-  // Validaciones visuales (editar)
   submittedEditar = false;
   errorsEditar: Partial<Record<keyof ProductoForm, string>> = {};
 
   // =========================
-  // Filtros admin
+  // Filtros
   // =========================
   filtroCategoria: CategoriaSlug | 'todas' = 'todas';
   busqueda = '';
 
   ngOnInit(): void {
-    this.cargarProductos();
+    this.cargarProductos(true);
     this.inicializarSelectsCrear();
   }
 
-  // Modal visible mientras abre o cierra (para animación)
   get modalVisible() {
     return this.modalOpen || this.modalClosing;
   }
@@ -128,7 +167,7 @@ export class Admin implements OnInit {
   }
 
   // =========================
-  // Form create
+  // Form
   // =========================
   nuevoForm(): ProductoForm {
     return {
@@ -165,21 +204,33 @@ export class Admin implements OnInit {
   }
 
   limpiarFormularioCrear() {
+    if (this.imagenPreviewLocal) {
+      try { URL.revokeObjectURL(this.imagenPreviewLocal); } catch {}
+    }
+
     this.form = this.nuevoForm();
     this.fileSeleccionado = null;
     this.imagenPreviewLocal = null;
     this.inicializarSelectsCrear();
 
-    // reset validación visual
     this.submittedCrear = false;
     this.errorsCrear = {};
+    this.toast('info', 'Formulario limpio.', 'Info');
   }
 
   // =========================
-  // Listar productos
+  // Cargar productos (paginado)
   // =========================
-  async cargarProductos() {
-    this.loading = true;
+  async cargarProductos(reset: boolean) {
+    if (reset) {
+      this.loading = true;
+      this.offset = 0;
+      this.hasMore = true;
+      this.productos = [];
+    } else {
+      if (!this.hasMore || this.loadingMore) return;
+      this.loadingMore = true;
+    }
 
     let query = supabase
       .from('productos')
@@ -194,59 +245,234 @@ export class Admin implements OnInit {
       query = query.ilike('nombre', `%${this.busqueda.trim()}%`);
     }
 
-    const { data, error } = await query;
+    const from = this.offset;
+    const to = this.offset + this.pageSize - 1;
+
+    const { data, error } = await query.range(from, to);
 
     if (error) {
       console.error('Error cargando productos:', error);
-      this.productos = [];
+      this.toast('error', 'No se pudieron cargar los productos.', 'Error');
       this.loading = false;
+      this.loadingMore = false;
       return;
     }
 
-    this.productos = (data ?? []) as Producto[];
+    const rows = (data ?? []) as Producto[];
+    this.productos = [...this.productos, ...rows];
+
+    if (rows.length < this.pageSize) {
+      this.hasMore = false;
+    } else {
+      this.offset += this.pageSize;
+    }
+
     this.loading = false;
+    this.loadingMore = false;
   }
 
   async aplicarFiltro() {
-    await this.cargarProductos();
+    await this.cargarProductos(true);
+  }
+
+  async cargarMas() {
+    await this.cargarProductos(false);
+  }
+
+  // =========================
+  // 🖼️ OPTIMIZACIÓN (resize + compresión)
+  // =========================
+  private formatKB(bytes: number) {
+    return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  }
+
+  private async resizeAndCompressImage(
+    file: File,
+    opts: {
+      maxW?: number;
+      maxH?: number;
+      quality?: number;
+      mime?: 'image/webp' | 'image/jpeg';
+    } = {}
+  ): Promise<File> {
+    if (!file.type.startsWith('image/')) return file;
+
+    const maxW = opts.maxW ?? 1400;
+    const maxH = opts.maxH ?? 1400;
+    const quality = opts.quality ?? 0.82;
+    const mime = opts.mime ?? 'image/webp';
+
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error('No se pudo leer la imagen.'));
+      i.src = URL.createObjectURL(file);
+    });
+
+    let w = img.width;
+    let h = img.height;
+
+    const ratio = Math.min(maxW / w, maxH / h, 1);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return file;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, w, h);
+
+    try { URL.revokeObjectURL(img.src); } catch {}
+
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((b) => resolve(b), mime, quality);
+    });
+
+    if (!blob) return file;
+
+    const ext = mime === 'image/webp' ? 'webp' : 'jpg';
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+    const newName = `${baseName}.${ext}`;
+
+    return new File([blob], newName, { type: mime, lastModified: Date.now() });
+  }
+
+  // =========================
+  // ✅ SELECCIÓN DE IMAGEN (AHORA: preview = optimizado)
+  // =========================
+  private async prepareOptimizedFile(file: File) {
+    if (!file.type.startsWith('image/')) {
+      this.toast('error', 'Solo se permiten imágenes.', 'Archivo inválido');
+      return null;
+    }
+
+    // bloquea mientras optimiza
+    this.uploadBusy = true;
+
+    const beforeBytes = file.size;
+
+    try {
+      const optimized = await this.resizeAndCompressImage(file, {
+        maxW: 1400,
+        maxH: 1400,
+        quality: 0.82,
+        mime: 'image/webp',
+      });
+
+      const afterBytes = optimized.size;
+      const saved = Math.max(0, beforeBytes - afterBytes);
+      const pct = beforeBytes > 0 ? Math.round((saved / beforeBytes) * 100) : 0;
+
+      this.toast(
+        'info',
+        `Optimizada: ${this.formatKB(beforeBytes)} → ${this.formatKB(afterBytes)} (${pct}% menos)`,
+        'Imagen'
+      );
+
+      return optimized;
+    } catch (e) {
+      console.error(e);
+      this.toast('error', 'No se pudo optimizar la imagen.', 'Error');
+      return null;
+    } finally {
+      this.uploadBusy = false;
+    }
+  }
+
+  private async setCrearFile(file: File) {
+    const optimized = await this.prepareOptimizedFile(file);
+    if (!optimized) return;
+
+    // liberar preview anterior
+    if (this.imagenPreviewLocal) {
+      try { URL.revokeObjectURL(this.imagenPreviewLocal); } catch {}
+    }
+
+    // ✅ guardamos el optimizado
+    this.fileSeleccionado = optimized;
+
+    // ✅ preview del optimizado
+    this.imagenPreviewLocal = URL.createObjectURL(optimized);
+  }
+
+  private async setEditarFile(file: File) {
+    const optimized = await this.prepareOptimizedFile(file);
+    if (!optimized) return;
+
+    if (this.editPreviewLocal) {
+      try { URL.revokeObjectURL(this.editPreviewLocal); } catch {}
+    }
+
+    // ✅ guardamos el optimizado
+    this.editFile = optimized;
+
+    // ✅ preview del optimizado
+    this.editPreviewLocal = URL.createObjectURL(optimized);
   }
 
   // =========================
   // Imagen (create)
   // =========================
-  onFileChangeCrear(event: Event) {
+  async onFileChangeCrear(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
+    await this.setCrearFile(input.files[0]);
 
-    const file = input.files[0];
-    this.fileSeleccionado = file;
-    this.imagenPreviewLocal = URL.createObjectURL(file);
+    // permite volver a seleccionar el mismo archivo y que dispare change
+    input.value = '';
+  }
+
+  // Drag & drop create
+  onDragOverCrear(e: DragEvent) { e.preventDefault(); this.dragOverCrear = true; }
+  onDragLeaveCrear() { this.dragOverCrear = false; }
+  async onDropCrear(e: DragEvent) {
+    e.preventDefault();
+    this.dragOverCrear = false;
+    const file = e.dataTransfer?.files?.[0];
+    if (file) await this.setCrearFile(file);
   }
 
   // =========================
   // Imagen (edit)
   // =========================
-  onFileChangeEditar(event: Event) {
+  async onFileChangeEditar(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    this.editFile = file;
-    this.editPreviewLocal = URL.createObjectURL(file);
+    await this.setEditarFile(input.files[0]);
+    input.value = '';
   }
 
+  // Drag & drop edit
+  onDragOverEditar(e: DragEvent) { e.preventDefault(); this.dragOverEditar = true; }
+  onDragLeaveEditar() { this.dragOverEditar = false; }
+  async onDropEditar(e: DragEvent) {
+    e.preventDefault();
+    this.dragOverEditar = false;
+    const file = e.dataTransfer?.files?.[0];
+    if (file) await this.setEditarFile(file);
+  }
+
+  // =========================
+  // Subir imagen a Supabase Storage
+  // (Ahora recibe ya OPTIMIZADA, así que aquí NO re-optimiza)
+  // =========================
   async subirImagenAStorage(file: File) {
     try {
       this.uploadBusy = true;
 
-      const ext = file.name.split('.').pop() || 'png';
+      const ext = file.name.split('.').pop() || 'webp';
       const filePath = `imgs/${Date.now()}.${ext}`;
 
       const { error: upErr } = await supabase.storage
         .from('productos')
         .upload(filePath, file, {
           upsert: false,
-          contentType: file.type || 'image/png',
+          contentType: file.type || 'image/webp',
         });
 
       if (upErr) {
@@ -266,7 +492,7 @@ export class Admin implements OnInit {
   }
 
   // =========================
-  // Validación visual (errors por campo)
+  // Validación
   // =========================
   private buildErrors(f: ProductoForm): Partial<Record<keyof ProductoForm, string>> {
     const e: Partial<Record<keyof ProductoForm, string>> = {};
@@ -290,7 +516,6 @@ export class Admin implements OnInit {
   }
 
   private focusFirstInvalid() {
-    // intenta enfocar el primer input/select/textarea marcado como invalid
     setTimeout(() => {
       const el = document.querySelector('.field.invalid input, .field.invalid select, .field.invalid textarea') as HTMLElement | null;
       if (el) el.focus();
@@ -305,18 +530,20 @@ export class Admin implements OnInit {
     this.errorsCrear = this.buildErrors(this.form);
 
     if (this.hasErrors(this.errorsCrear)) {
+      this.toast('error', 'Revisa los campos en rojo.', 'Validación');
       this.focusFirstInvalid();
       return;
     }
 
     this.saving = true;
 
-    // subir imagen si hay archivo
+    // subir imagen si hay archivo (YA optimizado)
     if (this.fileSeleccionado) {
       const url = await this.subirImagenAStorage(this.fileSeleccionado);
       if (!url) {
         this.saving = false;
-        return alert('No se pudo subir la imagen.');
+        this.toast('error', 'No se pudo subir la imagen.', 'Error');
+        return;
       }
       this.form.imagen = url;
     }
@@ -339,13 +566,15 @@ export class Admin implements OnInit {
     if (error) {
       console.error('Error creando producto:', error);
       this.saving = false;
-      return alert('❌ Error creando producto: ' + error.message);
+      this.toast('error', 'No se pudo crear el producto.', 'Error');
+      return;
     }
 
     this.saving = false;
-    alert('✅ Producto creado');
+    this.toast('success', 'Producto creado correctamente.', 'Éxito');
+
     this.limpiarFormularioCrear();
-    await this.cargarProductos();
+    await this.cargarProductos(true);
   }
 
   // =========================
@@ -369,7 +598,6 @@ export class Admin implements OnInit {
       precio_antes: p.precio_antes ?? null,
     };
 
-    // acomodar al catálogo
     const grupos = this.getGrupos(this.editForm.categoria);
     if (!grupos.find(g => g.nombre === this.editForm.grupo)) {
       this.editForm.grupo = grupos[0]?.nombre ?? '';
@@ -379,10 +607,13 @@ export class Admin implements OnInit {
       this.editForm.subgrupo = subs[0] ?? '';
     }
 
+    // limpiar selección anterior
     this.editFile = null;
+    if (this.editPreviewLocal) {
+      try { URL.revokeObjectURL(this.editPreviewLocal); } catch {}
+    }
     this.editPreviewLocal = null;
 
-    // reset validación
     this.submittedEditar = false;
     this.errorsEditar = {};
   }
@@ -390,20 +621,23 @@ export class Admin implements OnInit {
   cerrarModal() {
     if (!this.modalOpen || this.modalClosing) return;
 
-    // activa animación cierre
     this.modalClosing = true;
 
-    // después de animación, realmente lo escondes
     setTimeout(() => {
       this.modalOpen = false;
       this.modalClosing = false;
+
       this.editandoId = null;
       this.editFile = null;
+
+      if (this.editPreviewLocal) {
+        try { URL.revokeObjectURL(this.editPreviewLocal); } catch {}
+      }
       this.editPreviewLocal = null;
 
       this.submittedEditar = false;
       this.errorsEditar = {};
-    }, 160); // debe calzar con CSS popOut/fadeOut (0.16s)
+    }, 160);
   }
 
   onCategoriaChangeEditar() {
@@ -425,18 +659,20 @@ export class Admin implements OnInit {
     this.errorsEditar = this.buildErrors(this.editForm);
 
     if (this.hasErrors(this.errorsEditar)) {
+      this.toast('error', 'Revisa los campos en rojo.', 'Validación');
       this.focusFirstInvalid();
       return;
     }
 
     this.saving = true;
 
-    // subir imagen si cambió
+    // subir imagen si cambió (YA optimizada)
     if (this.editFile) {
       const url = await this.subirImagenAStorage(this.editFile);
       if (!url) {
         this.saving = false;
-        return alert('No se pudo subir la imagen.');
+        this.toast('error', 'No se pudo subir la imagen.', 'Error');
+        return;
       }
       this.editForm.imagen = url;
     }
@@ -459,13 +695,14 @@ export class Admin implements OnInit {
     if (error) {
       console.error('Error actualizando producto:', error);
       this.saving = false;
-      return alert('❌ Error actualizando: ' + error.message);
+      this.toast('error', 'No se pudo actualizar el producto.', 'Error');
+      return;
     }
 
     this.saving = false;
-    alert('✅ Producto actualizado');
+    this.toast('success', 'Producto actualizado.', 'Éxito');
     this.cerrarModal();
-    await this.cargarProductos();
+    await this.cargarProductos(true);
   }
 
   // =========================
@@ -479,10 +716,11 @@ export class Admin implements OnInit {
 
     if (error) {
       console.error('Error eliminando producto:', error);
-      return alert('❌ Error eliminando: ' + error.message);
+      this.toast('error', 'No se pudo eliminar el producto.', 'Error');
+      return;
     }
 
-    alert('✅ Producto eliminado');
-    await this.cargarProductos();
+    this.toast('success', 'Producto eliminado.', 'Éxito');
+    await this.cargarProductos(true);
   }
 }

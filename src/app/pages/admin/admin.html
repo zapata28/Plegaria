@@ -1,4 +1,16 @@
 <section class="admin-page">
+
+  <!-- TOASTS -->
+  <div class="toast-wrap" aria-live="polite" aria-atomic="true">
+    <div class="toast" *ngFor="let t of toasts" [class]="t.type">
+      <div class="toast-body">
+        <div class="toast-title">{{ t.title }}</div>
+        <div class="toast-msg">{{ t.message }}</div>
+      </div>
+      <button class="toast-x" (click)="dismissToast(t.id)" aria-label="Cerrar">✕</button>
+    </div>
+  </div>
+
   <div class="admin-header">
     <h1>Admin productos</h1>
     <p>Crear, editar (modal) y eliminar productos.</p>
@@ -71,9 +83,7 @@
 
     <!-- ======= SECCIÓN: PROMOS ======= -->
     <div class="form-section soft">
-      <h3 class="section-title">Promos</h3>
-
-      <div class="form-grid">
+        <div class="form-grid">
         <div class="field">
           <label class="check">
             <input type="checkbox" [(ngModel)]="form.es_nuevo" />
@@ -96,16 +106,29 @@
       </div>
     </div>
 
-    <!-- ======= SECCIÓN: IMAGEN ======= -->
+    <!-- ======= SECCIÓN: IMAGEN (Drag & Drop) ======= -->
     <div class="form-section">
-      <h3 class="section-title">Imagen</h3>
+        <div
+          class="dropzone"
+          [class.over]="dragOverCrear"
+          (dragover)="onDragOverCrear($event)"
+          (dragleave)="onDragLeaveCrear()"
+          (drop)="onDropCrear($event)"
+          (click)="fileCrear.click()"
+          role="button"
+          tabindex="0"
+        >
+          <div class="dz-title">Arrastra y suelta una imagen aquí</div>
+          <div class="dz-sub">o haz clic para seleccionar</div>
+          <div class="dz-hint" *ngIf="uploadBusy">Subiendo imagen...</div>
 
-      <div class="field field-full">
-        <label>Imagen</label>
-
-        <div class="img-row">
-          <input type="file" accept="image/*" (change)="onFileChangeCrear($event)" />
-          <span class="hint" *ngIf="uploadBusy">Subiendo imagen...</span>
+          <input
+            #fileCrear
+            class="hidden-file"
+            type="file"
+            accept="image/*"
+            (change)="onFileChangeCrear($event)"
+          />
         </div>
 
         <div class="img-preview" *ngIf="imagenPreviewLocal || form.imagen">
@@ -119,7 +142,7 @@
         {{ saving ? 'Guardando...' : 'Crear' }}
       </button>
     </div>
-  </div>
+
 
   <!-- ================= LISTA ================= -->
   <div class="admin-card">
@@ -172,18 +195,19 @@
     <div class="empty" *ngIf="!loading && productos.length === 0">
       No hay productos con ese filtro.
     </div>
+
+    <!-- CARGAR MÁS -->
+    <div class="load-more" *ngIf="!loading && productos.length > 0">
+      <button class="btn" (click)="cargarMas()" [disabled]="loadingMore || !hasMore">
+        {{ loadingMore ? 'Cargando...' : (hasMore ? 'Cargar más' : 'No hay más') }}
+      </button>
+    </div>
   </div>
 
   <!-- ================= MODAL EDITAR ================= -->
   <div class="modal-backdrop" *ngIf="modalVisible" [class.closing]="modalClosing" (click)="cerrarModal()"></div>
 
-  <div
-    class="modal"
-    *ngIf="modalVisible"
-    [class.closing]="modalClosing"
-    role="dialog"
-    aria-modal="true"
-  >
+  <div class="modal" *ngIf="modalVisible" [class.closing]="modalClosing" role="dialog" aria-modal="true">
     <div class="modal-card" (click)="$event.stopPropagation()">
       <div class="modal-head">
         <h3>Editar producto</h3>
@@ -259,11 +283,31 @@
           <small class="error" *ngIf="submittedEditar && errorsEditar.precio_antes">{{ errorsEditar.precio_antes }}</small>
         </div>
 
+        <!-- Drag & Drop Edit -->
         <div class="field field-full">
           <label>Cambiar imagen</label>
-          <div class="img-row">
-            <input type="file" accept="image/*" (change)="onFileChangeEditar($event)" />
-            <span class="hint" *ngIf="uploadBusy">Subiendo...</span>
+
+          <div
+            class="dropzone"
+            [class.over]="dragOverEditar"
+            (dragover)="onDragOverEditar($event)"
+            (dragleave)="onDragLeaveEditar()"
+            (drop)="onDropEditar($event)"
+            (click)="fileEditar.click()"
+            role="button"
+            tabindex="0"
+          >
+            <div class="dz-title">Arrastra y suelta una imagen aquí</div>
+            <div class="dz-sub">o haz clic para seleccionar</div>
+            <div class="dz-hint" *ngIf="uploadBusy">Subiendo...</div>
+
+            <input
+              #fileEditar
+              class="hidden-file"
+              type="file"
+              accept="image/*"
+              (change)="onFileChangeEditar($event)"
+            />
           </div>
 
           <div class="img-preview" *ngIf="editPreviewLocal || editForm.imagen">

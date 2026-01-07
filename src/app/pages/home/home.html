@@ -10,8 +10,17 @@
     class="slide"
     *ngFor="let slide of slides; let i = index"
     [class.active]="i === currentSlide"
-    [style.backgroundImage]="'url(' + slide.image + ')'"
   >
+    <!-- ✅ Imagen real (mejor performance) -->
+    <img
+      class="slide-bg"
+      [src]="slide.image"
+      [alt]="slide.title"
+      [attr.loading]="i === 0 ? 'eager' : 'lazy'"
+      decoding="async"
+      [attr.fetchpriority]="i === 0 ? 'high' : 'low'"
+    />
+
     <div class="content">
       <h1>{{ slide.title }}</h1>
       <p>{{ slide.text }}</p>
@@ -28,6 +37,7 @@
     ></span>
   </div>
 </section>
+
 
 <!-- ================= NOVEDADES ================= -->
 <section class="section-title">
@@ -46,14 +56,17 @@
       (click)="verProducto(p.id)"
     >
       <div class="producto-img">
-        <img [src]="p.imagen || 'img/placeholder.png'" [alt]="p.nombre" />
+        <img
+          [src]="p.imagen || 'img/placeholder.png'"
+          [alt]="p.nombre"
+          loading="lazy"
+          decoding="async"
+        />
+
         <span class="badge badge-nuevo" *ngIf="p.es_nuevo">Nuevo</span>
 
-        <!-- ✅ % descuento si está en oferta y tiene precio_antes -->
-        <span
-          class="badge badge-oferta"
-          *ngIf="p.en_oferta && p.precio_antes"
-        >
+        <!-- % descuento -->
+        <span class="badge badge-oferta" *ngIf="p.en_oferta && p.precio_antes">
           -{{ descuentoPct(p) }}%
         </span>
       </div>
@@ -78,7 +91,9 @@
               aria-label="Agregar al carrito"
             >
               <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"></path>
+                <path
+                  d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"
+                ></path>
               </svg>
               <span class="btn-text">Agregar</span>
             </button>
@@ -93,7 +108,12 @@
 <section class="categoria-container">
   <div class="horizontal-scroll">
     <div class="card" *ngFor="let item of categorias" (click)="irACategoria(item.slug)">
-      <img [src]="item.img" [alt]="item.name" />
+      <img
+        [src]="item.img"
+        [alt]="item.name"
+        loading="lazy"
+        decoding="async"
+      />
       <div class="card-info">
         <span class="text">{{ item.name }}</span>
       </div>
@@ -119,9 +139,13 @@
       (click)="verProducto(p.id)"
     >
       <div class="producto-img">
-        <img [src]="p.imagen || 'img/placeholder.png'" [alt]="p.nombre" />
+        <img
+          [src]="p.imagen || 'img/placeholder.png'"
+          [alt]="p.nombre"
+          loading="lazy"
+          decoding="async"
+        />
 
-        <!-- ✅ En descuentos siempre hay oferta, mostramos % -->
         <span class="badge badge-oferta" *ngIf="p.precio_antes">
           -{{ descuentoPct(p) }}%
         </span>
@@ -147,7 +171,9 @@
               aria-label="Agregar al carrito"
             >
               <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"></path>
+                <path
+                  d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"
+                ></path>
               </svg>
               <span class="btn-text">Agregar</span>
             </button>

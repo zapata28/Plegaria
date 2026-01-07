@@ -128,9 +128,9 @@ export class Home implements OnInit, OnDestroy {
   }
 
   verProducto(id: string) {
-    console.log('Producto:', id);
-    // Cuando tengas ruta: this.router.navigate(['/producto', id]);
-  }
+  this.router.navigate(['/producto', id]);
+}
+
 
   // CARRITO
   addToCart(p: Producto) {

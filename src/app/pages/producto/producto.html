@@ -1,0 +1,127 @@
+<section class="producto-page">
+  <!-- TOP BAR -->
+  <div class="producto-top">
+    <button class="btn-back" type="button" (click)="volver()">
+      ← Volver
+    </button>
+
+    <div class="breadcrumb" *ngIf="producto">
+      <a [routerLink]="['/']">Inicio</a>
+      <span>/</span>
+      <a [routerLink]="['/categoria', producto.categoria]">{{ producto.categoria }}</a>
+      <span>/</span>
+      <strong>{{ producto.nombre }}</strong>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="loading">
+    Cargando producto...
+  </div>
+
+  <!-- PRODUCTO -->
+  <div *ngIf="!loading && producto" class="producto-grid">
+    <!-- IMAGEN -->
+    <div class="media">
+      <div class="img-wrap">
+        <img
+          class="img"
+          [src]="producto.imagen || 'img/placeholder.png'"
+          [alt]="producto.nombre"
+          loading="eager"
+          decoding="async"
+        />
+
+        <span class="tag tag-nuevo" *ngIf="producto.es_nuevo">Nuevo</span>
+
+        <span class="tag tag-oferta" *ngIf="producto.en_oferta && producto.precio_antes">
+          -{{ descuentoPct(producto) }}%
+        </span>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="info">
+      <h1 class="title">{{ producto.nombre }}</h1>
+
+      <p class="desc" *ngIf="producto.descripcion">{{ producto.descripcion }}</p>
+
+      <div class="meta">
+        <span class="chip" *ngIf="producto.grupo">{{ producto.grupo }}</span>
+        <span class="chip" *ngIf="producto.subgrupo">{{ producto.subgrupo }}</span>
+      </div>
+
+      <div class="price-box">
+        <div class="prices">
+          <div class="price-now">
+            {{ producto.precio | currency:'COP':'symbol':'1.0-0' }}
+          </div>
+
+          <div class="price-before" *ngIf="producto.en_oferta && producto.precio_antes">
+            {{ producto.precio_antes | currency:'COP':'symbol':'1.0-0' }}
+          </div>
+        </div>
+
+        <div class="hint" *ngIf="producto.en_oferta && producto.precio_antes">
+          Ahorra {{ (producto.precio_antes - producto.precio) | currency:'COP':'symbol':'1.0-0' }}
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" type="button" (click)="addToCart(producto)">
+          <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"
+            ></path>
+          </svg>
+          Agregar al carrito
+        </button>
+
+        <button class="btn-ghost" type="button" (click)="volver()">
+          Seguir comprando
+        </button>
+      </div>
+
+      <div class="note">
+        <span class="dot"></span>
+        Envíos y pagos contraentrega según disponibilidad.
+      </div>
+    </div>
+  </div>
+
+  <!-- RELACIONADOS -->
+  <section class="rel-section" *ngIf="producto">
+    <h2 class="rel-title">Relacionados</h2>
+
+    <div *ngIf="loadingRelacionados" class="loading-sm">
+      Cargando relacionados...
+    </div>
+
+    <div class="rel-grid" *ngIf="!loadingRelacionados">
+      <article
+        class="rel-card"
+        *ngFor="let p of relacionados"
+        (click)="verProducto(p.id)"
+      >
+        <div class="rel-img">
+          <img
+            [src]="p.imagen || 'img/placeholder.png'"
+            [alt]="p.nombre"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="rel-badge" *ngIf="p.en_oferta && p.precio_antes">
+            -{{ descuentoPct(p) }}%
+          </span>
+        </div>
+
+        <div class="rel-info">
+          <h3>{{ p.nombre }}</h3>
+          <div class="rel-price">
+            {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</section>

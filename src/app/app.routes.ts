@@ -11,19 +11,21 @@ export const routes: Routes = [
 
   { path: 'categoria/:slug', component: Categoria },
 
-  // ✅ Login protegido (si ya está logueado, lo manda a /admin)
   { path: 'login', component: Login, canActivate: [noAuthGuard] },
 
-  // ✅ Admin protegido (si NO está logueado, lo manda a /login)
   { path: 'admin', component: Admin, canActivate: [authGuard] },
 
-  // ✅ carrito con lazy load
   {
     path: 'carrito',
     loadComponent: () =>
       import('./pages/carrito/carrito').then(m => m.CarritoComponent),
   },
 
-  // ✅ siempre al final
+  {
+    path: 'producto/:id',
+    loadComponent: () =>
+      import('./pages/producto/producto').then(m => m.Producto),
+  },
+
   { path: '**', redirectTo: '' },
 ];

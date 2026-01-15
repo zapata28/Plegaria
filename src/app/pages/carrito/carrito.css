@@ -203,3 +203,44 @@
 .btn.whatsapp:hover{
   filter: brightness(0.95);
 }
+
+/* =========================
+   FORMULARIO DATOS CLIENTE
+========================= */
+.checkout-form{
+  margin-top: 14px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkout-form h3{
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--texto-principal);
+}
+
+.checkout-form input{
+  width: 97%;
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.18);
+  font-weight: 700;
+  outline: none;
+}
+
+.checkout-form input::placeholder{
+  font-weight: 600;
+  color: rgba(0,0,0,0.45);
+}
+
+.checkout-form input:focus{
+  border-color: var(--verde-principal);
+  box-shadow: 0 0 0 2px rgba(47,125,90,0.12);
+}

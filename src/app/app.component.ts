@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './layout/header/header';
 import { FooterComponent } from './layout/footer/footer';
-import { Auth } from './auth/auth'; // <-- ajusta si tu archivo se llama distinto
+import { Auth } from './auth/auth';
+
+
 
 @Component({
   selector: 'app-root',

@@ -2,15 +2,13 @@
   <div class="top">
     <h1>Carrito</h1>
 
-    <div class="top-actions">
-      <button
-        class="btn ghost"
-        *ngIf="cart.itemsSig().length"
-        (click)="cart.clear()"
-      >
-        Vaciar
-      </button>
-    </div>
+    <button
+      class="btn ghost"
+      *ngIf="cart.itemsSig().length"
+      (click)="cart.clear()"
+    >
+      Vaciar
+    </button>
   </div>
 
   <div class="carrito-vacio" *ngIf="cart.itemsSig().length === 0">
@@ -27,15 +25,20 @@
       <div class="qty">
         <button (click)="cart.setQty(it.id, it.qty - 1)">−</button>
         <input
+          type="number"
           [value]="it.qty"
           (change)="cart.setQty(it.id, $any($event.target).value)"
         />
         <button (click)="cart.setQty(it.id, it.qty + 1)">+</button>
       </div>
 
-      <div class="line-total">{{ money(it.precio * it.qty) }}</div>
+      <div class="line-total">
+        {{ money(it.precio * it.qty) }}
+      </div>
 
-      <button class="btn danger" (click)="cart.remove(it.id)">Quitar</button>
+      <button class="btn danger" (click)="cart.remove(it.id)">
+        Quitar
+      </button>
     </div>
 
     <!-- RESUMEN -->
@@ -63,12 +66,22 @@
         <span>Total</span>
         <strong>{{ money(total) }}</strong>
       </div>
-      <div class="cta">
-  <button class="btn whatsapp" type="button" (click)="finalizarWhatsApp()">
-    Finalizar por WhatsApp
-  </button>
-</div>
 
+      <!-- FORMULARIO -->
+      <div class="checkout-form">
+        <h3>Datos para el pedido</h3>
+
+        <input type="text" placeholder="Nombre completo" [(ngModel)]="cliente.nombre">
+        <input type="text" placeholder="Dirección" [(ngModel)]="cliente.direccion">
+        <input type="email" placeholder="Correo electrónico" [(ngModel)]="cliente.correo">
+        <input type="tel" placeholder="Teléfono" [(ngModel)]="cliente.telefono">
+      </div>
+
+      <div class="cta">
+        <button class="btn whatsapp" type="button" (click)="finalizarWhatsApp()">
+          Finalizar por WhatsApp
+        </button>
+      </div>
     </div>
   </div>
 </section>

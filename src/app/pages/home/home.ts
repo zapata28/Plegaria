@@ -3,6 +3,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { supabase } from '../../supabase.client';
 import { CartService } from '../../cart.service';
+import { ProductCacheService } from '../../services/product-cache';
 
 type CategoriaSlug = 'maquillaje' | 'skincare' | 'capilar' | 'accesorios';
 
@@ -29,9 +30,13 @@ type Producto = {
   styleUrls: ['./home.css'],
 })
 export class Home implements OnInit, OnDestroy {
-  constructor(private router: Router, private cart: CartService) {}
+  constructor(
+    private router: Router,
+    private cart: CartService,
+    private productCache: ProductCacheService
+  ) {}
 
-  // HERO
+  // ================= HERO =================
   currentSlide = 0;
   private autoplayId: any = null;
   private autoplayMs = 5000;
@@ -40,29 +45,24 @@ export class Home implements OnInit, OnDestroy {
     {
       image: 'img/centella-ampoule.jpg',
       title: 'Espuma de ampolla de centella',
-      text: `Es un limpiador facial suave y eficaz diseñado para limpiar
-      la piel de impurezas sin agredirla. Está formulado con extracto de
-      Centella Asiática, una planta conocida por sus propiedades calmantes
-      y reparadoras.`,
+      text: 'Limpiador facial suave con Centella Asiática.',
       button: 'Ver producto',
     },
     {
       image: 'img/Mixsoon_Centella.jpg',
-      title: 'Espuma limpiadora calmante para piel sensible',
-      text: `Es una espuma limpiadora facial suave y eficaz, formulada con
-      Centella Asiática, ideal para limpiar la piel en pocos segundos sin causar
-      irritación.`,
+      title: 'Espuma calmante para piel sensible',
+      text: 'Limpia sin irritar la piel.',
       button: 'Explorar',
     },
     {
       image: 'img/slide3.jpg',
       title: 'Tu rutina empieza aquí',
-      text: 'Mensaje promocional.',
+      text: 'Descubre productos pensados para ti.',
       button: 'Ver todo',
     },
   ];
 
-  // CATEGORÍAS
+  // ================= CATEGORÍAS =================
   categorias = [
     { name: 'Maquillaje', slug: 'maquillaje', img: 'assets/icons/icono-maquillaje.png' },
     { name: 'Cuidado de la piel', slug: 'skincare', img: 'assets/icons/icono-cuidado-facial.png' },
@@ -70,14 +70,14 @@ export class Home implements OnInit, OnDestroy {
     { name: 'Accesorios', slug: 'accesorios', img: 'assets/icons/icono-accesorios.png' },
   ];
 
-  // NOVEDADES
+  // ================= DATA =================
   loadingNovedades = true;
-  novedades: Producto[] = [];
-
-  // DESCUENTOS / OFERTAS
   loadingOfertas = true;
+
+  novedades: Producto[] = [];
   ofertas: Producto[] = [];
 
+  // ================= LIFECYCLE =================
   ngOnInit(): void {
     this.startAutoplay();
     this.cargarNovedades();
@@ -88,7 +88,7 @@ export class Home implements OnInit, OnDestroy {
     this.stopAutoplay();
   }
 
-  // HERO CONTROLS
+  // ================= HERO CONTROLS =================
   goToSlide(index: number) {
     this.currentSlide = index;
     this.restartAutoplay();
@@ -122,40 +122,44 @@ export class Home implements OnInit, OnDestroy {
     this.startAutoplay();
   }
 
-  // NAV
+  // ================= NAV =================
   irACategoria(slug: string) {
     this.router.navigate(['/categoria', slug]);
   }
 
   verProducto(id: string) {
-  this.router.navigate(['/producto', id]);
-}
+    this.router.navigate(['/producto', id]);
+  }
 
-
-  // CARRITO
+  // ================= CARRITO =================
   addToCart(p: Producto) {
     this.cart.add(
       {
-        id: String(p.id),
+        id: p.id,
         nombre: p.nombre,
-        precio: Number(p.precio),
+        precio: p.precio,
         imagen: p.imagen ?? '',
       },
       1
     );
   }
 
-  // ✅ % DESCUENTO (OPCIÓN 3)
+  // ================= UTIL =================
   descuentoPct(p: Producto): number {
-    const antes = Number(p.precio_antes ?? 0);
-    const ahora = Number(p.precio ?? 0);
-    if (!antes || antes <= 0 || ahora <= 0 || ahora >= antes) return 0;
-    return Math.round(((antes - ahora) / antes) * 100);
+    if (!p.precio_antes || p.precio_antes <= p.precio) return 0;
+    return Math.round(((p.precio_antes - p.precio) / p.precio_antes) * 100);
   }
 
-  // SUPABASE - NOVEDADES (ÚLTIMOS 10)
+  // ================= SUPABASE + CACHE =================
   async cargarNovedades() {
-    this.loadingNovedades = true;
+    const cacheKey = 'home_novedades';
+    const cached = this.productCache.get<Producto[]>(cacheKey);
+
+    if (cached) {
+      this.novedades = cached;
+      this.loadingNovedades = false;
+      return;
+    }
 
     const { data, error } = await supabase
       .from('productos')
@@ -163,20 +167,26 @@ export class Home implements OnInit, OnDestroy {
       .order('created_at', { ascending: false })
       .limit(10);
 
+    this.loadingNovedades = false;
+
     if (error) {
-      console.error('Error cargando novedades:', error.message);
-      this.novedades = [];
-      this.loadingNovedades = false;
+      console.error('Error novedades:', error.message);
       return;
     }
 
-    this.novedades = (data ?? []) as Producto[];
-    this.loadingNovedades = false;
+    this.novedades = data ?? [];
+    this.productCache.set(cacheKey, this.novedades);
   }
 
-  // SUPABASE - OFERTAS (SOLO en_oferta = true, ÚLTIMOS 10)
   async cargarOfertas() {
-    this.loadingOfertas = true;
+    const cacheKey = 'home_ofertas';
+    const cached = this.productCache.get<Producto[]>(cacheKey);
+
+    if (cached) {
+      this.ofertas = cached;
+      this.loadingOfertas = false;
+      return;
+    }
 
     const { data, error } = await supabase
       .from('productos')
@@ -185,14 +195,14 @@ export class Home implements OnInit, OnDestroy {
       .order('created_at', { ascending: false })
       .limit(10);
 
+    this.loadingOfertas = false;
+
     if (error) {
-      console.error('Error cargando ofertas:', error.message);
-      this.ofertas = [];
-      this.loadingOfertas = false;
+      console.error('Error ofertas:', error.message);
       return;
     }
 
-    this.ofertas = (data ?? []) as Producto[];
-    this.loadingOfertas = false;
+    this.ofertas = data ?? [];
+    this.productCache.set(cacheKey, this.ofertas);
   }
 }

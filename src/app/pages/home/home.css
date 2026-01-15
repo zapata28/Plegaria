@@ -574,3 +574,9 @@
 .badge-oferta::before{
   content: "🔥";
 }
+
+.virtual-viewport {
+  height: 520px; /* controla cuántos productos ves */
+  width: 100%;
+  overflow: auto;
+}

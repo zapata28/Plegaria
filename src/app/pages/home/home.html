@@ -49,10 +49,14 @@
     Cargando novedades...
   </div>
 
-  <div class="novedades-grid" *ngIf="!loadingNovedades">
+  <cdk-virtual-scroll-viewport
+    *ngIf="!loadingNovedades"
+    itemSize="340"
+    class="virtual-viewport"
+  >
     <article
       class="producto-card"
-      *ngFor="let p of novedades"
+      *cdkVirtualFor="let p of novedades"
       (click)="verProducto(p.id)"
     >
       <div class="producto-img">
@@ -65,7 +69,6 @@
 
         <span class="badge badge-nuevo" *ngIf="p.es_nuevo">Nuevo</span>
 
-        <!-- % descuento -->
         <span class="badge badge-oferta" *ngIf="p.en_oferta && p.precio_antes">
           -{{ descuentoPct(p) }}%
         </span>
@@ -77,8 +80,10 @@
 
         <div class="precio-row">
           <div class="precios">
-            <span class="precio">{{ p.precio | currency:'COP':'symbol':'1.0-0' }}</span>
-            <span class="precio-antes" *ngIf="p.en_oferta && p.precio_antes">
+            <span class="precio">
+              {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
+            </span>
+            <span class="precio-antes" *ngIf="p.precio_antes">
               {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
             </span>
           </div>
@@ -90,7 +95,7 @@
               (click)="addToCart(p); $event.stopPropagation()"
               aria-label="Agregar al carrito"
             >
-              <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <svg class="btn-icon" viewBox="0 0 24 24">
                 <path
                   d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"
                 ></path>
@@ -101,7 +106,7 @@
         </div>
       </div>
     </article>
-  </div>
+  </cdk-virtual-scroll-viewport>
 </section>
 
 <!-- ================= CATEGORÍAS ================= -->
@@ -132,10 +137,14 @@
     Cargando descuentos...
   </div>
 
-  <div class="novedades-grid" *ngIf="!loadingOfertas">
+  <cdk-virtual-scroll-viewport
+    *ngIf="!loadingOfertas"
+    itemSize="340"
+    class="virtual-viewport"
+  >
     <article
       class="producto-card"
-      *ngFor="let p of ofertas"
+      *cdkVirtualFor="let p of ofertas"
       (click)="verProducto(p.id)"
     >
       <div class="producto-img">
@@ -157,7 +166,9 @@
 
         <div class="precio-row">
           <div class="precios">
-            <span class="precio">{{ p.precio | currency:'COP':'symbol':'1.0-0' }}</span>
+            <span class="precio">
+              {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
+            </span>
             <span class="precio-antes" *ngIf="p.precio_antes">
               {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
             </span>
@@ -168,18 +179,12 @@
               class="btn-add"
               type="button"
               (click)="addToCart(p); $event.stopPropagation()"
-              aria-label="Agregar al carrito"
             >
-              <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"
-                ></path>
-              </svg>
-              <span class="btn-text">Agregar</span>
+              Agregar
             </button>
           </div>
         </div>
       </div>
     </article>
-  </div>
+  </cdk-virtual-scroll-viewport>
 </section>

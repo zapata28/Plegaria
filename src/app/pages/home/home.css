@@ -580,3 +580,23 @@
   width: 100%;
   overflow: auto;
 }
+
+
+.virtual-viewport {
+  height: 420px;
+  width: 100%;
+}
+
+.producto-card {
+  height: 340px;
+}
+/* ===============================
+   FIX CDK + SCROLL HORIZONTAL
+================================ */
+cdk-virtual-scroll-viewport {
+  overflow-y: hidden !important;
+}
+
+.cdk-virtual-scroll-content-wrapper {
+  display: flex !important;
+}

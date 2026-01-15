@@ -10,16 +10,14 @@
       [disabled]="last"
       (click)="!last && navegarCrumb(c.action)"
     >
-      <span *ngIf="c.action === 'home'" aria-hidden="true">🏠</span>
+      <span *ngIf="c.action === 'home'">🏠</span>
       <span *ngIf="c.action !== 'home'">{{ c.label }}</span>
-
       <span class="sep" *ngIf="!last">/</span>
     </button>
   </nav>
 
-  <!-- NIVEL 1 -->
+  <!-- CHIPS NIVEL 1 -->
   <div class="chips-box">
-
     <div class="chips">
       <button
         type="button"
@@ -42,8 +40,8 @@
     </div>
   </div>
 
-  <!-- NIVEL 2 -->
-  <div class="chips-box" *ngIf="grupoActivo !== 'Todos'">
+  <!-- CHIPS NIVEL 2 -->
+  <div class="chips-box" *ngIf="subitems.length">
     <div class="chips">
       <button
         type="button"
@@ -58,16 +56,16 @@
   </div>
 
   <!-- LOADING -->
-  <div *ngIf="loading" style="padding: 12px 0; color:#666;">
+  <div *ngIf="loading" class="loading">
     Cargando productos...
   </div>
 
-  <!-- GRID -->
+  <!-- GRID PRODUCTOS -->
   <div class="productos-grid" *ngIf="!loading">
 
     <article
       class="producto-card"
-      *ngFor="let p of productosFiltrados"
+      *ngFor="let p of productos"
       (click)="verProducto(p.id)"
     >
       <div class="producto-img">
@@ -80,71 +78,78 @@
         <h3>{{ p.nombre }}</h3>
         <p class="desc">{{ p.descripcion }}</p>
 
-    <div class="precio-row">
-      <div class="precios">
-        <span class="precio">
-          {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
-        </span>
-        <span class="precio-antes" *ngIf="p.en_oferta && p.precio_antes">
-          {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
-        </span>
-      </div>
+        <div class="precio-row">
+          <div class="precios">
+            <span class="precio">
+              {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
+            </span>
 
-      <div class="acciones">
-        <button
-          type="button"
-          class="btn-add"
-          (click)="addToCart(p); $event.stopPropagation()"
-        >
-      Agregar
-        </button>
+            <span
+              class="precio-antes"
+              *ngIf="p.en_oferta && p.precio_antes"
+            >
+              {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
+            </span>
+          </div>
 
-    <button
-      type="button"
-      class="btn-ver"
-      (click)="verProducto(p.id); $event.stopPropagation()"
-    >
-      Ver
-    </button>
-  </div>
-</div>
+          <div class="acciones">
+            <button
+              type="button"
+              class="btn-add"
+              (click)="addToCart(p); $event.stopPropagation()"
+            >
+              Agregar
+            </button>
+
+            <button
+              type="button"
+              class="btn-ver"
+              (click)="verProducto(p.id); $event.stopPropagation()"
+            >
+              Ver
+            </button>
+          </div>
+        </div>
       </div>
     </article>
 
-    <div *ngIf="productosFiltrados.length === 0" style="padding: 12px 0; color:#666;">
+    <div *ngIf="productos.length === 0" class="empty">
       No hay productos para este filtro.
     </div>
+
   </div>
 
-  <!-- PAGINACIÓN NUMÉRICA -->
-  <div class="paginacion" *ngIf="!loading && total > 0">
+  <!-- PAGINACIÓN -->
+  <div class="paginacion" *ngIf="!loading && totalPages > 1">
 
-    <button type="button" class="pag-btn" (click)="prevPage()" [disabled]="page === 1">
+    <button
+      class="pag-btn"
+      (click)="prevPage()"
+      [disabled]="page === 1"
+    >
       ←
     </button>
 
     <div class="pag-numeros">
       <button
-        type="button"
         class="pag-num"
         *ngFor="let p of paginasVisibles"
-        [class.active]="p === page"
         [disabled]="p === -1"
+        [class.active]="p === page"
         (click)="p !== -1 && goToPage(p)"
       >
         {{ p === -1 ? '…' : p }}
       </button>
     </div>
 
-    <button type="button" class="pag-btn" (click)="nextPage()" [disabled]="page === totalPages">
+    <button
+      class="pag-btn"
+      (click)="nextPage()"
+      [disabled]="page === totalPages"
+    >
       →
     </button>
 
-  </div>
-
-  <div class="pag-info" *ngIf="!loading && total > 0">
-    Página <b>{{ page }}</b> de <b>{{ totalPages }}</b>
-    <span class="pag-total">({{ total }} productos)</span>
   </div>
 
 </section>

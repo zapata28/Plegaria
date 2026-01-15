@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
 import { supabase } from '../../supabase.client';
 import { CartService } from '../../cart.service';
 import { ProductCacheService } from '../../services/product-cache';
@@ -13,8 +15,6 @@ type Producto = {
   descripcion?: string | null;
   precio: number;
   categoria: CategoriaSlug;
-  grupo?: string | null;
-  subgrupo?: string | null;
   imagen?: string | null;
   es_nuevo?: boolean | null;
   en_oferta?: boolean | null;
@@ -25,7 +25,7 @@ type Producto = {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe],
+  imports: [CommonModule, CurrencyPipe, ScrollingModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
@@ -33,13 +33,13 @@ export class Home implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private cart: CartService,
-    private productCache: ProductCacheService
+    private cache: ProductCacheService
   ) {}
 
-  // ================= HERO =================
+  /* ================= HERO ================= */
   currentSlide = 0;
-  private autoplayId: any = null;
-  private autoplayMs = 5000;
+  autoplayId: any;
+  autoplayMs = 5000;
 
   slides = [
     {
@@ -62,7 +62,7 @@ export class Home implements OnInit, OnDestroy {
     },
   ];
 
-  // ================= CATEGORÍAS =================
+  /* ================= CATEGORÍAS ================= */
   categorias = [
     { name: 'Maquillaje', slug: 'maquillaje', img: 'assets/icons/icono-maquillaje.png' },
     { name: 'Cuidado de la piel', slug: 'skincare', img: 'assets/icons/icono-cuidado-facial.png' },
@@ -70,59 +70,52 @@ export class Home implements OnInit, OnDestroy {
     { name: 'Accesorios', slug: 'accesorios', img: 'assets/icons/icono-accesorios.png' },
   ];
 
-  // ================= DATA =================
+  /* ================= DATA ================= */
   loadingNovedades = true;
   loadingOfertas = true;
 
   novedades: Producto[] = [];
   ofertas: Producto[] = [];
 
-  // ================= LIFECYCLE =================
-  ngOnInit(): void {
+  /* ================= LIFECYCLE ================= */
+  ngOnInit() {
     this.startAutoplay();
     this.cargarNovedades();
     this.cargarOfertas();
   }
 
-  ngOnDestroy(): void {
-    this.stopAutoplay();
+  ngOnDestroy() {
+    clearInterval(this.autoplayId);
   }
 
-  // ================= HERO CONTROLS =================
-  goToSlide(index: number) {
-    this.currentSlide = index;
+  /* ================= HERO ================= */
+  goToSlide(i: number) {
+    this.currentSlide = i;
     this.restartAutoplay();
   }
 
-  private nextSlide() {
+  nextSlide() {
     this.currentSlide = (this.currentSlide + 1) % this.slides.length;
   }
 
-  private startAutoplay() {
-    if (this.autoplayId) return;
+  startAutoplay() {
     this.autoplayId = setInterval(() => this.nextSlide(), this.autoplayMs);
   }
 
-  private stopAutoplay() {
-    if (!this.autoplayId) return;
+  restartAutoplay() {
     clearInterval(this.autoplayId);
-    this.autoplayId = null;
-  }
-
-  private restartAutoplay() {
-    this.stopAutoplay();
     this.startAutoplay();
   }
 
   pauseAutoplay() {
-    this.stopAutoplay();
+    clearInterval(this.autoplayId);
   }
 
   resumeAutoplay() {
     this.startAutoplay();
   }
 
-  // ================= NAV =================
+  /* ================= NAV ================= */
   irACategoria(slug: string) {
     this.router.navigate(['/categoria', slug]);
   }
@@ -131,7 +124,7 @@ export class Home implements OnInit, OnDestroy {
     this.router.navigate(['/producto', id]);
   }
 
-  // ================= CARRITO =================
+  /* ================= CARRITO ================= */
   addToCart(p: Producto) {
     this.cart.add(
       {
@@ -144,16 +137,16 @@ export class Home implements OnInit, OnDestroy {
     );
   }
 
-  // ================= UTIL =================
+  /* ================= UTIL ================= */
   descuentoPct(p: Producto): number {
     if (!p.precio_antes || p.precio_antes <= p.precio) return 0;
     return Math.round(((p.precio_antes - p.precio) / p.precio_antes) * 100);
   }
 
-  // ================= SUPABASE + CACHE =================
+  /* ================= DATA + CACHE ================= */
   async cargarNovedades() {
-    const cacheKey = 'home_novedades';
-    const cached = this.productCache.get<Producto[]>(cacheKey);
+    const key = 'home_novedades';
+    const cached = this.cache.get<Producto[]>(key);
 
     if (cached) {
       this.novedades = cached;
@@ -161,26 +154,20 @@ export class Home implements OnInit, OnDestroy {
       return;
     }
 
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('productos')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(10);
-
-    this.loadingNovedades = false;
-
-    if (error) {
-      console.error('Error novedades:', error.message);
-      return;
-    }
+      .limit(20);
 
     this.novedades = data ?? [];
-    this.productCache.set(cacheKey, this.novedades);
+    this.cache.set(key, this.novedades);
+    this.loadingNovedades = false;
   }
 
   async cargarOfertas() {
-    const cacheKey = 'home_ofertas';
-    const cached = this.productCache.get<Producto[]>(cacheKey);
+    const key = 'home_ofertas';
+    const cached = this.cache.get<Producto[]>(key);
 
     if (cached) {
       this.ofertas = cached;
@@ -188,21 +175,14 @@ export class Home implements OnInit, OnDestroy {
       return;
     }
 
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('productos')
       .select('*')
       .eq('en_oferta', true)
-      .order('created_at', { ascending: false })
-      .limit(10);
-
-    this.loadingOfertas = false;
-
-    if (error) {
-      console.error('Error ofertas:', error.message);
-      return;
-    }
+      .limit(20);
 
     this.ofertas = data ?? [];
-    this.productCache.set(cacheKey, this.ofertas);
+    this.cache.set(key, this.ofertas);
+    this.loadingOfertas = false;
   }
 }

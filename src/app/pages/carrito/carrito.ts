@@ -13,21 +13,19 @@ import { CartService } from '../../cart.service';
 export class CarritoComponent {
   constructor(public cart: CartService) {}
 
-  // ===== CONFIG ENVÍO =====
   envioBase = 12000;
   envioGratisDesde = 150000;
 
-  // ===== DATOS CLIENTE =====
+  pedidoEnviado = false;
+
   cliente = {
     nombre: '',
     direccion: '',
     ciudad: '',
     correo: '',
     telefono: '',
-    pago: '', // Nequi | Daviplata
   };
 
-  // ===== TOTALES =====
   get subtotal(): number {
     return this.cart.subtotalSig();
   }
@@ -40,56 +38,55 @@ export class CarritoComponent {
     return this.subtotal + this.envio;
   }
 
-  // ===== WHATSAPP =====
-  get whatsappLink(): string {
-    const items = this.cart.itemsSig();
+  finalizarWhatsApp() {
+    const c = this.cliente;
 
-    const lineas = items.map(it => {
-      const lineTotal = it.precio * it.qty;
-      return `• ${it.nombre} x${it.qty} = ${this.money(lineTotal)}`;
-    });
+    if (!c.nombre || !c.direccion || !c.ciudad || !c.correo || !c.telefono) {
+      alert('Completa todos los datos');
+      return;
+    }
+
+    window.open(this.whatsappLink, '_blank', 'noopener');
+
+    // 👇 ORDEN CORRECTO
+    this.pedidoEnviado = true;
+
+    setTimeout(() => {
+      this.cart.clear();
+      this.resetFormulario();
+    }, 300);
+  }
+
+  resetFormulario() {
+    this.cliente = {
+      nombre: '',
+      direccion: '',
+      ciudad: '',
+      correo: '',
+      telefono: '',
+    };
+  }
+
+  get whatsappLink(): string {
+    const lineas = this.cart.itemsSig().map(it =>
+      `• ${it.nombre} x${it.qty} = ${this.money(it.precio * it.qty)}`
+    );
 
     const msg =
 `Hola 👋 Quiero hacer este pedido:
 
-👤 *DATOS DEL CLIENTE*
 Nombre: ${this.cliente.nombre}
 Dirección: ${this.cliente.direccion}
 Ciudad: ${this.cliente.ciudad}
 Correo: ${this.cliente.correo}
 Teléfono: ${this.cliente.telefono}
 
-💳 *MÉTODO DE PAGO*
-${this.cliente.pago}
-
-🛒 *PEDIDO*
+Pedido:
 ${lineas.join('\n')}
 
-Subtotal: ${this.money(this.subtotal)}
-Envío: ${this.envio === 0 ? 'Gratis' : this.money(this.envio)}
-Total: ${this.money(this.total)}
-
-¿Me confirmas disponibilidad y tiempo de entrega?`;
+Total: ${this.money(this.total)}`;
 
     return `https://wa.me/573202507109?text=${encodeURIComponent(msg)}`;
-  }
-
-  finalizarWhatsApp() {
-    const c = this.cliente;
-
-    if (
-      !c.nombre ||
-      !c.direccion ||
-      !c.ciudad ||
-      !c.correo ||
-      !c.telefono ||
-      !c.pago
-    ) {
-      alert('Por favor completa todos los datos del pedido');
-      return;
-    }
-
-    window.open(this.whatsappLink, '_blank', 'noopener');
   }
 
   money(v: number) {

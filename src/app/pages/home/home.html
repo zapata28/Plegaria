@@ -1,24 +1,19 @@
-<!-- ================= HERO CAROUSEL ================= -->
+<!-- ================= HERO ================= -->
 <section
   class="hero-carousel"
   (mouseenter)="pauseAutoplay()"
   (mouseleave)="resumeAutoplay()"
-  (touchstart)="pauseAutoplay()"
-  (touchend)="resumeAutoplay()"
 >
   <div
     class="slide"
     *ngFor="let slide of slides; let i = index"
     [class.active]="i === currentSlide"
   >
- 
     <img
       class="slide-bg"
       [src]="slide.image"
       [alt]="slide.title"
-      [attr.loading]="i === 0 ? 'eager' : 'lazy'"
-      decoding="async"
-      [attr.fetchpriority]="i === 0 ? 'high' : 'low'"
+      loading="lazy"
     />
 
     <div class="content">
@@ -31,13 +26,12 @@
   <div class="dots">
     <span
       class="dot"
-      *ngFor="let slide of slides; let i = index"
+      *ngFor="let _ of slides; let i = index"
       [class.active]="i === currentSlide"
       (click)="goToSlide(i)"
     ></span>
   </div>
 </section>
-
 
 <!-- ================= NOVEDADES ================= -->
 <section class="section-title">
@@ -45,18 +39,14 @@
 </section>
 
 <section class="novedades-container">
-  <div *ngIf="loadingNovedades" style="padding: 10px 20px;">
+  <div *ngIf="loadingNovedades" style="padding: 16px">
     Cargando novedades...
   </div>
 
-  <cdk-virtual-scroll-viewport
-    *ngIf="!loadingNovedades"
-    itemSize="340"
-    class="virtual-viewport"
-  >
+  <div class="novedades-grid" *ngIf="!loadingNovedades">
     <article
       class="producto-card"
-      *cdkVirtualFor="let p of novedades"
+      *ngFor="let p of novedades | slice:0:10"
       (click)="verProducto(p.id)"
     >
       <div class="producto-img">
@@ -64,96 +54,11 @@
           [src]="p.imagen || 'img/placeholder.png'"
           [alt]="p.nombre"
           loading="lazy"
-          decoding="async"
         />
 
-        <span class="badge badge-nuevo" *ngIf="p.es_nuevo">Nuevo</span>
-
-        <span class="badge badge-oferta" *ngIf="p.en_oferta && p.precio_antes">
-          -{{ descuentoPct(p) }}%
+        <span class="badge badge-nuevo" *ngIf="p.es_nuevo">
+          Nuevo
         </span>
-      </div>
-
-      <div class="producto-info">
-        <h3>{{ p.nombre }}</h3>
-        <p class="desc">{{ p.descripcion }}</p>
-
-        <div class="precio-row">
-          <div class="precios">
-            <span class="precio">
-              {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
-            </span>
-            <span class="precio-antes" *ngIf="p.precio_antes">
-              {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
-            </span>
-          </div>
-
-          <div class="acciones">
-            <button
-              class="btn-add"
-              type="button"
-              (click)="addToCart(p); $event.stopPropagation()"
-              aria-label="Agregar al carrito"
-            >
-              <svg class="btn-icon" viewBox="0 0 24 24">
-                <path
-                  d="M11 5a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H6a1 1 0 1 1 0-2h5V6a1 1 0 0 1 1-1z"
-                ></path>
-              </svg>
-              <span class="btn-text">Agregar</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </article>
-  </cdk-virtual-scroll-viewport>
-</section>
-
-<!-- ================= CATEGORÍAS ================= -->
-<section class="categoria-container">
-  <div class="horizontal-scroll">
-    <div class="card" *ngFor="let item of categorias" (click)="irACategoria(item.slug)">
-      <img
-        [src]="item.img"
-        [alt]="item.name"
-        loading="lazy"
-        decoding="async"
-      />
-      <div class="card-info">
-        <span class="text">{{ item.name }}</span>
-      </div>
-    </div>
-  </div>
-  <div class="franja"></div>
-</section>
-
-<!-- ================= DESCUENTOS ================= -->
-<section class="section-title">
-  <h2>DESCUENTOS</h2>
-</section>
-
-<section class="novedades-container">
-  <div *ngIf="loadingOfertas" style="padding: 10px 20px;">
-    Cargando descuentos...
-  </div>
-
-  <cdk-virtual-scroll-viewport
-    *ngIf="!loadingOfertas"
-    itemSize="340"
-    class="virtual-viewport"
-  >
-    <article
-      class="producto-card"
-      *cdkVirtualFor="let p of ofertas"
-      (click)="verProducto(p.id)"
-    >
-      <div class="producto-img">
-        <img
-          [src]="p.imagen || 'img/placeholder.png'"
-          [alt]="p.nombre"
-          loading="lazy"
-          decoding="async"
-        />
 
         <span class="badge badge-oferta" *ngIf="p.precio_antes">
           -{{ descuentoPct(p) }}%
@@ -162,13 +67,13 @@
 
       <div class="producto-info">
         <h3>{{ p.nombre }}</h3>
-        <p class="desc">{{ p.descripcion }}</p>
 
         <div class="precio-row">
           <div class="precios">
             <span class="precio">
               {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
             </span>
+
             <span class="precio-antes" *ngIf="p.precio_antes">
               {{ p.precio_antes | currency:'COP':'symbol':'1.0-0' }}
             </span>
@@ -186,5 +91,69 @@
         </div>
       </div>
     </article>
-  </cdk-virtual-scroll-viewport>
+  </div>
+</section>
+
+<!-- ================= CATEGORÍAS ================= -->
+<section class="categoria-container">
+  <div class="horizontal-scroll">
+    <div
+      class="card"
+      *ngFor="let c of categorias"
+      (click)="irACategoria(c.slug)"
+    >
+      <img
+        [src]="c.img"
+        [alt]="c.name"
+        loading="lazy"
+      />
+
+      <div class="card-info">
+        <span class="text">{{ c.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="franja"></div>
+</section>
+
+<!-- ================= DESCUENTOS ================= -->
+<section class="section-title">
+  <h2>DESCUENTOS</h2>
+</section>
+
+<section class="novedades-container">
+  <div *ngIf="loadingOfertas" style="padding: 16px">
+    Cargando descuentos...
+  </div>
+
+  <div class="novedades-grid" *ngIf="!loadingOfertas">
+    <article
+      class="producto-card"
+      *ngFor="let p of ofertas | slice:0:10"
+      (click)="verProducto(p.id)"
+    >
+      <div class="producto-img">
+        <img
+          [src]="p.imagen || 'img/placeholder.png'"
+          [alt]="p.nombre"
+          loading="lazy"
+        />
+
+        <span class="badge badge-oferta">
+          -{{ descuentoPct(p) }}%
+        </span>
+      </div>
+
+      <div class="producto-info">
+        <h3>{{ p.nombre }}</h3>
+
+        <div class="precio-row">
+          <span class="precio">
+            {{ p.precio | currency:'COP':'symbol':'1.0-0' }}
+          </span>
+        </div>
+      </div>
+    </article>
+  </div>
 </section>

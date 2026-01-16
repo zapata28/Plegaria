@@ -18,6 +18,10 @@ export type Producto = {
   es_nuevo?: boolean | null;
   en_oferta?: boolean | null;
   precio_antes?: number | null;
+
+
+  grupo?: string | null;
+  subgrupo?: string | null;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -27,35 +31,38 @@ export class ProductService {
   async getByCategoria(
     slug: CategoriaSlug,
     page = 1,
-    pageSize = 12
+    pageSize = 12,
+    grupo: string = 'Todos',
+    subgrupo: string = 'Todos'
   ): Promise<{ data: Producto[]; total: number }> {
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    const cacheKey = `categoria_${slug}_${page}_${pageSize}`;
-    const cached =
-      this.cache.get<{ data: Producto[]; total: number }>(cacheKey);
-
-    if (cached) return cached;
-
-    const { data, count, error } = await supabase
+    let query = supabase
       .from('productos')
       .select('*', { count: 'exact' })
       .eq('categoria', slug)
       .order('created_at', { ascending: false })
       .range(from, to);
 
+    if (grupo !== 'Todos') {
+      query = query.eq('grupo', grupo);
+    }
+
+    if (subgrupo !== 'Todos') {
+      query = query.eq('subgrupo', subgrupo);
+    }
+
+    const { data, count, error } = await query;
+
     if (error) {
-      console.error('Error cargando productos', error);
+      console.error(error);
       return { data: [], total: 0 };
     }
 
-    const result = {
+    return {
       data: data ?? [],
       total: count ?? 0,
     };
-
-    this.cache.set(cacheKey, result);
-    return result;
   }
 }

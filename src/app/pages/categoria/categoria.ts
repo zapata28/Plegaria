@@ -53,9 +53,13 @@ export class Categoria implements OnInit {
       }
 
       this.slugActual = slug;
+      this.grupoActivo = 'Todos';
+      this.subitemActivo = 'Todos';
+      this.subitems = [];
+      this.page = 1;
+
       this.setTitulo();
       this.setGrupos();
-      this.page = 1;
 
       await this.cargarProductos();
     });
@@ -71,31 +75,145 @@ export class Categoria implements OnInit {
     this.titulo = map[this.slugActual];
   }
 
+  /* =================================================
+     DEFINICIÓN DE GRUPOS Y SUBGRUPOS (UI)
+  ================================================= */
   setGrupos() {
-    this.grupoActivo = 'Todos';
-    this.subitemActivo = 'Todos';
-    this.subitems = [];
+    this.grupos = [];
 
+    /* ===== MAQUILLAJE ===== */
     if (this.slugActual === 'maquillaje') {
       this.grupos = [
-        { nombre: 'Rostro', items: ['Bases', 'Correctores', 'Polvos'] },
-        { nombre: 'Ojos', items: ['Sombras', 'Pestañinas'] },
-        { nombre: 'Labios', items: ['Labiales', 'Brillos'] },
+        {
+          nombre: 'Rostro',
+          items: [
+            'Bases',
+            'BB Cream',
+            'Correctores',
+            'Polvos',
+            'Primer',
+            'Contornos',
+            'Iluminadores',
+            'Rubores',
+            'Bronzer',
+            'Fijadores',
+          ],
+        },
+        {
+          nombre: 'Ojos',
+          items: [
+            'Delineadores',
+            'Pestañinas',
+            'Sombras',
+            'Cejas',
+            'Pestañas postizas',
+          ],
+        },
+        {
+          nombre: 'Labios',
+          items: [
+            'Bálsamo labial',
+            'Brillo labial',
+            'Labial',
+            'Tinta de labios',
+            'Delineador de labios',
+          ],
+        },
+        {
+          nombre: 'Accesorios de maquillaje',
+          items: [
+            'Brochas',
+            'Cosmetiqueras',
+            'Encrespadores',
+            'Esponjas y aplicadores',
+          ],
+        },
+        {
+          nombre: 'Otros maquillaje',
+          items: ['Kits de maquillaje', 'Complementos'],
+        },
       ];
-    } else {
-      this.grupos = [];
+    }
+
+    /* ===== SKINCARE ===== */
+    if (this.slugActual === 'skincare') {
+      this.grupos = [
+        {
+          nombre: 'Cuidado facial',
+          items: [
+            'Limpiadores y desmaquillantes',
+            'Aguas micelares y tónicos',
+            'Mascarillas',
+            'Hidratantes y tratamientos',
+            'Contorno de ojos',
+            'Exfoliantes faciales',
+            'Kits',
+          ],
+        },
+        {
+          nombre: 'Protección solar',
+          items: ['Protector solar', 'Bronceadores'],
+        },
+        {
+          nombre: 'Otros cuidado',
+          items: ['Depilación', 'Masajeadores'],
+        },
+      ];
+    }
+
+    /* ===== CAPILAR ===== */
+    if (this.slugActual === 'capilar') {
+      this.grupos = [
+        {
+          nombre: 'Limpieza y tratamientos',
+          items: [
+            'Shampoo',
+            'Acondicionador',
+            'Mascarillas y tratamientos',
+            'Serum y óleos',
+          ],
+        },
+        {
+          nombre: 'Styling',
+          items: [
+            'Cremas de peinar y desenredantes',
+            'Fijadores y laca',
+            'Termoprotectores',
+            'Mousse y espumas',
+            'Shampoo seco',
+          ],
+        },
+        {
+          nombre: 'Eléctricos',
+          items: ['Cepillos eléctricos', 'Planchas', 'Rizadores', 'Secadores'],
+        },
+      ];
+    }
+
+    /* ===== ACCESORIOS ===== */
+    if (this.slugActual === 'accesorios') {
+      this.grupos = [
+        {
+          nombre: 'Accesorios',
+          items: ['Collares', 'Aretes', 'Manillas'],
+        },
+      ];
     }
   }
 
+  /* =================================================
+     CARGA DE PRODUCTOS (BACKEND)
+  ================================================= */
   async cargarProductos() {
     this.loading = true;
 
-    const { data, total } =
-      await this.productService.getByCategoria(
-        this.slugActual,
-        this.page,
-        this.pageSize
-      );
+    const { data, total } = await this.productService.getByCategoria(
+      this.slugActual,
+      this.page,
+      this.pageSize,
+      this.grupoActivo,
+      this.subitemActivo
+    );
 
     this.productos = data;
     this.total = total;
@@ -103,7 +221,6 @@ export class Categoria implements OnInit {
 
     this.recalcularPaginas();
     this.actualizarBreadcrumbs();
-
     this.loading = false;
   }
 
@@ -114,12 +231,15 @@ export class Categoria implements OnInit {
     }
   }
 
+  /* =================================================
+     INTERACCIONES UI
+  ================================================= */
   async seleccionarGrupo(nombre: string) {
     this.grupoActivo = nombre;
     this.subitemActivo = 'Todos';
 
-    const g = this.grupos.find(x => x.nombre === nombre);
-    this.subitems = g ? ['Todos', ...g.items] : [];
+    const grupo = this.grupos.find(g => g.nombre === nombre);
+    this.subitems = grupo ? ['Todos', ...grupo.items] : ['Todos'];
 
     this.page = 1;
     await this.cargarProductos();
@@ -157,17 +277,11 @@ export class Categoria implements OnInit {
     ];
 
     if (this.grupoActivo !== 'Todos') {
-      this.breadcrumbs.push({
-        label: this.grupoActivo,
-        action: 'grupo',
-      });
+      this.breadcrumbs.push({ label: this.grupoActivo, action: 'grupo' });
     }
 
     if (this.subitemActivo !== 'Todos') {
-      this.breadcrumbs.push({
-        label: this.subitemActivo,
-        action: 'subitem',
-      });
+      this.breadcrumbs.push({ label: this.subitemActivo, action: 'subitem' });
     }
   }
 

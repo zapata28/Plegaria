@@ -1,9 +1,9 @@
 :root {
-  --verde-principal: #2f7d5a;
-  --verde-hover: #246347;
-  --verde-claro: #e9f5ef;
-  --gris-suave: #f4f6f5;
-  --texto-principal: #1f2d27;
+  --marron-principal: #7f5539;
+  --marron-hover: #9c6644;
+  --marron-claro: #b08968;
+  --beige-suave: #ddb892;
+  --texto-principal: #000000;
 }
 
 /* ==========================
@@ -14,11 +14,9 @@
   right: 20px;
   bottom: 20px;
   z-index: 1200;
-
   display: inline-flex;
   align-items: center;
   gap: 10px;
-
   height: 56px;
   padding: 0 16px 0 14px;
   border-radius: 999px;
@@ -26,16 +24,14 @@
   /* 🔥 CONTRASTE CON TU MARCA */
   background: linear-gradient(
     135deg,
-    var(--verde-principal),
-    var(--verde-hover)
+    var(--marron-principal),
+    var(--marron-hover)
   );
 
   color: #fff;
   text-decoration: none;
-
-  box-shadow: 0 12px 26px rgba(47,125,90,.35);
+  box-shadow: 0 12px 26px rgba(125, 65, 47, 0.35);
   transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
-
   isolation: isolate;
   -webkit-tap-highlight-color: transparent;
 }
@@ -64,7 +60,7 @@
 
 /* Focus accesible */
 .whatsapp-float:focus-visible{
-  outline: 3px solid var(--verde-claro);
+  outline: 3px solid var(--marron-claro);
   outline-offset: 4px;
 }
 
@@ -74,7 +70,7 @@
   position: absolute;
   inset: -8px;
   border-radius: 999px;
-  background: rgba(47,125,90,.25);
+  background: rgba(255, 0, 0, 0.25);
   animation: waPulse 2.4s ease-out infinite;
   z-index: -1;
   pointer-events: none;

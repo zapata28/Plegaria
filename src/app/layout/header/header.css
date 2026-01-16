@@ -183,55 +183,6 @@
 }
 
 /* ===============================
-   MOBILE NAV
-================================ */
-@media (max-width: 768px) {
-  .header nav {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 10px;
-    right: 10px;
-    width: auto;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 16px;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
-    overflow: hidden;
-    z-index: 11;
-  }
-
-  .header nav.open {
-    display: flex;
-  }
-
-  .header nav a {
-    height: 52px;
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 0;
-    transition: background 0.2s ease, color 0.2s ease;
-  }
-
-  .header nav a:hover {
-    background: rgba(47, 125, 90, 0.10);
-    color: var(--verde-principal);
-  }
-
-  .header nav a.active {
-    background: rgba(47, 125, 90, 0.12);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  }
-
-  .icons {
-    display: flex;
-  }
-}
-
-/* ===============================
    MINI CARRITO
 ================================ */
 .mini-cart {
@@ -300,7 +251,7 @@
 }
 
 .mini-item:hover {
-  background: #d1a48850;
+  background: #ff630350;
 }
 
 .mini-name {
@@ -327,7 +278,7 @@
 
 .mini-del {
   border: 0;
-  background: rgba(214, 157, 157, 0.08);
+  background: rgba(255, 0, 0, 0.08);
   color: var(--marron-hover);
   font-weight: 900;
   padding: 8px 10px;
@@ -338,7 +289,7 @@
 }
 
 .mini-del:hover {
-  background: rgba(255, 0, 0, 0.12);
+  background: rgba(253, 0, 0, 0.12);
 }
 
 .mini-del:active {
@@ -365,7 +316,7 @@
   font-weight: 900;
   background: var(--marron-claro);
   border: 1px solid var(--marron-principal);
-  color: var(--texto-principal);
+  color: #ffffff;
   transition: transform 0.12s ease, filter 0.2s ease;
 }
 
@@ -390,7 +341,7 @@
   top: calc(100% + 10px);
   width: 190px;
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  border: 1px solid var(--marron-principal);
   border-radius: 16px;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.20);
   padding: 8px;
@@ -407,14 +358,14 @@
   text-decoration: none;
   border: 0;
   background: transparent;
-  color: var(--texto-principal);
+  color: var(--marron-principal);
   font-weight: 850;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.12s ease;
 }
 
 .user-item:hover {
-  background: rgba(47, 125, 90, 0.10);
+  background: rgba(0, 255, 140, 0.1);
 }
 
 .user-item:active {
@@ -427,4 +378,54 @@
 
 .user-item.danger:hover {
   background: rgba(255, 0, 0, 0.08);
+}
+
+
+/* ===============================
+   MOBILE NAV
+================================ */
+@media (max-width: 768px) {
+  .header nav {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 10px;
+    right: 10px;
+    width: auto;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+    overflow: hidden;
+    z-index: 11;
+  }
+
+  .header nav.open {
+    display: flex;
+  }
+
+  .header nav a {
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 0;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .header nav a:hover {
+    background: rgba(47, 125, 90, 0.10);
+    color: var(--verde-principal);
+  }
+
+  .header nav a.active {
+    background: rgba(47, 125, 90, 0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .icons {
+    display: flex;
+  }
 }

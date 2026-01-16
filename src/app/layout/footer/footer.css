@@ -1,45 +1,52 @@
+:root {
+  --marron-principal: #7f5539;
+  --marron-hover: #9c6644;
+  --marron-claro: #b08968;
+  --beige-suave: #ddb892;
+  --texto-principal: #000000;
+}
+/* ===============================
+   FOOTER
+================================ */
 .footer {
-  background: var(--verde-principal);
-  color: rgba(255, 255, 255, 0.9);
-  padding: 26px 18px 14px;   /* ↓ antes era enorme */
-  margin-top: 34px;          /* ↓ menos separación con el contenido */
+  background: var(--marron-claro);
+  color: rgb(255, 255, 255);
+  padding: 20px 18px 14px;
+  margin-top: 20px;
 }
 
 .footer-container {
   max-width: 1100px;
   margin: auto;
-  display: flex;             /* más compacto que grid */
+  display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 22px;                 /* ↓ antes 40 */
+  gap: 22px;
 }
 
-/* Marca */
 .footer-brand {
   max-width: 520px;
 }
 
 .footer-logo {
-  font-size: 20px;           /* ↓ antes 24 */
+  font-size: 20px;
   font-weight: 900;
   margin: 0 0 6px 0;
-  color: #fff;
+  color: #ffffff;
 }
 
 .footer-text {
   font-size: 13.5px;
   line-height: 1.5;
-  margin: 0;                 /* quita espacios extra */
-  opacity: 0.9;
-}
+  margin: 0;
 
-/* Contacto */
+}
 .footer-contact {
   min-width: 220px;
 }
 
 .footer-title {
-  font-size: 12px;           /* ↓ más minimal */
+  font-size: 12px;
   font-weight: 900;
   margin: 2px 0 10px 0;
   text-transform: uppercase;
@@ -55,7 +62,7 @@
 
 .footer-info li {
   font-size: 13px;
-  margin-bottom: 7px;        /* ↓ */
+  margin-bottom: 7px;
   opacity: 0.88;
 }
 
@@ -63,7 +70,7 @@
 .footer-social {
   display: flex;
   gap: 10px;
-  margin-top: 12px;          /* ↓ */
+  margin-top: 8px;          /* ↓ */
 }
 
 .footer-social a {
@@ -90,15 +97,15 @@
 
 /* Línea inferior */
 .footer-bottom {
-  margin-top: 14px;          /* ↓ antes 36 */
-  padding-top: 10px;         /* ↓ */
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 10px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.639);
   text-align: center;
   font-size: 12px;
   opacity: 0.8;
 }
+/* Responsive */
 
-/* Responsive: todo en columna, bien apretado */
 @media (max-width: 720px) {
   .footer-container {
     flex-direction: column;

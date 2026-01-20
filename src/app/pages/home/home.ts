@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-
 import { supabase } from '../../supabase.client';
 import { CartService } from '../../cart.service';
 import { ProductCacheService } from '../../services/product-cache';

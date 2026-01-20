@@ -9,9 +9,12 @@
    CATEGORIA PAGE (BASE)
 ================================ */
 .categoria-page{
-  padding: 28px 20px;
-  max-width: 1100px;
-  margin: 0 auto;
+  padding: 20px 28px 40px;
+  background: #f6ede4;
+  min-height: 100vh;
+  /* max-width: 1100px; */
+  box-sizing: border-box;
+  /* margin: 0 auto; */
 }
 
 .categoria-page h1 {
@@ -23,6 +26,35 @@
 /* ===============================
    BREADCRUMB
 ================================ */
+
+.categoria-title{
+  font-size: 22px;
+  font-weight: 700;
+  color: #6f4428;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filtro-btn{
+padding: 8px 18px;
+border-radius: 999px;
+border: 1px solid #8b4e3c;
+background: #fff;
+color: #6f4428;
+font-weight: 600;
+font-size: 14px;
+cursor: pointer;
+transition: all .2s ease;
+}
+
+.filtro-btn.active,
+.filtro-btn:hover {
+  background: #8b5e3c;
+  color: #fff;
+}
+
 .breadcrumb{
   display: flex;
   align-items: center;
@@ -90,7 +122,7 @@
 
 /* Chip */
 .chip {
-  border: 1px solid rgba(47, 125, 90, 0.25);
+  border: 1px solid rgba(127, 85, 57, 0.35);
   background: #fff;
   color: var(--marron-principal);
   padding: 9px 14px;
@@ -145,26 +177,28 @@
 ================================ */
 .productos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
-  margin-top: 16px;
 }
 
 /* ===============================
    PRODUCT CARD (FALTABA)
 ================================ */
 .producto-card{
-  background: #f0dfcd;
-  border-radius: 18px;
+
+  height: auto;
   overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.05);
   cursor: pointer;
   display: flex;
   flex-direction: column;
   position: relative;
-}
+  align-items: stretch;
+  background: #f1ddc8;
+  border-radius: 22px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.06);
 
+}
 
 .producto-card:hover {
   transform: translateY(-3px);
@@ -173,19 +207,18 @@
 
 /* CONTENEDOR DE IMAGEN */
 .producto-img{
-  width: 100%;
-  height: 210px;            /* 🔥 un poco más alta */
-  margin: 14px 12px 0;     /* aire lateral y arriba */
-
-  background: #f7efe6;     /* beige suave, no gris */
+  width: 90%;
+  height: 200px;
+  margin: 10px 10px 0;
+  padding: 16px;
   border-radius: 14px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 18px;           /* separación real */
   overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  background: #f7efe686;
 }
 
 /* IMAGEN */
@@ -193,16 +226,7 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  display: block;
 }
-
-
-
-/* HOVER SUAVE (opcional) */
-.producto-card:hover .producto-img img {
-  transform: scale(1.05);
-}
-
 
 /* EFECTO HOVER IMAGEN */
 .producto-card:hover .producto-img img {
@@ -213,8 +237,8 @@
 /* Badges */
 .badge{
   position: absolute;
-  top: 18px;
-  left: 18px;
+  top: 10px;
+  left: 10px;
   padding: 6px 12px;
   border-radius: 999px;
   font-weight: 900;
@@ -225,32 +249,30 @@
   z-index: 3;
 }
 
-
 .badge-oferta{
   left: auto;
+  top: 10px;
   right: 10px;
   background: #ff5a5f;
 }
 
 .badge-nuevo{
-  background: var(--verde-principal);
+ background: #8b5e3c;
 }
 
 /* Info */
 .producto-info{
-  padding: 14px 14px 16px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;                 /* 🔥 empuja precio abajo */
+  padding: 14px 14px 16px;
 }
-
 
 .producto-info h3{
   margin: 0;
   font-size: 14px;
   font-weight: 900;
-  color: var(--texto-principal);
+  color: var(--marron-principal);
   line-height: 1.2;
 }
 
@@ -260,26 +282,19 @@
   font-size: 12.8px;
   line-height: 1.25;
   min-height: 32px;
+  text-align: left;
 }
 
-/* Precio y botón */
 .precio-row{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: auto;        /* 🔥 se pega abajo */
-}
-
-
-.precios{
-  display:flex;
-  flex-direction: column;
-  gap: 2px;
+  margin-top: auto;
 }
 
 .precio{
   font-weight: 900;
-  color: var(--texto-principal);
+  color: var(--marron-principal);
   font-size: 14px;
 }
 
@@ -288,24 +303,6 @@
   color: rgba(0,0,0,0.45);
   text-decoration: line-through;
   font-weight: 800;
-}
-
-/* Botón ver */
-.btn-ver{
-  border: none;
-  background: var(--verde-principal);
-  color: #fff;
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform .15s ease, background .2s ease;
-  white-space: nowrap;
-}
-
-.btn-ver:hover{
-  transform: translateY(-1px);
-  background: var(--verde-hover);
 }
 
 /* ===============================
@@ -319,13 +316,15 @@
   margin-top: 18px;
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(47,125,90,0.12);
-  background: rgba(47,125,90,0.06);
+  display:flex;
+  background: rgba(127,85,57,0.12);
+  border-color: rgba(127,85,57,0.25);
+
 }
 
 .pag-btn{
   border: none;
-  background: var(--verde-principal);
+  background: var(--marron-principal);
   color: #fff;
   width: 40px;
   height: 40px;
@@ -359,8 +358,8 @@
 }
 
 .pag-num.active{
-  background: var(--verde-principal);
-  border-color: var(--verde-principal);
+  background: var(--marron-principal);
+  border-color: var(--marron-principal);
   color: #fff;
 }
 
@@ -406,19 +405,21 @@
 /* Botón agregar */
 .btn-add{
   border: none;
-  background: rgba(47,125,90,0.12);
-  color: var(--texto-principal);
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform .15s ease, background .2s ease;
   white-space: nowrap;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #8b5e3c;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .2s ease;
 }
 
 .btn-add:hover{
   transform: translateY(-1px);
-  background: rgba(47,125,90,0.18);
+  background: var(--marron-hover);
 }
 
 /* En móvil: que los botones no se aplasten */
@@ -459,8 +460,8 @@
 }
 
 .icon-btn:hover{
-  background: rgba(47,125,90,0.10);
-  border-color: rgba(47,125,90,0.20);
+  background: rgba(127,85,57,0.12);
+  border-color: rgba(127,85,57,0.25);
 }
 
 .cart-btn .badge{
@@ -476,6 +477,7 @@
   font-size: 12px;
   font-weight: 900;
   color: #fff;
-  background: var(--verde-principal);
+  background: var(--marron-principal);
   border: 2px solid #fff;
 }
+

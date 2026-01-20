@@ -116,7 +116,12 @@
   align-items: center;
   gap: 10px;
 }
-
+/* SVG usuario (login / cuenta) */
+.user-icon {
+  width: 19px;
+  height: 19px;
+  display: block;
+}
 .icon-btn,
 .cart-btn {
   position: relative;

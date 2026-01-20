@@ -1,3 +1,10 @@
+:root {
+  --marron-principal: #7f5539;
+  --marron-hover: #9c6644;
+  --marron-claro: #b08968;
+  --beige-suave: #ddb892;
+  --texto-principal: #000000;
+}
 /* =========================================================
    ADMIN PRODUCTOS – CSS FINAL (PRO + TOAST + DROPZONE + LOAD MORE)
 ========================================================= */
@@ -175,7 +182,7 @@
 .field input:focus,
 .field select:focus,
 .field textarea:focus{
-  border-color: var(--verde-principal);
+  border-color: var(--marron-principal);
   box-shadow: 0 0 0 3px rgba(47,125,90,0.14);
 }
 
@@ -217,7 +224,7 @@
 
 .check input{
   transform: scale(1.15);
-  accent-color: var(--verde-principal);
+  accent-color: var(--marron-principal);
 }
 
 /* =========================================================
@@ -329,9 +336,9 @@
 }
 
 .btn.primary{
-  background: var(--verde-principal);
+  background: var(--marron-principal);
   color: #fff;
-  border-color: var(--verde-principal);
+  border-color: var(--marron-principal);
   padding: 12px 18px;
   font-size: 15px;
 }
@@ -387,7 +394,7 @@
 
 .filters input:focus,
 .filters select:focus{
-  border-color: var(--verde-principal);
+  border-color: var(--marron-principal);
   box-shadow: 0 0 0 3px rgba(47,125,90,0.14);
 }
 

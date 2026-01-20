@@ -26,8 +26,7 @@ export class Categoria implements OnInit {
   subitemActivo = 'Todos';
 
   productos: Producto[] = [];
-  loading = true;
-
+  loading = false;
   page = 1;
   pageSize = 12;
   total = 0;
@@ -43,28 +42,31 @@ export class Categoria implements OnInit {
     private productService: ProductService
   ) {}
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(async params => {
-      const slug = params.get('slug') as CategoriaSlug;
+ngOnInit(): void {
+  this.route.paramMap.subscribe(params => {
+    const slug = params.get('slug') as CategoriaSlug;
 
-      if (!slug) {
-        this.router.navigate(['/']);
-        return;
-      }
+    if (!slug) {
+      this.router.navigate(['/']);
+      return;
+    }
 
-      this.slugActual = slug;
-      this.grupoActivo = 'Todos';
-      this.subitemActivo = 'Todos';
-      this.subitems = [];
-      this.page = 1;
+    this.slugActual = slug;
 
-      this.setTitulo();
-      this.setGrupos();
+    this.resetEstado();
+    this.setTitulo();
+    this.setGrupos();
+    this.actualizarBreadcrumbs();
 
-      await this.cargarProductos();
-    });
-  }
+    this.cargarProductos(); // ✅ ahora sí
+  });
+}
 
+
+
+  /* =======================
+     TÍTULO
+  ======================= */
   setTitulo() {
     const map: Record<CategoriaSlug, string> = {
       maquillaje: 'Maquillaje',
@@ -75,139 +77,40 @@ export class Categoria implements OnInit {
     this.titulo = map[this.slugActual];
   }
 
-  /* =================================================
-     DEFINICIÓN DE GRUPOS Y SUBGRUPOS (UI)
-  ================================================= */
+  /* =======================
+     GRUPOS
+  ======================= */
   setGrupos() {
-    this.grupos = [];
-
-    /* ===== MAQUILLAJE ===== */
     if (this.slugActual === 'maquillaje') {
       this.grupos = [
-        {
-          nombre: 'Rostro',
-          items: [
-            'Bases',
-            'BB Cream',
-            'Correctores',
-            'Polvos',
-            'Primer',
-            'Contornos',
-            'Iluminadores',
-            'Rubores',
-            'Bronzer',
-            'Fijadores',
-          ],
-        },
-        {
-          nombre: 'Ojos',
-          items: [
-            'Delineadores',
-            'Pestañinas',
-            'Sombras',
-            'Cejas',
-            'Pestañas postizas',
-          ],
-        },
-        {
-          nombre: 'Labios',
-          items: [
-            'Bálsamo labial',
-            'Brillo labial',
-            'Labial',
-            'Tinta de labios',
-            'Delineador de labios',
-          ],
-        },
-        {
-          nombre: 'Accesorios de maquillaje',
-          items: [
-            'Brochas',
-            'Cosmetiqueras',
-            'Encrespadores',
-            'Esponjas y aplicadores',
-          ],
-        },
-        {
-          nombre: 'Otros maquillaje',
-          items: ['Kits de maquillaje', 'Complementos'],
-        },
+        { nombre: 'Rostro', items: ['Bases', 'Correctores', 'Polvos'] },
+        { nombre: 'Ojos', items: ['Sombras', 'Pestañinas'] },
+        { nombre: 'Labios', items: ['Labial', 'Brillo'] },
       ];
-    }
-
-    /* ===== SKINCARE ===== */
-    if (this.slugActual === 'skincare') {
+    } else if (this.slugActual === 'skincare') {
       this.grupos = [
-        {
-          nombre: 'Cuidado facial',
-          items: [
-            'Limpiadores y desmaquillantes',
-            'Aguas micelares y tónicos',
-            'Mascarillas',
-            'Hidratantes y tratamientos',
-            'Contorno de ojos',
-            'Exfoliantes faciales',
-            'Kits',
-          ],
-        },
-        {
-          nombre: 'Protección solar',
-          items: ['Protector solar', 'Bronceadores'],
-        },
-        {
-          nombre: 'Otros cuidado',
-          items: ['Depilación', 'Masajeadores'],
-        },
+        { nombre: 'Cuidado facial', items: ['Limpiadores', 'Mascarillas'] },
+        { nombre: 'Protección solar', items: ['Protector solar'] },
       ];
-    }
-
-    /* ===== CAPILAR ===== */
-    if (this.slugActual === 'capilar') {
+    } else if (this.slugActual === 'capilar') {
       this.grupos = [
-        {
-          nombre: 'Limpieza y tratamientos',
-          items: [
-            'Shampoo',
-            'Acondicionador',
-            'Mascarillas y tratamientos',
-            'Serum y óleos',
-          ],
-        },
-        {
-          nombre: 'Styling',
-          items: [
-            'Cremas de peinar y desenredantes',
-            'Fijadores y laca',
-            'Termoprotectores',
-            'Mousse y espumas',
-            'Shampoo seco',
-          ],
-        },
-        {
-          nombre: 'Eléctricos',
-          items: ['Cepillos eléctricos', 'Planchas', 'Rizadores', 'Secadores'],
-        },
+        { nombre: 'Tratamientos', items: ['Shampoo', 'Acondicionador'] },
       ];
-    }
-
-    /* ===== ACCESORIOS ===== */
-    if (this.slugActual === 'accesorios') {
+    } else if (this.slugActual === 'accesorios') {
       this.grupos = [
-        {
-          nombre: 'Accesorios',
-          items: ['Collares', 'Aretes', 'Manillas'],
-        },
+        { nombre: 'Accesorios', items: ['Collares', 'Aretes'] },
       ];
     }
   }
 
-  /* =================================================
-     CARGA DE PRODUCTOS (BACKEND)
-  ================================================= */
-  async cargarProductos() {
-    this.loading = true;
+  /* =======================
+     CARGA PRODUCTOS (FIX)
+  ======================= */
+async cargarProductos() {
+  this.loading = true;
 
-    const { data, total } = await this.productService.getByCategoria(
+  try {
+    const resp = await this.productService.getByCategoria(
       this.slugActual,
       this.page,
       this.pageSize,
@@ -215,61 +118,70 @@ export class Categoria implements OnInit {
       this.subitemActivo
     );
 
-    this.productos = data;
-    this.total = total;
-    this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
+    console.log('📦 Respuesta productos', resp);
+
+    this.productos = resp.data;
+    this.total = resp.total;
+
+    this.totalPages = Math.max(
+      1,
+      Math.ceil(this.total / this.pageSize)
+    );
 
     this.recalcularPaginas();
-    this.actualizarBreadcrumbs();
+  } catch (err) {
+    console.error('Error cargando productos', err);
+    this.productos = [];
+    this.total = 0;
+  } finally {
     this.loading = false;
   }
+}
 
-  recalcularPaginas() {
-    this.paginasVisibles = [];
-    for (let i = 1; i <= this.totalPages; i++) {
-      this.paginasVisibles.push(i);
-    }
-  }
-
-  /* =================================================
-     INTERACCIONES UI
-  ================================================= */
-  async seleccionarGrupo(nombre: string) {
+  /* =======================
+     UI
+  ======================= */
+  seleccionarGrupo(nombre: string) {
     this.grupoActivo = nombre;
     this.subitemActivo = 'Todos';
 
     const grupo = this.grupos.find(g => g.nombre === nombre);
-    this.subitems = grupo ? ['Todos', ...grupo.items] : ['Todos'];
+    this.subitems = grupo ? ['Todos', ...grupo.items] : [];
 
     this.page = 1;
-    await this.cargarProductos();
+    this.actualizarBreadcrumbs();
+    this.cargarProductos();
   }
 
-  async seleccionarSubitem(nombre: string) {
+  seleccionarSubitem(nombre: string) {
     this.subitemActivo = nombre;
     this.page = 1;
-    await this.cargarProductos();
+    this.actualizarBreadcrumbs();
+    this.cargarProductos();
   }
 
-  async prevPage() {
+  prevPage() {
     if (this.page > 1) {
       this.page--;
-      await this.cargarProductos();
+      this.cargarProductos();
     }
   }
 
-  async nextPage() {
+  nextPage() {
     if (this.page < this.totalPages) {
       this.page++;
-      await this.cargarProductos();
+      this.cargarProductos();
     }
   }
 
-  async goToPage(p: number) {
+  goToPage(p: number) {
     this.page = p;
-    await this.cargarProductos();
+    this.cargarProductos();
   }
 
+  /* =======================
+     BREADCRUMB
+  ======================= */
   actualizarBreadcrumbs() {
     this.breadcrumbs = [
       { label: 'Inicio', action: 'home' },
@@ -290,6 +202,9 @@ export class Categoria implements OnInit {
     if (action === 'categoria') this.seleccionarGrupo('Todos');
   }
 
+  /* =======================
+     CART
+  ======================= */
   verProducto(id: string) {
     this.router.navigate(['/producto', id]);
   }
@@ -304,5 +219,22 @@ export class Categoria implements OnInit {
       },
       1
     );
+  }
+
+  /* =======================
+     PAGINACIÓN
+  ======================= */
+  recalcularPaginas() {
+    this.paginasVisibles = Array.from(
+      { length: this.totalPages },
+      (_, i) => i + 1
+    );
+  }
+
+  resetEstado() {
+    this.grupoActivo = 'Todos';
+    this.subitemActivo = 'Todos';
+    this.subitems = [];
+    this.page = 1;
   }
 }

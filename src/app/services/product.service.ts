@@ -42,15 +42,14 @@ export class ProductService {
       .from('productos')
       .select('*', { count: 'exact' })
       .eq('categoria', slug)
-      .order('created_at', { ascending: false })
       .range(from, to);
 
     if (grupo !== 'Todos') {
-      query = query.eq('grupo', grupo);
+      query = query.ilike('grupo', grupo);
     }
 
     if (subgrupo !== 'Todos') {
-      query = query.eq('subgrupo', subgrupo);
+      query = query.ilike('subgrupo', subgrupo);
     }
 
     const { data, count, error } = await query;

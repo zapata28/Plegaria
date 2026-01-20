@@ -83,15 +83,22 @@
     <div class="account" (click)="$event.stopPropagation()">
       <!-- Si NO está logueado -> va a login -->
       <a
-        *ngIf="!auth.isLoggedIn()"
-        class="icon-btn"
-        routerLink="/login"
-        (click)="closeAll()"
-        aria-label="Login"
-        title="Login"
-      >
-        👤
-      </a>
+  *ngIf="!auth.isLoggedIn()"
+  class="icon-btn"
+  routerLink="/login"
+  (click)="closeAll()"
+  aria-label="Login"
+  title="Login"
+>
+  <svg class="user-icon" viewBox="0 0 24 24">
+    <path
+      fill="currentColor"
+      d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0
+      2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"
+    />
+  </svg>
+</a>
+
 
       <!-- Si SÍ está logueado -> abre menú -->
       <button

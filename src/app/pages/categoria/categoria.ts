@@ -1,3 +1,4 @@
+import { ChangeDetectorRef } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -35,12 +36,14 @@ export class Categoria implements OnInit {
 
   breadcrumbs: { label: string; action: string }[] = [];
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private cart: CartService,
-    private productService: ProductService
-  ) {}
+constructor(
+  private route: ActivatedRoute,
+  private router: Router,
+  private cart: CartService,
+  private productService: ProductService,
+  private cdr: ChangeDetectorRef // 👈 AQUI
+) {}
+
 
 ngOnInit(): void {
   this.route.paramMap.subscribe(params => {
@@ -129,14 +132,18 @@ async cargarProductos() {
     );
 
     this.recalcularPaginas();
+
+    this.cdr.detectChanges(); // 🔥 CLAVE
   } catch (err) {
     console.error('Error cargando productos', err);
     this.productos = [];
     this.total = 0;
   } finally {
     this.loading = false;
+    this.cdr.detectChanges(); // 🔥 CLAVE
   }
 }
+
 
   /* =======================
      UI

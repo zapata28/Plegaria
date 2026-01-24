@@ -54,7 +54,7 @@ export class Home implements OnInit, OnDestroy {
       button: 'Explorar',
     },
     {
-      image: 'img/slide3.jpg',
+      image: '',
       title: 'Tu rutina empieza aquí',
       text: 'Descubre productos pensados para ti.',
       button: 'Ver todo',

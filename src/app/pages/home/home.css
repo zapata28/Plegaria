@@ -344,7 +344,7 @@
   margin: 0;
   font-size: 15px;
   font-weight: 900;
-  color: var(--marron-principal);
+  color: var(--);
   line-height: 1.15;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -355,7 +355,7 @@
 .novedades-grid .producto-card .producto-info .desc {
   margin: 0;
   font-size: 13px;
-  color: rgba(0,0,0,0.68);
+  color: rgba(245, 0, 0, 0.68);
   line-height: 1.25;
   display: -webkit-box;
   -webkit-line-clamp: 2;

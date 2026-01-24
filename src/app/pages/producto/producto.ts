@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 
 type CategoriaSlug = 'maquillaje' | 'skincare' | 'capilar' | 'accesorios';
 
-type ProductoModel = {
+export type ProductoModel = {
   id: string;
   nombre: string;
   descripcion?: string | null;
@@ -29,26 +29,32 @@ type ProductoModel = {
   templateUrl: './producto.html',
   styleUrls: ['./producto.css'],
 })
-export class Producto implements OnInit, OnDestroy {
+export class ProductoComponent implements OnInit, OnDestroy {
   loading = true;
-  producto: ProductoModel | null = null;
-
   loadingRelacionados = true;
+
+  producto: ProductoModel | null = null;
   relacionados: ProductoModel[] = [];
 
   private sub?: Subscription;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private cart: CartService
-  ) {}
+constructor(
+  private route: ActivatedRoute,
+  private router: Router,
+  private cart: CartService
+) {
+  // 👇 ESTA LÍNEA ES LA CLAVE REAL
+  this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+}
 
+
+  // ✅ FIX REAL (igual que categorías)
   ngOnInit(): void {
-    this.sub = this.route.paramMap.subscribe(async (params) => {
-      const id = params.get('id');
-      if (!id) return;
-      await this.cargarProducto(id);
+    this.sub = this.router.events.subscribe(async () => {
+      const id = this.route.snapshot.paramMap.get('id');
+      if (id) {
+        await this.cargarProducto(id);
+      }
     });
   }
 
@@ -81,8 +87,6 @@ export class Producto implements OnInit, OnDestroy {
   }
 
   async cargarRelacionados(categoria: CategoriaSlug, actualId: string) {
-    this.loadingRelacionados = true;
-
     const { data, error } = await supabase
       .from('productos')
       .select('*')
@@ -92,44 +96,39 @@ export class Producto implements OnInit, OnDestroy {
       .limit(8);
 
     if (error) {
-      console.error('Error cargando relacionados:', error.message);
+      console.error('Error relacionados:', error);
       this.relacionados = [];
-      this.loadingRelacionados = false;
-      return;
+    } else {
+      this.relacionados = data as ProductoModel[];
     }
 
-    this.relacionados = (data ?? []) as ProductoModel[];
     this.loadingRelacionados = false;
   }
 
-  // % DESCUENTO
   descuentoPct(p: ProductoModel): number {
-    const antes = Number(p.precio_antes ?? 0);
-    const ahora = Number(p.precio ?? 0);
-    if (!antes || antes <= 0 || ahora <= 0 || ahora >= antes) return 0;
+    const antes = Number(p.precio_antes);
+    const ahora = Number(p.precio);
+    if (!antes || ahora >= antes) return 0;
     return Math.round(((antes - ahora) / antes) * 100);
   }
 
-  // Agregar al carrito
   addToCart(p: ProductoModel) {
     this.cart.add(
       {
-        id: String(p.id),
+        id: p.id,
         nombre: p.nombre,
-        precio: Number(p.precio),
+        precio: p.precio,
         imagen: p.imagen ?? '',
       },
       1
     );
   }
 
-  // Ver otro producto
   verProducto(id: string) {
     this.router.navigate(['/producto', id]);
   }
 
-  // Volver
   volver() {
-    this.router.navigate(['/categoria', this.producto?.categoria || 'maquillaje']);
+    this.router.navigate(['/categoria', this.producto?.categoria ?? 'maquillaje']);
   }
 }

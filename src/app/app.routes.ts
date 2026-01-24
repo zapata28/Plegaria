@@ -36,10 +36,13 @@ export const routes: Routes = [
   },
 
   {
-    path: 'producto/:id',
-    loadComponent: () =>
-      import('./pages/producto/producto').then(m => m.Producto),
-  },
+  path: 'producto/:id',
+  loadComponent: () =>
+    import('./pages/producto/producto').then(
+      m => m.ProductoComponent
+    ),
+  runGuardsAndResolvers: 'always'
+},
 
   { path: '**', redirectTo: '' },
 ];

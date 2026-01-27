@@ -1,10 +1,12 @@
 <section class="hero-wrapper">
   <section class="hero-carousel">
     <div
-      class="slide"
-      *ngFor="let slide of heroProductos; let i = index"
-      [class.active]="i === currentSlide"
-    >
+  class="slide"
+  *ngFor="let slide of heroProductos; let i = index"
+  [class.active]="i === currentSlide"
+  [hidden]="i !== currentSlide"
+>
+
       <!-- Recuadro de la imagen -->
       <div class="image-container">
         <img [src]="slide.imagen || 'img/placeholder.png'" [alt]="slide.nombre" />
@@ -116,7 +118,6 @@
     </div>
   </div>
 
-  <div class="franja"></div>
 </section>
 
 <!-- ================= DESCUENTOS ================= -->
@@ -148,14 +149,30 @@
       </div>
 
       <div class="producto-info">
-        <h3>{{ p.nombre }}</h3>
+  <h3>{{ p.nombre }}</h3>
 
-        <div class="precio-row">
-          <span class="precio">
-            {{ p.precio | currency:'$  ':'symbol':'1.0-0' }}
-          </span>
-        </div>
-      </div>
+  <div class="precio-row">
+    <div class="precios">
+      <span class="precio">
+        {{ p.precio | currency:'$  ':'symbol':'1.0-0' }}
+      </span>
+      <span class="precio-antes" *ngIf="p.precio_antes">
+        {{ p.precio_antes | currency:'$  ':'symbol':'1.0-0' }}
+      </span>
+    </div>
+
+    <div class="acciones">
+      <button
+        class="btn-add"
+        type="button"
+        (click)="addToCart(p); $event.stopPropagation()"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+</div>
+
     </article>
   </div>
 </section>

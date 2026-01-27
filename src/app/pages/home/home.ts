@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone} from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -32,7 +32,9 @@ export class Home implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private cart: CartService,
-    private cache: ProductCacheService
+    private cache: ProductCacheService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {}
 
   /* ================= HERO ================= */
@@ -51,9 +53,16 @@ export class Home implements OnInit, OnDestroy {
     this.currentSlide = (this.currentSlide + 1) % this.heroProductos.length;
   }
 
-  startAutoplay() {
-    this.autoplayId = setInterval(() => this.nextSlide(), this.autoplayMs);
-  }
+startAutoplay() {
+  if (!this.heroProductos.length) return;
+
+  clearInterval(this.autoplayId);
+
+  this.autoplayId = setInterval(() => {
+    this.currentSlide =
+      (this.currentSlide + 1) % this.heroProductos.length;
+  }, this.autoplayMs);
+}
 
   restartAutoplay() {
     clearInterval(this.autoplayId);
@@ -68,23 +77,29 @@ export class Home implements OnInit, OnDestroy {
     this.startAutoplay();
   }
 
-  async cargarHero() {
-    const key = 'home_hero';
-    const cached = this.cache.get<Producto[]>(key);
-    if (cached) {
-      this.heroProductos = cached;
-      return;
-    }
+async cargarHero() {
+  const key = 'home_hero';
+  const cached = this.cache.get<Producto[]>(key);
 
-    const { data } = await supabase
-      .from('productos')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(5); // Ajusta la cantidad de productos que quieras en el hero
-
-    this.heroProductos = data ?? [];
-    this.cache.set(key, this.heroProductos);
+  if (cached) {
+    this.heroProductos = cached;
+    this.currentSlide = 0;
+    setTimeout(() => this.cdr.detectChanges());
+    return;
   }
+
+  const { data } = await supabase
+    .from('productos')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  this.heroProductos = data ?? [];
+  this.currentSlide = 0;
+  this.cache.set(key, this.heroProductos);
+
+  setTimeout(() => this.cdr.detectChanges()); // 👈 🔑
+}
 
   /* ================= CATEGORÍAS ================= */
   categorias = [
@@ -101,9 +116,9 @@ export class Home implements OnInit, OnDestroy {
   ofertas: Producto[] = [];
 
   /* ================= LIFECYCLE ================= */
-  ngOnInit() {
+  async ngOnInit() {
+    await this.cargarHero();
     this.startAutoplay();
-    this.cargarHero();
     this.cargarNovedades();
     this.cargarOfertas();
   }
@@ -141,43 +156,53 @@ export class Home implements OnInit, OnDestroy {
   }
 
   /* ================= DATA + CACHE ================= */
-  async cargarNovedades() {
-    const key = 'home_novedades';
-    const cached = this.cache.get<Producto[]>(key);
-    if (cached) {
-      this.novedades = cached;
-      this.loadingNovedades = false;
-      return;
-    }
+async cargarNovedades() {
+  const key = 'home_novedades';
+  const cached = this.cache.get<Producto[]>(key);
 
-    const { data } = await supabase
-      .from('productos')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(20);
-
-    this.novedades = data ?? [];
-    this.cache.set(key, this.novedades);
+  if (cached) {
+    this.novedades = cached;
     this.loadingNovedades = false;
+    this.cdr.detectChanges();
+    return;
   }
+
+  const { data } = await supabase
+    .from('productos')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  this.novedades = data ?? [];
+  this.cache.set(key, this.novedades);
+  this.loadingNovedades = false;
+
+  this.cdr.detectChanges();
+}
+
 
   async cargarOfertas() {
-    const key = 'home_ofertas';
-    const cached = this.cache.get<Producto[]>(key);
-    if (cached) {
-      this.ofertas = cached;
-      this.loadingOfertas = false;
-      return;
-    }
+  const key = 'home_ofertas';
+  const cached = this.cache.get<Producto[]>(key);
 
-    const { data } = await supabase
-      .from('productos')
-      .select('*')
-      .eq('en_oferta', true)
-      .limit(20);
-
-    this.ofertas = data ?? [];
-    this.cache.set(key, this.ofertas);
+  if (cached) {
+    this.ofertas = cached;
     this.loadingOfertas = false;
+    this.cdr.detectChanges();
+    return;
   }
+
+  const { data } = await supabase
+    .from('productos')
+    .select('*')
+    .eq('en_oferta', true)
+    .limit(20);
+
+  this.ofertas = data ?? [];
+  this.cache.set(key, this.ofertas);
+  this.loadingOfertas = false;
+
+  this.cdr.detectChanges();
+}
+
 }

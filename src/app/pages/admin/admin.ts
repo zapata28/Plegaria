@@ -43,14 +43,15 @@ type ToastItem = { id: string; type: ToastType; title: string; message: string; 
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule // 🔥 ESTE FALTABA
+    RouterModule
   ],
   templateUrl: './admin.html',
   styleUrls: ['./admin.css'],
 })
 
-
 export class Admin implements OnInit {
+  precioOriginalEditar: number | null = null;
+
   loading = true;
   loadingMore = false;
   saving = false;
@@ -68,7 +69,6 @@ export class Admin implements OnInit {
 
 constructor(
   private cdr: ChangeDetectorRef,
-  private zone: NgZone
 ) {}
 
   // =========================
@@ -250,31 +250,33 @@ async cargarProductos(reset: boolean) {
 
   const { data, error, count } = await query.range(from, to);
 
-  // 👇 AQUÍ ES DONDE ARREGLAMOS TODO
-  this.zone.run(() => {
-    if (error) {
-      console.error(error);
-      this.toast('error', 'No se pudieron cargar los productos.', 'Error');
-      this.loading = false;
-      this.loadingMore = false;
-      return;
-    }
-
-    const rows = (data ?? []) as Producto[];
-    this.productos = [...this.productos, ...rows];
-
-    const totalLoaded = this.offset + rows.length;
-
-    if (count !== null && totalLoaded >= count) {
-      this.hasMore = false;
-    } else {
-      this.offset += this.pageSize;
-    }
-
+  if (error) {
+    console.error(error);
+    this.toast('error', 'No se pudieron cargar los productos.', 'Error');
     this.loading = false;
     this.loadingMore = false;
-  });
+    this.cdr.detectChanges(); // 👈 IMPORTANTE
+    return;
+  }
+
+  const rows = (data ?? []) as Producto[];
+  this.productos = [...this.productos, ...rows];
+
+  const totalLoaded = this.offset + rows.length;
+
+  if (count !== null && totalLoaded >= count) {
+    this.hasMore = false;
+  } else {
+    this.offset += this.pageSize;
+  }
+
+  this.loading = false;
+  this.loadingMore = false;
+
+  // 🔥🔥 ESTO ES LO QUE TE FALTABA
+  this.cdr.detectChanges();
 }
+
 
 async aplicarFiltro() {
   await this.cargarProductos(true);
@@ -284,6 +286,9 @@ async cargarMas() {
   await this.cargarProductos(false);
 }
 
+trackById(_: number, p: Producto) {
+  return p.id;
+}
 
 
   // =========================
@@ -352,85 +357,67 @@ async cargarMas() {
   // =========================
   // ✅ SELECCIÓN DE IMAGEN (AHORA: preview = optimizado)
   // =========================
-  private async prepareOptimizedFile(file: File) {
-    if (!file.type.startsWith('image/')) {
-      this.toast('error', 'Solo se permiten imágenes.', 'Archivo inválido');
-      return null;
-    }
-
-    // bloquea mientras optimiza
-    this.uploadBusy = true;
-
-    const beforeBytes = file.size;
-
-    try {
-      const optimized = await this.resizeAndCompressImage(file, {
-        maxW: 1400,
-        maxH: 1400,
-        quality: 0.82,
-        mime: 'image/webp',
-      });
-
-      const afterBytes = optimized.size;
-      const saved = Math.max(0, beforeBytes - afterBytes);
-      const pct = beforeBytes > 0 ? Math.round((saved / beforeBytes) * 100) : 0;
-
-      this.toast(
-        'info',
-        `Optimizada: ${this.formatKB(beforeBytes)} → ${this.formatKB(afterBytes)} (${pct}% menos)`,
-        'Imagen'
-      );
-
-      return optimized;
-    } catch (e) {
-      console.error(e);
-      this.toast('error', 'No se pudo optimizar la imagen.', 'Error');
-      return null;
-    } finally {
-      this.uploadBusy = false;
-    }
+private async prepareOptimizedFile(file: File) {
+  if (!file.type.startsWith('image/')) {
+    this.toast('error', 'Solo se permiten imágenes.', 'Archivo inválido');
+    return null;
   }
 
-  private async setCrearFile(file: File) {
-    const optimized = await this.prepareOptimizedFile(file);
-    if (!optimized) return;
+  this.uploadBusy = true;
+  this.cdr.detectChanges(); // 🔥 aparece loader inmediato
 
-    // liberar preview anterior
-    if (this.imagenPreviewLocal) {
-      try { URL.revokeObjectURL(this.imagenPreviewLocal); } catch {}
-    }
+  try {
+    const optimized = await this.resizeAndCompressImage(file, {
+      maxW: 1400,
+      maxH: 1400,
+      quality: 0.82,
+      mime: 'image/webp',
+    });
 
-    // ✅ guardamos el optimizado
-    this.fileSeleccionado = optimized;
+    return optimized;
+  } catch (e) {
+    console.error(e);
+    this.toast('error', 'No se pudo optimizar la imagen.', 'Error');
+    return null;
+  } finally {
+    this.uploadBusy = false;
+    this.cdr.detectChanges(); // 🔥 desaparece loader
+  }
+}
 
-    // ✅ preview del optimizado
-    this.imagenPreviewLocal = URL.createObjectURL(optimized);
+private async setCrearFile(file: File) {
+  const optimized = await this.prepareOptimizedFile(file);
+  if (!optimized) return;
+
+  if (this.imagenPreviewLocal) {
+    try { URL.revokeObjectURL(this.imagenPreviewLocal); } catch {}
   }
 
-  private async setEditarFile(file: File) {
-    const optimized = await this.prepareOptimizedFile(file);
-    if (!optimized) return;
+  this.fileSeleccionado = optimized;
+  this.imagenPreviewLocal = URL.createObjectURL(optimized);
 
-    if (this.editPreviewLocal) {
-      try { URL.revokeObjectURL(this.editPreviewLocal); } catch {}
-    }
+  this.cdr.detectChanges(); // 🔥 AQUÍ
+}
 
-    // ✅ guardamos el optimizado
-    this.editFile = optimized;
+private async setEditarFile(file: File) {
+  const optimized = await this.prepareOptimizedFile(file);
+  if (!optimized) return;
 
-    // ✅ preview del optimizado
-    this.editPreviewLocal = URL.createObjectURL(optimized);
+  if (this.editPreviewLocal) {
+    try { URL.revokeObjectURL(this.editPreviewLocal); } catch {}
   }
 
-  // =========================
+  this.editFile = optimized;
+  this.editPreviewLocal = URL.createObjectURL(optimized);
+
+  this.cdr.detectChanges(); // 🔥 AQUÍ TAMBIÉN
+}
+
   // Imagen (create)
-  // =========================
   async onFileChangeCrear(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
     await this.setCrearFile(input.files[0]);
-
-    // permite volver a seleccionar el mismo archivo y que dispare change
     input.value = '';
   }
 
@@ -444,9 +431,7 @@ async cargarMas() {
     if (file) await this.setCrearFile(file);
   }
 
-  // =========================
   // Imagen (edit)
-  // =========================
   async onFileChangeEditar(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
@@ -539,24 +524,23 @@ async crearProducto() {
   if (this.hasErrors(this.errorsCrear)) {
     this.toast('error', 'Revisa los campos en rojo.', 'Validación');
     this.focusFirstInvalid();
-    this.cdr.detectChanges(); // 🔥
+    this.cdr.detectChanges();
     return;
   }
 
   this.saving = true;
-  this.cdr.detectChanges(); // 🔥 muestra loader
+  this.cdr.detectChanges(); // 🔥 muestra loader inmediato
 
-  // subir imagen si hay archivo (YA optimizado)
+  // subir imagen
   if (this.fileSeleccionado) {
     const url = await this.subirImagenAStorage(this.fileSeleccionado);
     if (!url) {
       this.saving = false;
-      this.toast('error', 'No se pudo subir la imagen.', 'Error');
-      this.cdr.detectChanges(); // 🔥
+      this.cdr.detectChanges(); // 🔥 oculta loader
       return;
     }
     this.form.imagen = url;
-    this.cdr.detectChanges(); // 🔥 preview / estado
+    this.cdr.detectChanges(); // 🔥 actualiza preview / estado
   }
 
   const payload = {
@@ -569,30 +553,26 @@ async crearProducto() {
     imagen: this.form.imagen || null,
     es_nuevo: this.form.es_nuevo,
     en_oferta: this.form.en_oferta,
-    precio_antes: this.form.en_oferta ? (this.form.precio_antes ?? null) : null,
+    precio_antes: this.form.en_oferta ? this.form.precio_antes : null,
   };
 
   const { error } = await supabase.from('productos').insert(payload);
 
+  this.saving = false;
+  this.cdr.detectChanges(); // 🔥 quita loader sí o sí
+
   if (error) {
-    console.error('Error creando producto:', error);
-    this.saving = false;
     this.toast('error', 'No se pudo crear el producto.', 'Error');
-    this.cdr.detectChanges(); // 🔥
     return;
   }
 
-  this.saving = false;
-  this.toast('success', 'Producto creado correctamente.', 'Éxito');
-  this.cdr.detectChanges(); // 🔥
+  this.toast('success', 'Producto creado.', 'Éxito');
 
   this.limpiarFormularioCrear();
-  this.cdr.detectChanges(); // 🔥 limpia la UI
+  this.cdr.detectChanges(); // 🔥 limpia UI
 
   await this.cargarProductos(true);
-  this.cdr.detectChanges(); // 🔥 renderiza la lista
 }
-
 
   // =========================
   // MODAL EDITAR
@@ -601,6 +581,8 @@ async crearProducto() {
     this.editandoId = p.id;
     this.modalOpen = true;
     this.modalClosing = false;
+
+    this.precioOriginalEditar = p.precio;
 
     this.editForm = {
       nombre: p.nombre || '',

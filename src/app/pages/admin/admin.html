@@ -164,8 +164,8 @@
 
     <div class="loading" *ngIf="loading">Cargando productos...</div>
 
-    <div class="grid" *ngIf="!loading">
-      <article class="card" *ngFor="let p of productos">
+    <div class="grid">
+      <article class="card" *ngFor="let p of productos; trackBy: trackById">
         <div class="thumb">
           <img [src]="p.imagen || 'assets/img/placeholder.png'" [alt]="p.nombre" />
           <span class="badge nuevo" *ngIf="p.es_nuevo">Nuevo</span>

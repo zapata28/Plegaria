@@ -1,3 +1,5 @@
+
+
 /* =========================
    CONTENEDOR GENERAL
 ========================= */
@@ -197,7 +199,7 @@
 
 .checkout-form input:focus,
 .checkout-form select:focus {
-  border-color: var(--verde-principal);
+  border-color: var(--marron-principal);
   box-shadow: 0 0 0 2px rgba(47,125,90,0.12);
 }
 
@@ -210,7 +212,7 @@
 
 .btn.whatsapp {
   width: 100%;
-  background: var(--verde-principal);
+  background: var(--marron-principal);
   color: #fff;
 }
 

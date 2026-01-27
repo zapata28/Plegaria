@@ -180,7 +180,6 @@ async cargarNovedades() {
   this.cdr.detectChanges();
 }
 
-
   async cargarOfertas() {
   const key = 'home_ofertas';
   const cached = this.cache.get<Producto[]>(key);
@@ -203,6 +202,5 @@ async cargarNovedades() {
   this.loadingOfertas = false;
 
   this.cdr.detectChanges();
-}
-
+  }
 }

@@ -305,7 +305,7 @@
 .img-preview img{
   width: 100%;
   max-width: 360px;
-  height: 220px;
+  height: auto;
   object-fit: cover;
   border-radius: 14px;
   border: 1px solid rgba(0,0,0,0.10);
@@ -518,21 +518,26 @@
   padding: 16px;
   z-index: 1001;
   animation: fadeIn .18s ease;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .modal-card{
   width: 100%;
-  max-width: 820px;
+  max-width: min(820px, 96vw);
   background: #fff;
   border-radius: 18px;
   border: 1px solid rgba(0,0,0,0.10);
   box-shadow: 0 18px 60px rgba(0,0,0,0.25);
   padding: 14px;
   max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;   /* 🔑 CLAVE */
   animation: popIn .18s ease;
-  transform-origin: center;
 }
+
 
 .modal-head{
   display:flex;
@@ -570,17 +575,22 @@
 }
 
 .modal-actions{
-  display:flex;
-  justify-content:flex-end;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
   gap: 10px;
+  padding-top: 14px;
   margin-top: 12px;
-  flex-wrap: wrap;
-  position: sticky;
-  bottom: 0;
-  background: #fff;
-  padding: 10px 4px 4px;
-  border-top: 1px solid rgba(0,0,0,0.06);
+  border-top: 1px solid rgba(0,0,0,0.08);
 }
+
+
+.modal-body{
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
 
 /* ====== CIERRE ANIMADO REAL ====== */
 .modal.closing{
@@ -627,5 +637,21 @@
     left: 14px;
     right: 14px;
     width: auto;
+  }
+}
+.offer-box{
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+
+.offer-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* ⬅️ lado a lado */
+  gap: 12px;
+}
+
+@media (max-width: 640px){
+  .offer-grid{
+    grid-template-columns: 1fr; /* 📱 se apilan en móvil */
   }
 }

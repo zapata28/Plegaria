@@ -110,7 +110,6 @@
   box-shadow: 0 14px 32px rgba(0,0,0,0.10);
 }
 
-
 .title{
   margin: 0 0 8px 0;
   color: var(--texto-principal);
@@ -170,8 +169,6 @@
   text-decoration-thickness: 2px;
 }
 
-
-
 .hint{
   margin-top: 6px;
   font-size: 12px;
@@ -194,11 +191,9 @@
   cursor: pointer;
   background: var(--marron-principal);
   color: #fff;
-
   display: inline-flex;
   align-items: center;
   gap: 10px;
-
   transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
 }
 
@@ -255,7 +250,6 @@
   display: inline-block;
 }
 
-/* Relacionados */
 .rel-section{
   margin-top: 18px;
 }
@@ -346,7 +340,6 @@
   color: var(--texto-principal);
 }
 
-/* Responsive */
 @media (max-width: 900px){
   .producto-grid{
     grid-template-columns: 1fr;

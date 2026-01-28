@@ -5,16 +5,12 @@
   --beige-suave: #ddb892;
   --texto-principal: #000000;
 }
-/* ===============================
-   CATEGORIA PAGE (BASE)
-================================ */
+
 .categoria-page{
   padding: 20px 28px 40px;
   background: #f6ede4;
   min-height: 100vh;
-  /* max-width: 1100px; */
   box-sizing: border-box;
-  /* margin: 0 auto; */
 }
 
 .categoria-page h1 {
@@ -22,10 +18,6 @@
   color: var(--beige-suave);
   margin-bottom: 16px;
 }
-
-/* ===============================
-   BREADCRUMB
-================================ */
 
 .categoria-title{
   font-size: 22px;
@@ -94,10 +86,6 @@ transition: all .2s ease;
   font-weight: 900;
 }
 
-/* ===============================
-   CHIPS (FILTROS)
-================================ */
-/* Caja de chips */
 .chips-box {
   background: #b0886869;
   border: 1px solid var(--marron-principal);
@@ -113,14 +101,12 @@ transition: all .2s ease;
   margin-bottom: 10px;
 }
 
-/* Contenedor chips */
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-/* Chip */
 .chip {
   border: 1px solid rgba(127, 85, 57, 0.35);
   background: #fff;
@@ -145,27 +131,18 @@ transition: all .2s ease;
   color: #fff;
 }
 
-/* Chip secundario */
 .chip-sec {
   font-weight: 700;
   font-size: 12.5px;
   padding: 8px 12px;
 }
 
-
-
-/* ===============================
-   GRID PRODUCTOS
-================================ */
 .productos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 }
 
-/* ===============================
-   PRODUCT CARD (FALTABA)
-================================ */
 .producto-card{
 
   height: auto;
@@ -179,7 +156,6 @@ transition: all .2s ease;
   border-radius: 22px;
   box-shadow: 0 10px 24px rgba(0,0,0,0.08);
   border: 1px solid rgba(0,0,0,0.06);
-
 }
 
 .producto-card:hover {
@@ -187,7 +163,6 @@ transition: all .2s ease;
   box-shadow: 0 10px 22px rgba(0,0,0,0.12);
 }
 
-/* CONTENEDOR DE IMAGEN */
 .producto-img{
   width: 90%;
   height: 200px;
@@ -203,20 +178,16 @@ transition: all .2s ease;
   background: #f7efe686;
 }
 
-/* IMAGEN */
 .producto-img img{
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-/* EFECTO HOVER IMAGEN */
 .producto-card:hover .producto-img img {
   transform: scale(1.05);
 }
 
-
-/* Badges */
 .badge{
   position: absolute;
   top: 10px;
@@ -239,10 +210,9 @@ transition: all .2s ease;
 }
 
 .badge-nuevo{
- background: #8b5e3c;
+  background: #8b5e3c;
 }
 
-/* Info */
 .producto-info{
   flex: 1;
   display: flex;
@@ -274,7 +244,6 @@ transition: all .2s ease;
   gap: 8px;
 }
 
-
 .precio,
 .precio-antes{
   display: block;
@@ -289,14 +258,11 @@ transition: all .2s ease;
 .precio-antes{
   font-size: 10.5px;
   margin-top: 2px;
-  text-decoration: line-through;   /* 👈 FORZADO */
+  text-decoration: line-through;
   text-decoration-thickness: 1.5px;
   text-decoration-color:var(--marron-principal);
 }
 
-/* ===============================
-   PAGINACIÓN (TU BLOQUE)
-================================ */
 .paginacion{
   display:flex;
   align-items:center;
@@ -308,7 +274,6 @@ transition: all .2s ease;
   display:flex;
   background: rgba(127,85,57,0.12);
   border-color: rgba(127,85,57,0.25);
-
 }
 
 .pag-btn{
@@ -371,17 +336,12 @@ transition: all .2s ease;
   margin-left: 6px;
 }
 
-
-/* ===============================
-   ACCIONES (AGREGAR + VER)
-================================ */
 .acciones{
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-/* Botón agregar */
 .btn-add{
   border: none;
   white-space: nowrap;
@@ -400,8 +360,6 @@ transition: all .2s ease;
   transform: translateY(-1px);
   background: var(--marron-hover);
 }
-
-/* En móvil: que los botones no se aplasten */
 
 .icons{
   display: flex;
@@ -447,23 +405,12 @@ transition: all .2s ease;
   border: 2px solid #fff;
 }
 
-
-
-
-
-
-
-/* =================================
-   MOBILE – CATEGORÍA PAGE
-================================= */
 @media (max-width: 768px) {
 
-  /* CONTENEDOR PRINCIPAL */
   .categoria-page {
     padding: 14px 12px 32px;
   }
 
-  /* TÍTULOS */
   .categoria-page h1 {
     font-size: 22px;
     margin-bottom: 10px;
@@ -474,7 +421,6 @@ transition: all .2s ease;
     margin-bottom: 12px;
   }
 
-  /* BREADCRUMB */
   .breadcrumb {
     gap: 6px;
     margin-bottom: 8px;
@@ -484,15 +430,11 @@ transition: all .2s ease;
     font-size: 12px;
   }
 
-  /* BOTÓN FILTRO */
   .filtro-btn {
     padding: 6px 14px;
     font-size: 12px;
   }
 
-  /* ===============================
-     CHIPS
-  ============================== */
   .chips-box {
     padding: 10px;
     border-radius: 12px;
@@ -516,17 +458,11 @@ transition: all .2s ease;
     flex: 0 0 auto;
   }
 
-  /* ===============================
-     GRID PRODUCTOS
-  ============================== */
   .productos-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
-  /* ===============================
-     PRODUCT CARD
-  ============================== */
   .producto-card {
     border-radius: 18px;
   }
@@ -544,13 +480,11 @@ transition: all .2s ease;
     object-fit: contain;
   }
 
-  /* BADGES */
   .badge {
     font-size: 10px;
     padding: 4px 10px;
   }
 
-  /* INFO */
   .producto-info {
     padding: 10px 10px 12px;
   }
@@ -565,16 +499,12 @@ transition: all .2s ease;
     margin-bottom: 6px;
   }
 
-  /* ===============================
-     PRECIO + ACCIONES (FIX CLAVE)
-  ============================== */
 .precio-row{
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 8px;
 }
-
 
   .precio {
     font-size: 12.5px;
@@ -592,16 +522,14 @@ transition: all .2s ease;
     gap: 6px;
   }
 
-  /* BOTÓN AGREGAR COMPACTO */
   .btn-add {
-    width: auto;              /* 👈 NO 100% */
-    padding: 5px 8px;         /* 👈 MÁS PEQUEÑO */
+    width: auto;
+    padding: 5px 8px;
     font-size: 11px;
     border-radius: 7px;
     line-height: 1;
   }
 
-  /* ICONOS */
   .icons {
     justify-content: center;
   }
@@ -612,9 +540,6 @@ transition: all .2s ease;
     font-size: 18px;
   }
 
-  /* ===============================
-     PAGINACIÓN
-  ============================== */
   .paginacion {
     gap: 8px;
     padding: 10px;
@@ -634,9 +559,6 @@ transition: all .2s ease;
   }
 }
 
-/* =================================
-   EXTRA SMALL (≤ 420px)
-================================= */
 @media (max-width: 420px) {
 
   .producto-img {

@@ -6,29 +6,26 @@
   --texto-principal: #000000;
 }
 
-/* ================= HERO – CONTENEDOR GENERAL ================= */
 .hero-wrapper {
-  max-width: 800px;   /* ancho total del hero */
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   border-radius: 24px;
-  background: rgba(221, 184, 146, 0.2); /* color tipo novedades, semi-transparente */
+  background: rgba(221, 184, 146, 0.2);
   box-shadow: 0 12px 28px rgba(0,0,0,0.2);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Contenedor interno que mantiene la imagen y el texto */
 .hero-carousel {
   display: flex;
-  gap: 40px;       /* espacio entre imagen y texto */
+  gap: 40px;
   width: 100%;
   height: 420px;
   position: relative;
 }
 
-/* Slide individual */
 .hero-carousel .slide {
   display: flex;
   align-items: center;
@@ -43,7 +40,6 @@
   z-index: 1;
 }
 
-/* Recuadro de la imagen */
 .hero-carousel .slide .image-container {
   flex-shrink: 0;
   width: 450px;
@@ -52,7 +48,6 @@
   overflow: hidden;
 }
 
-/* Imagen dentro del recuadro */
 .hero-carousel .slide .image-container img {
   width: 100%;
   height: 100%;
@@ -60,7 +55,7 @@
   object-position: center;
   display: block;
 }
-/* Encabezado y descripción */
+
 .hero-carousel h1 {
   font-size: 44px;
   margin: 0 0 12px 0;
@@ -72,7 +67,6 @@
   line-height: 1.4;
 }
 
-/* Botón */
 .hero-carousel button {
   padding: 14px 26px;
   border: none;
@@ -88,7 +82,6 @@
   background: var(--marron-hover);
 }
 
-/* DOTS */
 .hero-carousel .dots {
   position: absolute;
   bottom: 18px;
@@ -103,7 +96,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: rgba(127,85,57,0.5); /* marrón suave */
+  background: rgba(127,85,57,0.5);
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
 }
@@ -118,7 +111,6 @@
   color: var(--marron-principal);
 }
 
-/* ================= HERO – RESPONSIVE CORREGIDO ================= */
 @media (max-width: 1024px) {
   .hero-wrapper {
     padding: 16px;
@@ -126,12 +118,11 @@
 
   .hero-carousel {
     gap: 24px;
-    height: 400px; /* ajustamos un poco la altura */
+    height: 400px;
   }
 
-  /* Slides siguen absolutos para el carrusel */
   .hero-carousel .slide {
-    flex-direction: row; /* imagen y texto lado a lado */
+    flex-direction: row;
     gap: 24px;
     top: 0;
     left: 0;
@@ -184,7 +175,7 @@
   }
 
   .hero-carousel .slide {
-    flex-direction: column; /* ahora sí apilamos en móvil */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 16px;
@@ -225,8 +216,6 @@
   }
 }
 
-
-   /* TÍTULOS DE SECCIÓN */
 .section-title {
   margin: 14px 0 10px;
   padding: 0 18px;
@@ -240,7 +229,6 @@
   letter-spacing: 0.2px;
 }
 
-   /* CATEGORÍAS */
 .categoria-container {
   background-color: #ddb89274;
   border-radius: 16px;
@@ -252,7 +240,6 @@
   justify-content: flex-end;
 }
 
-/* Scroll horizontal */
 .horizontal-scroll {
   display: flex;
   gap: 15px;
@@ -272,7 +259,6 @@
   border-radius: 3px;
 }
 
-/* Tarjetas */
 .card {
   flex: 0 0 auto;
   width: 160px;
@@ -292,7 +278,6 @@
   box-shadow: 0 10px 22px rgba(0,0,0,0.14);
 }
 
-/* Cuadro fijo para imagen/ícono */
 .card img {
   width: 112px;
   height: 112px;
@@ -305,7 +290,6 @@
   margin: 0 auto;
 }
 
-/* Texto de tarjeta */
 .card-info {
   padding: 10px 6px 0;
   text-align: center;
@@ -318,7 +302,6 @@
   font-size: 14px;
 }
 
-   /* NOVEDADES (HORIZONTAL) */
 .novedades-container {
   margin: 6px 18px 18px;
   overflow: hidden;
@@ -334,7 +317,6 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Barra bonita */
 .novedades-grid::-webkit-scrollbar {
   height: 8px;
 }
@@ -408,7 +390,6 @@
   transition: transform 0.35s ease;
 }
 
-/* Badges */
 .badge {
   position: absolute;
   top: 10px;
@@ -429,7 +410,6 @@
   right: 10px;
 }
 
-/* Info */
 .novedades-grid .producto-card .producto-info {
   flex: 1;
   display: flex;
@@ -465,7 +445,7 @@
 .novedades-grid .producto-card .producto-info .precio-row {
   margin-top: auto;
   display: flex;
-  align-items: center; /* clave */
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
@@ -492,11 +472,6 @@
   text-decoration-color: rgba(0, 0, 0, 0.6);
 }
 
-
-
-/* ===============================
-   BOTÓN AGREGAR (SVG BLANCO + HOVER PRO)
-================================ */
 .acciones {
   display: flex;
   gap: 10px;
@@ -535,7 +510,6 @@
   box-shadow: 0 6px 14px rgba(47,125,90,0.35);
 }
 
-/* Ripple/brillo */
 .btn-add::after {
   content: "";
   position: absolute;
@@ -543,7 +517,7 @@
   border-radius: inherit;
    background: radial-gradient(
     circle at center,
-    rgba(255, 215, 0, 0.25),  /* Dorado suave */
+    rgba(255, 215, 0, 0.25),
     rgba(255, 215, 0, 0.1) 40%,
     transparent 70%
   );
@@ -557,7 +531,6 @@
   opacity: 1;
 }
 
-/* Icono SVG blanco SIEMPRE */
 .btn-add .btn-icon {
   width: 18px;
   height: 18px;
@@ -580,9 +553,6 @@
   transform: translateX(1px);
 }
 
-/* ===============================
-   BADGE DESCUENTO PRO (%)
-================================ */
 .badge-oferta{
   background: linear-gradient(135deg, #ff3d3d, #ff7a00);
   right: 10px;
@@ -592,7 +562,6 @@
   text-transform: uppercase;
 }
 
-/* Un poquito más “premium” */
 .badge-oferta::before{
   content: "🔥";
 }
@@ -620,12 +589,8 @@ cdk-virtual-scroll-viewport {
   display: flex !important;
 }
 
-/* ===============================
-   RESPONSIVE MOBILE
-================================ */
 @media (max-width: 768px) {
 
-  /* CATEGORÍAS */
   .horizontal-scroll {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -647,9 +612,6 @@ cdk-virtual-scroll-viewport {
   height: auto;
   padding: 2px;
 }
-
-
-
   .card h3,
   .card p {
     font-size: clamp(8.5px, 2.6vw, 10px);
@@ -659,9 +621,6 @@ cdk-virtual-scroll-viewport {
   }
 }
 
-  /* ===============================
-     NOVEDADES – 2 productos visibles
-  ================================ */
   .novedades-grid {
     gap: 10px;
   }
@@ -680,7 +639,6 @@ cdk-virtual-scroll-viewport {
     padding: 6px;
   }
 
-  /* Precio + botón proporcionales */
   .precio {
     font-size: 16px;
   }
@@ -700,19 +658,12 @@ cdk-virtual-scroll-viewport {
     height: 14px;
   }
 
-
-/* ===============================
-   Hover solo para desktop
-================================ */
 @media (hover: hover) and (pointer: fine) {
   .novedades-grid .producto-card:hover .producto-img img {
     transform: scale(1.04);
   }
 }
 
-/* ===============================
-   Desktop un poco más grande
-================================ */
 @media (min-width: 900px) {
   .novedades-grid .producto-card {
     flex: 0 0 260px;
@@ -724,24 +675,19 @@ cdk-virtual-scroll-viewport {
     height: 205px;
   }
 }
-/* ===============================
-   DESKTOP PRO – PRECIO + BOTÓN
-================================ */
+
 @media (min-width: 1024px) {
 
-  /* Precio principal */
   .precio {
     font-size: 22px;
     font-weight: 900;
     letter-spacing: -0.3px;
   }
 
-  /* Precio antes */
   .precio-antes {
     font-size: 13px;
   }
 
-  /* Botón agregar */
   .btn-add {
     padding: 12px 18px;
     font-size: 15px;

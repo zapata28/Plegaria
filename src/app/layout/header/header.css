@@ -5,9 +5,7 @@
   --beige-suave: #ddb892;
   --texto-principal: #000000;
 }
-/* ===============================
-   TOP BAR
-================================ */
+
 .top-bar {
   background-color: var(--marron-claro);
   color: #ffffff;
@@ -20,9 +18,7 @@
   top: 0;
   z-index: 1100;
 }
-/* ===============================
-   HEADER
-================================ */
+
 .header {
   background-color: #ffffff;
   backdrop-filter: blur(10px);
@@ -41,9 +37,6 @@
   box-shadow: 0 10px 22px rgba(47, 125, 90, 0.10);
 }
 
-/* ===============================
-   LOGO
-================================ */
 .logo {
   display: flex;
   align-items: center;
@@ -66,9 +59,6 @@
   transform: scale(1.06);
 }
 
-/* ===============================
-   NAV DESKTOP
-================================ */
 .header nav {
   flex: 1;
   display: flex;
@@ -98,16 +88,13 @@
   color: #fff;
 }
 
-/* ===============================
-   ICONS
-================================ */
 .icons {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 10px;
 }
-/* SVG usuario (login / cuenta) */
+
 .user-icon {
   width: 19px;
   height: 19px;
@@ -144,14 +131,12 @@
   transform: translateY(1px);
 }
 
-/* Icono menú */
 .menu-icon {
   font-size: 9px;
   font-weight: 900;
   line-height: 1;
 }
 
-/* SVG del carrito */
 .cart-btn svg,
 .cart-icon {
   width: 19px;
@@ -159,7 +144,6 @@
   display: block;
 }
 
-/* Badge carrito */
 .cart-badge {
   position: absolute;
   top: -4px;
@@ -178,7 +162,6 @@
   box-shadow: 0 6px 12px rgba(47, 125, 90, 0.28);
 }
 
-/* MINI CARRITO */
 .mini-cart {
   position: fixed;
   right: 14px;
@@ -207,7 +190,6 @@
 
 .mini-close {
   border: 0;
-
   border-radius: 12px;
   width: 36px;
   height: 36px;
@@ -324,9 +306,6 @@
   transform: translateY(1px);
 }
 
-/* ===============================
-   USER MENU (dropdown del icono 👤)
-================================ */
 .account {
   position: relative;
 }
@@ -376,10 +355,6 @@
   background: rgba(255, 0, 0, 0.08);
 }
 
-
-/* ===============================
-   MOBILE NAV
-================================ */
 @media (max-width: 768px) {
   .header nav {
     display: none;
@@ -411,16 +386,6 @@
     transition: background 0.2s ease, color 0.2s ease;
   }
 
-  .header nav a:hover {
-    background: rgba(47, 125, 90, 0.10);
-    color: var(--verde-principal);
-  }
-
-  .header nav a.active {
-    background: rgba(47, 125, 90, 0.12);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  }
-
   .icons {
     display: flex;
   }
@@ -432,9 +397,7 @@
     text-align: center;
   }
 }
-/* ===============================
-   SEARCH
-================================ */
+
 .search {
   position: relative;
 }
@@ -477,7 +440,6 @@
   background: var(--marron-hover);
 }
 
-/* ICONO BUSQUEDA */
 .search-icon {
   width: 19px;
   height: 19px;
@@ -485,7 +447,6 @@
   color: var(--marron-principal);
 }
 
-/* hover hereda del icon-btn */
 .icon-btn:hover .search-icon {
   color: var(--marron-principal);
 }

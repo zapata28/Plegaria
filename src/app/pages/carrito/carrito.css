@@ -1,8 +1,10 @@
-
-
-/* =========================
-   CONTENEDOR GENERAL
-========================= */
+:root {
+  --marron-principal: #7f5539;
+  --marron-hover: #9c6644;
+  --marron-claro: #b08968;
+  --beige-suave: #ddb892;
+  --texto-principal: #000000;
+}
 .carrito {
   max-width: 900px;
   margin: 0 auto;
@@ -10,9 +12,6 @@
   box-sizing: border-box;
 }
 
-/* =========================
-   HEADER
-========================= */
 .top {
   display: flex;
   align-items: center;
@@ -26,9 +25,6 @@
   color: var(--texto-principal);
 }
 
-/* =========================
-   CARRITO VACÍO
-========================= */
 .carrito-vacio {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -39,9 +35,6 @@
   opacity: 0.8;
 }
 
-/* =========================
-   LISTA DE ITEMS
-========================= */
 .lista {
   display: flex;
   flex-direction: column;
@@ -70,9 +63,6 @@
   opacity: 0.85;
 }
 
-/* =========================
-   CANTIDAD
-========================= */
 .qty {
   display: flex;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -98,18 +88,12 @@
   font-weight: 900;
 }
 
-/* =========================
-   TOTALES POR ITEM
-========================= */
 .line-total {
   font-weight: 900;
   white-space: nowrap;
   color: var(--texto-principal);
 }
 
-/* =========================
-   BOTONES
-========================= */
 .btn {
   border: 0;
   border-radius: 12px;
@@ -128,9 +112,6 @@
   color: #b00020;
 }
 
-/* =========================
-   RESUMEN
-========================= */
 .resumen {
   margin-top: 14px;
   background: rgba(0,0,0,0.04);
@@ -158,9 +139,6 @@
   font-size: 16px;
 }
 
-/* =========================
-   FORMULARIO DATOS CLIENTE (PRO)
-========================= */
 .checkout-form {
   margin-top: 14px;
   padding: 14px;
@@ -203,9 +181,6 @@
   box-shadow: 0 0 0 2px rgba(47,125,90,0.12);
 }
 
-/* =========================
-   CTA WHATSAPP
-========================= */
 .cta {
   margin-top: 10px;
 }
@@ -220,9 +195,6 @@
   filter: brightness(0.95);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
 @media (max-width: 720px) {
   .item {
     grid-template-columns: 1fr;

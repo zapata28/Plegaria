@@ -5,9 +5,6 @@
   --beige-suave: #ddb892;
   --texto-principal: #000000;
 }
-/* =========================================================
-   ADMIN PRODUCTOS – CSS FINAL (PRO + TOAST + DROPZONE + LOAD MORE)
-========================================================= */
 
 .admin-page{
   padding: 26px 18px;
@@ -15,7 +12,6 @@
   margin: 0 auto;
 }
 
-/* ================= TOAST ================= */
 .toast-wrap{
   position: fixed;
   top: 14px;
@@ -71,7 +67,6 @@
   to{ opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ================= HEADER ================= */
 .admin-header h1{
   margin: 0 0 6px;
   font-size: 28px;
@@ -83,7 +78,6 @@
   font-weight: 650;
 }
 
-/* ================= CARD ================= */
 .admin-card{
   background: #fff;
   border: 1px solid rgba(0,0,0,0.08);
@@ -107,7 +101,6 @@
   color: var(--texto-principal);
 }
 
-/* ========== SECCIONES CREAR ========== */
 .form-section{
   border: 1px solid rgba(0,0,0,0.06);
   border-radius: 14px;
@@ -127,7 +120,6 @@
   letter-spacing: .2px;
 }
 
-/* ================= FORM ================= */
 .form-grid{
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -142,7 +134,6 @@
   margin-bottom: 4px;
 }
 
-/* inputs base */
 .field input,
 .field select,
 .field textarea{
@@ -154,31 +145,27 @@
   background: #fff;
 }
 
-/* 🔹 inputs compactos (nombre / precio) — FIX */
 .field input[type="text"],
 .field input[type="number"],
 .field input:not([type]){
-  padding: 6px 2px;        /* antes tenías 6px 0px (se ve feo) */
-  height: 34px;            /* antes 20px (queda apretado) */
+  padding: 6px 2px;
+  height: 34px;
   font-size: 14px;
   line-height: 1;
 }
 
-/* select compacto */
 .field select{
   padding: 6px 9px;
   height: 34px;
   font-size: 14px;
 }
 
-/* textarea cómodo */
 .field textarea{
-  padding: 2px 2px;      /* antes 10px 0PX */
+  padding: 2px 2px;
   min-height: 80px;
   resize: vertical;
 }
 
-/* focus */
 .field input:focus,
 .field select:focus,
 .field textarea:focus{
@@ -190,7 +177,6 @@
   grid-column: 1 / -1;
 }
 
-/* ========== VALIDACIONES VISUALES ========== */
 .field.invalid input,
 .field.invalid select,
 .field.invalid textarea{
@@ -206,7 +192,6 @@
   color: #c62828;
 }
 
-/* ================= CHECKS PRO ================= */
 .check{
   display:flex;
   align-items:center;
@@ -227,9 +212,6 @@
   accent-color: var(--marron-principal);
 }
 
-/* =========================================================
-   DROPZONE (Drag & Drop) — NUEVO
-========================================================= */
 .dropzone{
   border: 2px dashed rgba(0,0,0,0.22);
   background: rgba(0,0,0,0.02);
@@ -276,7 +258,6 @@
   display: none;
 }
 
-/* ================= FILE INPUT (si aún lo usas en otros lados) ================= */
 .img-row{
   display:flex;
   align-items:center;
@@ -312,7 +293,6 @@
   box-shadow: 0 10px 24px rgba(0,0,0,0.06);
 }
 
-/* ================= BUTTONS ================= */
 .actions{
   display:flex;
   gap: 10px;
@@ -367,7 +347,6 @@
   box-shadow: none;
 }
 
-/* ================= LIST / FILTER ================= */
 .list-head{
   display:flex;
   align-items:center;
@@ -404,7 +383,6 @@
   color: rgba(0,0,0,0.55);
 }
 
-/* ================= GRID ================= */
 .grid{
   display:grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -491,16 +469,12 @@
   gap: 10px;
 }
 
-/* =========================================================
-   LOAD MORE — NUEVO
-========================================================= */
 .load-more{
   display:flex;
   justify-content:center;
   padding-top: 12px;
 }
 
-/* ================= MODAL ================= */
 .modal-backdrop{
   position: fixed;
   inset: 0;
@@ -534,10 +508,9 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  overflow-x: hidden;   /* 🔑 CLAVE */
+  overflow-x: hidden;
   animation: popIn .18s ease;
 }
-
 
 .modal-head{
   display:flex;
@@ -584,15 +557,12 @@
   border-top: 1px solid rgba(0,0,0,0.08);
 }
 
-
 .modal-body{
   flex: 1;
   overflow-y: auto;
   padding-right: 4px;
 }
 
-
-/* ====== CIERRE ANIMADO REAL ====== */
 .modal.closing{
   animation: fadeOut .16s ease forwards;
 }
@@ -603,7 +573,6 @@
   animation: popOut .16s ease forwards;
 }
 
-/* Animaciones */
 @keyframes fadeIn{
   from{ opacity: 0; }
   to{ opacity: 1; }
@@ -621,7 +590,6 @@
   to{ opacity: 0; transform: translateY(8px) scale(.985); }
 }
 
-/* ================= RESPONSIVE ================= */
 @media (max-width: 720px){
   .form-grid{
     grid-template-columns: 1fr;
@@ -646,12 +614,12 @@
 
 .offer-grid{
   display: grid;
-  grid-template-columns: 1fr 1fr; /* ⬅️ lado a lado */
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
 @media (max-width: 640px){
   .offer-grid{
-    grid-template-columns: 1fr; /* 📱 se apilan en móvil */
+    grid-template-columns: 1fr;
   }
 }

@@ -12,6 +12,15 @@
 
 <!-- HEADER -->
 <header class="header">
+  <button
+  class="icon-btn menu-btn"
+  type="button"
+  (click)="toggleMenu()"
+  aria-label="Menú"
+>
+  ☰
+</button>
+
   <!-- LOGO → HOME -->
   <a class="logo" routerLink="/" (click)="closeAll()">
     <img src="/plegaria.png" alt="Logo" />

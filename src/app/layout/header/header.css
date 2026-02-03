@@ -450,3 +450,13 @@
 .icon-btn:hover .search-icon {
   color: var(--marron-principal);
 }
+.menu-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .menu-btn {
+    display: inline-flex;
+  }
+}
+

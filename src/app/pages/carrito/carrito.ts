@@ -48,7 +48,6 @@ export class CarritoComponent {
 
     window.open(this.whatsappLink, '_blank', 'noopener');
 
-    // 👇 ORDEN CORRECTO
     this.pedidoEnviado = true;
 
     setTimeout(() => {

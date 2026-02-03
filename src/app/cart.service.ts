@@ -14,8 +14,7 @@ const LS_KEY = 'eclipse_cart_v1';
 export class CartService {
   private _items = signal<CartItem[]>(this.load());
 
-  // ✅ Signals listos para UI
-  itemsSig = computed(() => this._items()); // <- lista reactiva
+  itemsSig = computed(() => this._items());
   countSig = computed(() => this._items().reduce((acc, i) => acc + i.qty, 0));
   subtotalSig = computed(() => this._items().reduce((acc, i) => acc + i.precio * i.qty, 0));
 
@@ -32,7 +31,6 @@ export class CartService {
     localStorage.setItem(LS_KEY, JSON.stringify(items));
   }
 
-  // ===== API que ya usas =====
   getItems(): CartItem[] {
     return [...this._items()];
   }
@@ -54,7 +52,6 @@ export class CartService {
     const it = items.find(i => i.id === id);
     if (!it) return;
 
-    // ✅ si queda en 0 o menos, lo quitamos
     const newQty = Math.floor(Number(qty) || 0);
     if (newQty <= 0) {
       const filtered = items.filter(x => x.id !== id);
@@ -80,7 +77,6 @@ export class CartService {
     this.save([]);
   }
 
-  // ===== helpers opcionales =====
   subtotal(): number {
     return this.subtotalSig();
   }

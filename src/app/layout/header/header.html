@@ -1,16 +1,13 @@
-<!-- TOP BAR -->
 <div class="top-bar">
   <span>Envío gratis por compras superiores a $150.000</span>
 </div>
 
-<!-- OVERLAY (menu, carrito o menú usuario) -->
 <div
   class="overlay"
   [class.active]="menuOpen || cartOpen || userMenuOpen"
   (click)="closeAll()"
 ></div>
 
-<!-- HEADER -->
 <header class="header">
   <button
   class="icon-btn menu-btn"
@@ -21,13 +18,11 @@
   ☰
 </button>
 
-  <!-- LOGO → HOME -->
   <a class="logo" routerLink="/" (click)="closeAll()">
     <img src="/plegaria.png" alt="Logo" />
     <span>PLEGARIA</span>
   </a>
 
-  <!-- NAV (categorías) -->
   <nav [class.open]="menuOpen">
     <a
       routerLink="/categoria/maquillaje"
@@ -62,10 +57,7 @@
     </a>
   </nav>
 
-  <!-- ICONS -->
   <div class="icons">
-
-    <!-- BUSQUEDA -->
 <div class="search" (click)="$event.stopPropagation()">
 <button
   class="icon-btn"
@@ -80,7 +72,6 @@
   </svg>
 </button>
 
-  <!-- Input desplegable -->
   <div class="search-box" *ngIf="searchOpen">
     <input
       type="text"
@@ -92,7 +83,6 @@
   </div>
 </div>
 
-    <!-- CARRITO -->
     <button
       class="cart-btn"
       type="button"
@@ -115,9 +105,7 @@
       </span>
     </button>
 
-    <!-- CUENTA / LOGIN (MISMO ICONO 👤) -->
     <div class="account" (click)="$event.stopPropagation()">
-      <!-- Si NO está logueado -> va a login -->
       <a
   *ngIf="!auth.isLoggedIn()"
   class="icon-btn"
@@ -134,8 +122,6 @@
     />
   </svg>
 </a>
-
-      <!-- Si SÍ está logueado -> abre menú -->
       <button
         *ngIf="auth.isLoggedIn()"
         class="icon-btn"
@@ -148,7 +134,6 @@
         👤
       </button>
 
-      <!-- Dropdown: Panel + Cerrar sesión -->
       <div class="user-menu" *ngIf="auth.isLoggedIn() && userMenuOpen">
         <a class="user-item" routerLink="/admin" (click)="closeAll()">
           Panel
@@ -161,7 +146,6 @@
     </div>
   </div>
 
-  <!-- MINI CARRITO (dentro del header) -->
   <div class="mini-cart" *ngIf="cartOpen">
     <div class="mini-top">
       <strong>Carrito</strong>

@@ -1,5 +1,4 @@
 <section class="producto-page">
-  <!-- TOP BAR -->
   <div class="producto-top">
     <button class="btn-back" type="button" (click)="volver()">
       ← Volver
@@ -14,14 +13,11 @@
     </div>
   </div>
 
-  <!-- LOADING -->
   <div *ngIf="loading" class="loading">
     Cargando producto...
   </div>
 
-  <!-- PRODUCTO -->
   <div *ngIf="!loading && producto" class="producto-grid">
-    <!-- IMAGEN -->
     <div class="media">
       <div class="img-wrap">
         <img
@@ -40,7 +36,6 @@
       </div>
     </div>
 
-    <!-- INFO -->
     <div class="info">
       <h1 class="title">{{ producto.nombre }}</h1>
 
@@ -89,7 +84,6 @@
     </div>
   </div>
 
-  <!-- RELACIONADOS -->
   <section class="rel-section" *ngIf="producto">
     <h2 class="rel-title">Relacionados</h2>
 

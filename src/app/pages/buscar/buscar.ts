@@ -12,7 +12,6 @@ import { ProductService, Producto } from '../../services/product.service';
 })
 export class BuscarComponent implements OnInit {
 
-
   term = '';
   loading = true;
   results: Producto[] = [];

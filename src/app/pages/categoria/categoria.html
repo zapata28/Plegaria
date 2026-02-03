@@ -1,6 +1,5 @@
 <section class="categoria-page">
 
-  <!-- BREADCRUMB -->
   <nav class="breadcrumb" *ngIf="breadcrumbs.length">
     <button
       type="button"
@@ -16,7 +15,6 @@
     </button>
   </nav>
 
-  <!-- CHIPS NIVEL 1 -->
   <div class="chips-box">
     <div class="chips">
       <button
@@ -40,7 +38,6 @@
     </div>
   </div>
 
-  <!-- CHIPS NIVEL 2 -->
   <div class="chips-box" *ngIf="subitems.length">
     <div class="chips">
       <button
@@ -55,17 +52,14 @@
     </div>
   </div>
 
- <!-- LOADING -->
 <div *ngIf="loading" class="loading">
   Cargando productos...
 </div>
 
-<!-- SIN RESULTADOS -->
 <div *ngIf="!loading && productos.length === 0" class="empty">
   No hay productos para este filtro.
 </div>
 
-<!-- GRID PRODUCTOS -->
 <div class="productos-grid" *ngIf="!loading && productos.length > 0">
 
   <article
@@ -109,8 +103,6 @@
   </article>
 </div>
 
-
-  <!-- PAGINACIÓN -->
   <div class="paginacion" *ngIf="!loading && totalPages > 1">
 
     <button

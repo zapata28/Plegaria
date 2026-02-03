@@ -18,12 +18,10 @@ import { CartService } from '../../cart.service';
 })
 export class HeaderComponent {
 
-  // Estados de UI
   menuOpen = false;
   cartOpen = false;
   userMenuOpen = false;
 
-  // 🔍 BUSQUEDA
   searchOpen = false;
   searchTerm = '';
 
@@ -33,18 +31,12 @@ export class HeaderComponent {
     public cart: CartService
   ) {}
 
-  /* ===============================
-     SESIÓN
-  ================================ */
   async salir(): Promise<void> {
     await this.auth.logout();
     this.router.navigate(['/']);
     this.closeAll();
   }
 
-  /* ===============================
-     MENÚ CATEGORÍAS
-  ================================ */
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
     if (this.menuOpen) {
@@ -54,9 +46,6 @@ export class HeaderComponent {
     }
   }
 
-  /* ===============================
-     CARRITO
-  ================================ */
   toggleCart(): void {
     this.cartOpen = !this.cartOpen;
     if (this.cartOpen) {
@@ -70,9 +59,6 @@ export class HeaderComponent {
     this.cartOpen = false;
   }
 
-  /* ===============================
-     MENÚ USUARIO
-  ================================ */
   toggleUserMenu(): void {
     this.userMenuOpen = !this.userMenuOpen;
     if (this.userMenuOpen) {
@@ -82,9 +68,6 @@ export class HeaderComponent {
     }
   }
 
-  /* ===============================
-     BUSQUEDA
-  ================================ */
   toggleSearch(): void {
     this.searchOpen = !this.searchOpen;
     if (this.searchOpen) {
@@ -106,9 +89,6 @@ export class HeaderComponent {
     this.closeAll();
   }
 
-  /* ===============================
-     CERRAR TODO
-  ================================ */
   closeAll(): void {
     this.menuOpen = false;
     this.cartOpen = false;

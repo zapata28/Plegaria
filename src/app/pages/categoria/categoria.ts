@@ -41,7 +41,7 @@ constructor(
   private router: Router,
   private cart: CartService,
   private productService: ProductService,
-  private cdr: ChangeDetectorRef // 👈 AQUI
+  private cdr: ChangeDetectorRef
 ) {}
 
 
@@ -61,15 +61,10 @@ ngOnInit(): void {
     this.setGrupos();
     this.actualizarBreadcrumbs();
 
-    this.cargarProductos(); // ✅ ahora sí
+    this.cargarProductos();
   });
 }
 
-
-
-  /* =======================
-     TÍTULO
-  ======================= */
   setTitulo() {
     const map: Record<CategoriaSlug, string> = {
       maquillaje: 'Maquillaje',
@@ -80,9 +75,6 @@ ngOnInit(): void {
     this.titulo = map[this.slugActual];
   }
 
-  /* =======================
-     GRUPOS
-  ======================= */
 setGrupos() {
   if (this.slugActual === 'maquillaje') {
     this.grupos = [
@@ -218,10 +210,6 @@ setGrupos() {
   }
 }
 
-
-  /* =======================
-     CARGA PRODUCTOS (FIX)
-  ======================= */
 async cargarProductos() {
   this.loading = true;
 
@@ -246,21 +234,17 @@ async cargarProductos() {
 
     this.recalcularPaginas();
 
-    this.cdr.detectChanges(); // 🔥 CLAVE
+    this.cdr.detectChanges();
   } catch (err) {
     console.error('Error cargando productos', err);
     this.productos = [];
     this.total = 0;
   } finally {
     this.loading = false;
-    this.cdr.detectChanges(); // 🔥 CLAVE
+    this.cdr.detectChanges();
   }
 }
 
-
-  /* =======================
-     UI
-  ======================= */
   seleccionarGrupo(nombre: string) {
     this.grupoActivo = nombre;
     this.subitemActivo = 'Todos';
@@ -299,9 +283,6 @@ async cargarProductos() {
     this.cargarProductos();
   }
 
-  /* =======================
-     BREADCRUMB
-  ======================= */
   actualizarBreadcrumbs() {
     this.breadcrumbs = [
       { label: 'Inicio', action: 'home' },
@@ -322,9 +303,6 @@ async cargarProductos() {
     if (action === 'categoria') this.seleccionarGrupo('Todos');
   }
 
-  /* =======================
-     CART
-  ======================= */
   verProducto(id: string) {
     this.router.navigate(['/producto', id]);
   }
@@ -341,9 +319,6 @@ async cargarProductos() {
     );
   }
 
-  /* =======================
-     PAGINACIÓN
-  ======================= */
   recalcularPaginas() {
     this.paginasVisibles = Array.from(
       { length: this.totalPages },

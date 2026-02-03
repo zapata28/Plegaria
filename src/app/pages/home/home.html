@@ -6,13 +6,10 @@
   [class.active]="i === currentSlide"
   [hidden]="i !== currentSlide"
 >
-
-      <!-- Recuadro de la imagen -->
       <div class="image-container">
         <img [src]="slide.imagen || 'img/placeholder.png'" [alt]="slide.nombre" />
       </div>
 
-      <!-- Contenido del texto -->
       <div class="content">
         <h1>{{ slide.nombre }}</h1>
         <p>{{ slide.descripcion }}</p>
@@ -20,7 +17,6 @@
       </div>
     </div>
 
-    <!-- DOTS -->
     <div class="dots" *ngIf="heroProductos.length > 1">
       <span
         class="dot"
@@ -32,7 +28,6 @@
   </section>
 </section>
 
-<!-- ================= NOVEDADES ================= -->
 <section class="section-title">
   <h2>NOVEDADES</h2>
 </section>
@@ -98,7 +93,6 @@
   </div>
 </section>
 
-<!-- ================= CATEGORÍAS ================= -->
 <section class="categoria-container">
   <div class="horizontal-scroll">
     <div
@@ -111,16 +105,13 @@
         [alt]="c.name"
         loading="lazy"
       />
-
       <div class="card-info">
         <span class="text">{{ c.name }}</span>
       </div>
     </div>
   </div>
-
 </section>
 
-<!-- ================= DESCUENTOS ================= -->
 <section class="section-title">
   <h2>DESCUENTOS</h2>
 </section>

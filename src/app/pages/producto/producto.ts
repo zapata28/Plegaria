@@ -42,7 +42,7 @@ export class ProductoComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private cart: CartService,
-    private cdr: ChangeDetectorRef // 👈 MISMO FIX QUE CATEGORÍA
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -62,9 +62,6 @@ export class ProductoComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  /* =======================
-     CARGAR PRODUCTO
-  ======================= */
   async cargarProducto(id: string) {
     this.loading = true;
     this.loadingRelacionados = true;
@@ -99,9 +96,6 @@ export class ProductoComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* =======================
-     RELACIONADOS
-  ======================= */
   async cargarRelacionados(categoria: CategoriaSlug, actualId: string) {
     try {
       const { data, error } = await supabase
@@ -124,9 +118,6 @@ export class ProductoComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* =======================
-     UTILIDADES
-  ======================= */
   descuentoPct(p: ProductoModel): number {
     const antes = Number(p.precio_antes);
     const ahora = Number(p.precio);

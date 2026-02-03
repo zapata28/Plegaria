@@ -37,7 +37,6 @@ export class Home implements OnInit, OnDestroy {
     private ngZone: NgZone
   ) {}
 
-  /* ================= HERO ================= */
   heroProductos: Producto[] = [];
   currentSlide = 0;
   autoplayId: any;
@@ -98,10 +97,9 @@ async cargarHero() {
   this.currentSlide = 0;
   this.cache.set(key, this.heroProductos);
 
-  setTimeout(() => this.cdr.detectChanges()); // 👈 🔑
+  setTimeout(() => this.cdr.detectChanges());
 }
 
-  /* ================= CATEGORÍAS ================= */
   categorias = [
     { name: 'Maquillaje', slug: 'maquillaje', img: 'assets/icons/icono-maquillaje.png' },
     { name: 'Cuidado de la piel', slug: 'skincare', img: 'assets/icons/icono-cuidado-facial.png' },
@@ -109,13 +107,11 @@ async cargarHero() {
     { name: 'Accesorios', slug: 'accesorios', img: 'assets/icons/icono-accesorios.png' },
   ];
 
-  /* ================= DATA ================= */
   loadingNovedades = true;
   loadingOfertas = true;
   novedades: Producto[] = [];
   ofertas: Producto[] = [];
 
-  /* ================= LIFECYCLE ================= */
   async ngOnInit() {
     await this.cargarHero();
     this.startAutoplay();
@@ -127,7 +123,6 @@ async cargarHero() {
     clearInterval(this.autoplayId);
   }
 
-  /* ================= NAV ================= */
   irACategoria(slug: string) {
     this.router.navigate(['/categoria', slug]);
   }
@@ -136,7 +131,6 @@ async cargarHero() {
     this.router.navigate(['/producto', id]);
   }
 
-  /* ================= CARRITO ================= */
   addToCart(p: Producto) {
     this.cart.add(
       {
@@ -149,13 +143,11 @@ async cargarHero() {
     );
   }
 
-  /* ================= UTIL ================= */
   descuentoPct(p: Producto): number {
     if (!p.precio_antes || p.precio_antes <= p.precio) return 0;
     return Math.round(((p.precio_antes - p.precio) / p.precio_antes) * 100);
   }
 
-  /* ================= DATA + CACHE ================= */
 async cargarNovedades() {
   const key = 'home_novedades';
   const cached = this.cache.get<Producto[]>(key);
